@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -20,12 +20,14 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, showData }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogin = () => {
-    // Navigate to auth page and pass the current location and show data
+    // Navigate to auth page and pass the current path and show data
+    // but NOT the entire location object
     navigate("/auth", { 
       state: { 
-        from: location,
+        from: location.pathname,
         action: "add_show",
         show: showData
       } 
@@ -36,7 +38,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, showData }) =>
     // Navigate to auth page with signup tab active
     navigate("/auth", { 
       state: { 
-        from: location,
+        from: location.pathname,
         action: "add_show",
         show: showData,
         initialTab: "signup"
