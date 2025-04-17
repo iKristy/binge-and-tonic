@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,17 +86,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Clear local storage after successful migration
       localStorage.removeItem("shows");
-      toast({
-        title: "Shows migrated",
-        description: `Successfully migrated ${shows.length} shows to your account`,
-      });
     } catch (error) {
       console.error("Error migrating shows:", error);
-      toast({
-        title: "Migration error",
-        description: "Failed to migrate some shows to your account",
-        variant: "destructive",
-      });
     }
   };
 
