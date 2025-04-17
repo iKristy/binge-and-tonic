@@ -1,6 +1,7 @@
 
-// TMDb API service for fetching show information
-const TMDB_API_KEY = "d833109ce4971eb3006edc79fcdd402a";
+// TMDb API service for fetching show information through Supabase Edge Function
+import { supabase } from "@/integrations/supabase/client";
+
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 export interface TMDbShow {
@@ -26,15 +27,20 @@ export const searchShows = async (query: string): Promise<TMDbSearchResult> => {
   if (!query) return { page: 0, results: [], total_results: 0, total_pages: 0 };
   
   try {
-    const response = await fetch(
-      `${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`
-    );
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch search results');
+    const { data, error } = await supabase.functions.invoke("tmdb", {
+      body: { 
+        action: "search" 
+      },
+      query: { 
+        path: `/search/tv?query=${encodeURIComponent(query)}&language=en-US&page=1` 
+      }
+    });
+
+    if (error) {
+      throw new Error(`Function error: ${error.message}`);
     }
     
-    return await response.json();
+    return data;
   } catch (error) {
     console.error("Error searching shows:", error);
     return { page: 0, results: [], total_results: 0, total_pages: 0 };
@@ -43,15 +49,20 @@ export const searchShows = async (query: string): Promise<TMDbSearchResult> => {
 
 export const getShowDetails = async (showId: number): Promise<TMDbShow | null> => {
   try {
-    const response = await fetch(
-      `${TMDB_BASE_URL}/tv/${showId}?api_key=${TMDB_API_KEY}&language=en-US`
-    );
+    const { data, error } = await supabase.functions.invoke("tmdb", {
+      body: { 
+        action: "details" 
+      },
+      query: { 
+        path: `/tv/${showId}?language=en-US` 
+      }
+    });
     
-    if (!response.ok) {
-      throw new Error('Failed to fetch show details');
+    if (error) {
+      throw new Error(`Function error: ${error.message}`);
     }
     
-    return await response.json();
+    return data;
   } catch (error) {
     console.error("Error fetching show details:", error);
     return null;

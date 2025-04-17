@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Show } from "@/types/Show";
 import ShowList from "@/components/ShowList";
@@ -20,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { v4 as uuidv4 } from "uuid";
 import { PlusCircle, TvIcon, LogOut } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,7 +36,6 @@ const Index: React.FC = () => {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
 
-  // Fetch shows from Supabase
   const fetchShows = async () => {
     try {
       setIsLoading(true);
@@ -52,16 +49,14 @@ const Index: React.FC = () => {
       }
 
       if (data) {
-        // Transform Supabase data to our Show type
         const transformedShows: Show[] = data.map(show => ({
           id: show.id,
           title: show.title,
           imageUrl: show.poster_url || "/placeholder.svg",
-          currentEpisodes: show.current_episodes,
+          currentEpisodes: show.current_episodes || 0,
           episodesNeeded: show.total_episodes,
           status: show.current_episodes >= show.total_episodes ? "ready" : "waiting",
-          description: show.description,
-          genre: show.genre
+          tmdbId: show.tmdb_show_id
         }));
         setShows(transformedShows);
       }
@@ -85,18 +80,15 @@ const Index: React.FC = () => {
     try {
       const episodesReady = newShow.currentEpisodes >= newShow.episodesNeeded;
       
-      // Save to Supabase
       const { data, error } = await supabase
         .from("user_shows")
         .insert({
-          tmdb_show_id: parseInt(newShow.tmdbId?.toString() || "0"),
+          tmdb_show_id: newShow.tmdbId || 0,
           title: newShow.title,
           current_episodes: newShow.currentEpisodes,
           total_episodes: newShow.episodesNeeded,
           status: episodesReady ? "completed" : "watching",
-          poster_url: newShow.imageUrl,
-          description: newShow.description || "",
-          genre: newShow.genre || ""
+          poster_url: newShow.imageUrl
         })
         .select();
 
@@ -107,11 +99,10 @@ const Index: React.FC = () => {
           id: data[0].id,
           title: data[0].title,
           imageUrl: data[0].poster_url || "/placeholder.svg",
-          currentEpisodes: data[0].current_episodes,
+          currentEpisodes: data[0].current_episodes || 0,
           episodesNeeded: data[0].total_episodes,
           status: episodesReady ? "ready" : "waiting",
-          description: data[0].description,
-          genre: data[0].genre
+          tmdbId: data[0].tmdb_show_id
         };
         
         setShows([show, ...shows]);
@@ -140,7 +131,6 @@ const Index: React.FC = () => {
       const newEpisodeCount = Math.max(0, show.currentEpisodes + episodeDelta);
       const newStatus = newEpisodeCount >= show.episodesNeeded ? "completed" : "watching";
       
-      // Update in Supabase
       const { error } = await supabase
         .from("user_shows")
         .update({
@@ -151,7 +141,6 @@ const Index: React.FC = () => {
       
       if (error) throw error;
       
-      // Update local state
       setShows(
         shows.map((show) => {
           if (show.id === id) {
