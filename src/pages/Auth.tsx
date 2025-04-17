@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom"; // Add Link import
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -141,10 +141,10 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-black border-b border-border py-4 px-6">
         <div className="mx-auto flex max-w-md items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity"> {/* Wrap logo in Link */}
             <TvIcon className="h-6 w-6 text-primary" />
             <h1 className="text-xl font-bold">Binge & Tonic</h1>
-          </div>
+          </Link>
         </div>
       </header>
 
