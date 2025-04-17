@@ -5,7 +5,7 @@ import { useShowFilter, FilterType } from "@/hooks/show/useShowFilter";
 import { useShowStorage } from "@/hooks/show/useShowStorage";
 import { Show } from "@/types/Show";
 
-export { FilterType } from "@/hooks/show/useShowFilter";
+export type { FilterType } from "@/hooks/show/useShowFilter";
 
 export function useShowsData(user: User | null) {
   const { shows, setShows, isLoading } = useShowFetch(user);

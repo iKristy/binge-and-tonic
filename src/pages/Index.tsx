@@ -7,8 +7,8 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useAuth } from "@/components/AuthProvider";
 import { useShowsData } from "@/hooks/useShowsData";
-import { useShowDetails } from "@/hooks/useShowDetails";
-import { useAddShowState } from "@/hooks/useAddShowState";
+import { useShowDetails } from "@/hooks/show/useShowDetails";
+import { useAddShowState } from "@/hooks/show/useAddShowState";
 
 const Index: React.FC = () => {
   const { user } = useAuth();
