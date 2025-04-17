@@ -49,7 +49,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Add New Show</SheetTitle>
+            <SheetTitle>Add new show</SheetTitle>
           </SheetHeader>
           <div className="mt-6">
             <AddShowForm
