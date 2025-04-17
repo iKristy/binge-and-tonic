@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Show } from "@/types/Show";
 
-export type SortType = "alphabetical" | "status" | "releaseDate";
+export type SortType = "alphabetical" | "status" | "releaseDate" | "dateAdded";
 
 export function useShowSort(shows: Show[]) {
   const [sortBy, setSortBy] = useState<SortType>("alphabetical");
@@ -24,6 +24,9 @@ export function useShowSort(shows: Show[]) {
           return aRemainingEpisodes - bRemainingEpisodes;
         }
         return a.title.localeCompare(b.title); // Secondary sort by title
+      case "dateAdded":
+        // Sort by the order in which shows were added (assuming the first show in the array is the most recently added)
+        return 0; // This will be updated in the storage hook
       default:
         return 0;
     }

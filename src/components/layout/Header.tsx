@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TvIcon, LogOut, PlusCircle, UserRound, SortDesc } from "lucide-react";
@@ -105,6 +104,7 @@ const Header: React.FC<HeaderProps> = ({
                 <SelectItem value="alphabetical">Alphabetical</SelectItem>
                 <SelectItem value="status">By Show Status</SelectItem>
                 <SelectItem value="releaseDate">By Release Date</SelectItem>
+                <SelectItem value="dateAdded">By Date Added</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
