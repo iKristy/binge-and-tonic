@@ -89,7 +89,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="mx-auto flex max-w-7xl flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between mb-4 md:mb-0">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <TvIcon className="h-6 w-6 text-red-500" />
+            <TvIcon className="h-6 w-6 text-primary" />
             <h1 className="text-xl font-bold">Binge & Tonic</h1>
           </Link>
           
