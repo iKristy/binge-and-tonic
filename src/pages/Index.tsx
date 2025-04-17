@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Show } from "@/types/Show";
 import ShowList from "@/components/ShowList";
@@ -23,7 +22,6 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { PlusCircle, TvIcon } from "lucide-react";
 
-// Sample data for initial shows
 const INITIAL_SHOWS: Show[] = [
   {
     id: "1",
@@ -66,7 +64,6 @@ const Index: React.FC = () => {
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [filter, setFilter] = useState<FilterType>("all");
 
-  // Initialize with sample data or load from localStorage
   useEffect(() => {
     const savedShows = localStorage.getItem("binge-shows");
     if (savedShows) {
@@ -76,7 +73,6 @@ const Index: React.FC = () => {
     }
   }, []);
 
-  // Save shows to localStorage whenever they change
   useEffect(() => {
     if (shows.length > 0) {
       localStorage.setItem("binge-shows", JSON.stringify(shows));
@@ -132,7 +128,7 @@ const Index: React.FC = () => {
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-2">
             <TvIcon className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold">Binge Watch Tracker</h1>
+            <h1 className="text-xl font-bold">Binge & Tonic</h1>
           </div>
           <div className="flex items-center gap-4">
             <Select value={filter} onValueChange={(value) => setFilter(value as FilterType)}>
@@ -184,7 +180,7 @@ const Index: React.FC = () => {
       </main>
 
       <footer className="border-t border-border py-4 px-6 text-center text-sm text-muted-foreground">
-        <p>Binge Watch Tracker — Never miss a bingeable show again!</p>
+        <p>Binge & Tonic — Never miss a bingeable show again!</p>
       </footer>
     </div>
   );
