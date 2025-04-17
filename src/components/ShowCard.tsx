@@ -21,7 +21,9 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onViewDetails }) => {
 
   return (
     <Card 
-      className="w-full overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl cursor-pointer"
+      className={`w-full overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl cursor-pointer ${
+        show.watched ? 'opacity-80' : ''
+      }`}
       onClick={handleCardClick}
     >
       <div className="relative aspect-video">

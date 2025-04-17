@@ -26,7 +26,8 @@ const Index: React.FC = () => {
     completeCount,
     waitingCount,
     totalCount,
-    refreshShows
+    refreshShows,
+    toggleWatched
   } = useShowsData(user);
   
   const {
@@ -34,14 +35,18 @@ const Index: React.FC = () => {
     isDetailsOpen,
     handleViewDetails,
     handleCloseDetails,
-    handleRemoveShow
-  } = useShowDetails(removeShow);
+    handleRemoveShow,
+    handleWatchedToggle
+  } = useShowDetails(removeShow, toggleWatched);
   
   const {
     isAddFormOpen,
     setIsAddFormOpen,
     handleAddShow
   } = useAddShowState(addShow);
+
+  const watchedShows = filteredShows.filter(show => show.watched);
+  const unwatchedShows = filteredShows.filter(show => !show.watched);
 
   return (
     <div className="min-h-screen bg-background">
@@ -60,22 +65,38 @@ const Index: React.FC = () => {
         }}
       />
 
-      <main className="mx-auto max-w-7xl p-6">
+      <main className="mx-auto max-w-7xl p-6 space-y-8">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
             <p className="text-xl">Loading shows...</p>
           </div>
         ) : (
-          <ShowList
-            shows={filteredShows}
-            onViewDetails={handleViewDetails}
-          />
+          <>
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">My Shows</h2>
+              <ShowList
+                shows={unwatchedShows}
+                onViewDetails={handleViewDetails}
+              />
+            </section>
+
+            {watchedShows.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">Watched</h2>
+                <ShowList
+                  shows={watchedShows}
+                  onViewDetails={handleViewDetails}
+                />
+              </section>
+            )}
+          </>
         )}
         <ShowDetails
           show={selectedShow}
           isOpen={isDetailsOpen}
           onClose={handleCloseDetails}
           onRemove={handleRemoveShow}
+          onWatchedToggle={handleWatchedToggle}
         />
       </main>
 

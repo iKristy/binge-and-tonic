@@ -2,7 +2,10 @@
 import { useState } from "react";
 import { Show } from "@/types/Show";
 
-export function useShowDetails(onRemoveShow?: (showId: string) => Promise<boolean>) {
+export function useShowDetails(
+  onRemoveShow?: (showId: string) => Promise<boolean>,
+  onWatchedToggle?: (showId: string) => Promise<boolean>
+) {
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
@@ -21,11 +24,24 @@ export function useShowDetails(onRemoveShow?: (showId: string) => Promise<boolea
     }
   };
 
+  const handleWatchedToggle = async (showId: string) => {
+    if (onWatchedToggle) {
+      const success = await onWatchedToggle(showId);
+      if (success && selectedShow) {
+        setSelectedShow({
+          ...selectedShow,
+          watched: !selectedShow.watched
+        });
+      }
+    }
+  };
+
   return {
     selectedShow,
     isDetailsOpen,
     handleViewDetails,
     handleCloseDetails,
-    handleRemoveShow
+    handleRemoveShow,
+    handleWatchedToggle
   };
 }

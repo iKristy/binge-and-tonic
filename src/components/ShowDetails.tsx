@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Show } from "@/types/Show";
 import {
@@ -11,16 +10,23 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, ExternalLink, Film, Trash2 } from "lucide-react";
+import { CalendarDays, ExternalLink, Film, Trash2, Eye, EyeOff } from "lucide-react";
 
 interface ShowDetailsProps {
   show: Show | null;
   isOpen: boolean;
   onClose: () => void;
   onRemove?: (showId: string) => void;
+  onWatchedToggle?: (showId: string) => void;
 }
 
-const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose, onRemove }) => {
+const ShowDetails: React.FC<ShowDetailsProps> = ({ 
+  show, 
+  isOpen, 
+  onClose, 
+  onRemove,
+  onWatchedToggle 
+}) => {
   if (!show) return null;
 
   const isComplete = show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
@@ -30,6 +36,12 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose, onRemo
     if (show.id && onRemove) {
       onRemove(show.id);
       onClose();
+    }
+  };
+
+  const handleWatchedToggle = () => {
+    if (show.id && onWatchedToggle) {
+      onWatchedToggle(show.id);
     }
   };
 
@@ -82,20 +94,38 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose, onRemo
           </div>
         )}
 
-        <DialogFooter className="mt-4 flex flex-row justify-between items-center">
-          {show.tmdbId && (
-            <a 
-              href={`https://www.themoviedb.org/tv/${show.tmdbId}`} 
-              target="_blank" 
-              rel="noopener noreferrer"
+        <DialogFooter className="mt-4 flex flex-row justify-between items-center gap-2">
+          <div className="flex gap-2">
+            {show.tmdbId && (
+              <a 
+                href={`https://www.themoviedb.org/tv/${show.tmdbId}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button variant="outline" className="flex gap-2 items-center">
+                  <ExternalLink className="h-4 w-4" />
+                  View on TMDb
+                </Button>
+              </a>
+            )}
+            <Button 
+              variant="outline"
+              onClick={handleWatchedToggle}
               className="flex gap-2 items-center"
             >
-              <Button variant="outline" className="flex gap-2 items-center">
-                <ExternalLink className="h-4 w-4" />
-                View on TMDb
-              </Button>
-            </a>
-          )}
+              {show.watched ? (
+                <>
+                  <EyeOff className="h-4 w-4" />
+                  Mark as Unwatched
+                </>
+              ) : (
+                <>
+                  <Eye className="h-4 w-4" />
+                  Mark as Watched
+                </>
+              )}
+            </Button>
+          </div>
           <Button 
             variant="destructive" 
             onClick={handleRemove}

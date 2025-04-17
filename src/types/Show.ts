@@ -9,4 +9,5 @@ export interface Show {
   genre?: string;
   tmdbId?: number;
   seasonNumber?: number;
+  watched?: boolean;
 }
