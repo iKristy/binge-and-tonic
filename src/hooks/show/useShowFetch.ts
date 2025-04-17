@@ -30,6 +30,7 @@ export function useShowFetch(user: User | null) {
         .select(`
           id,
           status,
+          watched,
           show:show_id(
             id,
             tmdb_id,
@@ -57,7 +58,8 @@ export function useShowFetch(user: User | null) {
           releasedEpisodes: relation.show.released_episodes || 0,
           status: relation.show.released_episodes >= relation.show.total_episodes ? "complete" : "waiting",
           seasonNumber: relation.show.season_number,
-          tmdbId: relation.show.tmdb_id
+          tmdbId: relation.show.tmdb_id,
+          watched: relation.watched || false
         }));
         
         setShows(transformedShows);
