@@ -31,12 +31,12 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
         <SheetTrigger asChild>
           <Button aria-label="Add new show">
             <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
-            Add Show
+            Add show
           </Button>
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Add new Show</SheetTitle>
+            <SheetTitle>Add new show</SheetTitle>
           </SheetHeader>
           <div className="mt-6">
             <AddShowForm onAddShow={onAddShow} onCancel={() => setIsAddFormOpen(false)} />
