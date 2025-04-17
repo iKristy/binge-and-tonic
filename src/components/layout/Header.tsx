@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { TvIcon, LogOut, PlusCircle, UserRound, SortDesc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,9 +61,7 @@ const Header: React.FC<HeaderProps> = ({
     try {
       await signOut();
       toast.success("Successfully signed out");
-      // Navigate to home first, then refresh the page
       navigate("/", { replace: true });
-      // Add a slight delay before refreshing to ensure navigation completes
       setTimeout(() => {
         window.location.reload();
       }, 100);
@@ -87,10 +84,10 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-black sticky top-0 z-10 border-b border-border py-4 px-6">
       <div className="mx-auto flex max-w-7xl items-center justify-between">
-        <div className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <TvIcon className="h-6 w-6 text-red-500" />
           <h1 className="text-xl font-bold">Binge & Tonic</h1>
-        </div>
+        </Link>
         <div className="flex items-center gap-4">
           <Select value={filter} onValueChange={(value) => onFilterChange(value as FilterType)}>
             <SelectTrigger className="w-[180px]">
