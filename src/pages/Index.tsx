@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Show } from "@/types/Show";
 import ShowList from "@/components/ShowList";
@@ -19,7 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PlusCircle, TvIcon, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { PlusCircle, TvIcon, LogOut, LogIn } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -35,10 +37,22 @@ const Index: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const fetchShows = async () => {
     try {
       setIsLoading(true);
+      
+      // If not logged in, we'll use local storage for demo purposes
+      if (!user) {
+        const localShows = localStorage.getItem("shows");
+        if (localShows) {
+          setShows(JSON.parse(localShows));
+        }
+        setIsLoading(false);
+        return;
+      }
+      
       const { data, error } = await supabase
         .from("user_shows")
         .select("*")
@@ -59,6 +73,9 @@ const Index: React.FC = () => {
           tmdbId: show.tmdb_show_id
         }));
         setShows(transformedShows);
+        
+        // Also save to localStorage as backup
+        localStorage.setItem("shows", JSON.stringify(transformedShows));
       }
     } catch (error: any) {
       console.error("Error fetching shows:", error.message);
@@ -79,38 +96,50 @@ const Index: React.FC = () => {
   const handleAddShow = async (newShow: Omit<Show, "id" | "status">) => {
     try {
       const episodesReady = newShow.currentEpisodes >= newShow.episodesNeeded;
+      const showData = {
+        title: newShow.title,
+        current_episodes: newShow.currentEpisodes,
+        total_episodes: newShow.episodesNeeded,
+        status: episodesReady ? "completed" : "watching",
+        poster_url: newShow.imageUrl,
+        tmdb_show_id: newShow.tmdbId || 0
+      };
       
-      const { data, error } = await supabase
-        .from("user_shows")
-        .insert({
-          tmdb_show_id: newShow.tmdbId || 0,
-          title: newShow.title,
-          current_episodes: newShow.currentEpisodes,
-          total_episodes: newShow.episodesNeeded,
-          status: episodesReady ? "completed" : "watching",
-          poster_url: newShow.imageUrl
-        })
-        .select();
+      // If user is logged in, save to Supabase
+      if (user) {
+        const { data, error } = await supabase
+          .from("user_shows")
+          .insert({
+            ...showData,
+            user_id: user.id
+          })
+          .select();
 
-      if (error) throw error;
-      
-      if (data && data[0]) {
-        const show: Show = {
-          id: data[0].id,
-          title: data[0].title,
-          imageUrl: data[0].poster_url || "/placeholder.svg",
-          currentEpisodes: data[0].current_episodes || 0,
-          episodesNeeded: data[0].total_episodes,
-          status: episodesReady ? "ready" : "waiting",
-          tmdbId: data[0].tmdb_show_id
-        };
+        if (error) throw error;
         
-        setShows([show, ...shows]);
-        
-        toast({
-          title: "Show Added",
-          description: `${show.title} has been added to your list.`
-        });
+        if (data && data[0]) {
+          const show: Show = {
+            id: data[0].id,
+            title: data[0].title,
+            imageUrl: data[0].poster_url || "/placeholder.svg",
+            currentEpisodes: data[0].current_episodes || 0,
+            episodesNeeded: data[0].total_episodes,
+            status: episodesReady ? "ready" : "waiting",
+            tmdbId: data[0].tmdb_show_id
+          };
+          
+          setShows([show, ...shows]);
+          localStorage.setItem("shows", JSON.stringify([show, ...shows]));
+          
+          toast({
+            title: "Show Added",
+            description: `${show.title} has been added to your list.`
+          });
+        }
+      } else {
+        // If not logged in, prompt for login
+        navigate("/auth", { state: { from: location, action: "add_show", show: newShow } });
+        return;
       }
       
       setIsAddFormOpen(false);
@@ -131,29 +160,45 @@ const Index: React.FC = () => {
       const newEpisodeCount = Math.max(0, show.currentEpisodes + episodeDelta);
       const newStatus = newEpisodeCount >= show.episodesNeeded ? "completed" : "watching";
       
-      const { error } = await supabase
-        .from("user_shows")
-        .update({
-          current_episodes: newEpisodeCount,
-          status: newStatus
-        })
-        .eq("id", id);
+      // If user is logged in, update in Supabase
+      if (user) {
+        const { error } = await supabase
+          .from("user_shows")
+          .update({
+            current_episodes: newEpisodeCount,
+            status: newStatus
+          })
+          .eq("id", id);
+        
+        if (error) throw error;
+      } else {
+        // If not logged in, prompt for login
+        navigate("/auth", { 
+          state: { 
+            from: location, 
+            action: "update_show", 
+            showId: id, 
+            episodeDelta: episodeDelta 
+          } 
+        });
+        return;
+      }
       
-      if (error) throw error;
+      // Update local state
+      const updatedShows = shows.map((show) => {
+        if (show.id === id) {
+          const updatedStatus = newEpisodeCount >= show.episodesNeeded ? "ready" : "waiting";
+          return {
+            ...show,
+            currentEpisodes: newEpisodeCount,
+            status: updatedStatus,
+          };
+        }
+        return show;
+      });
       
-      setShows(
-        shows.map((show) => {
-          if (show.id === id) {
-            const updatedStatus = newEpisodeCount >= show.episodesNeeded ? "ready" : "waiting";
-            return {
-              ...show,
-              currentEpisodes: newEpisodeCount,
-              status: updatedStatus,
-            };
-          }
-          return show;
-        })
-      );
+      setShows(updatedShows);
+      localStorage.setItem("shows", JSON.stringify(updatedShows));
       
     } catch (error: any) {
       toast({
@@ -171,6 +216,10 @@ const Index: React.FC = () => {
 
   const handleSignOut = async () => {
     await signOut();
+  };
+  
+  const handleSignIn = () => {
+    navigate("/auth", { state: { from: location } });
   };
 
   const filteredShows = shows.filter((show) => {
@@ -222,9 +271,15 @@ const Index: React.FC = () => {
                 </div>
               </SheetContent>
             </Sheet>
-            <Button variant="ghost" onClick={handleSignOut} title="Sign Out">
-              <LogOut className="h-5 w-5" />
-            </Button>
+            {user ? (
+              <Button variant="ghost" onClick={handleSignOut} title="Sign Out">
+                <LogOut className="h-5 w-5" />
+              </Button>
+            ) : (
+              <Button variant="ghost" onClick={handleSignIn} title="Sign In">
+                <LogIn className="h-5 w-5" />
+              </Button>
+            )}
           </div>
         </div>
       </header>

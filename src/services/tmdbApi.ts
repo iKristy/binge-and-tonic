@@ -29,9 +29,7 @@ export const searchShows = async (query: string): Promise<TMDbSearchResult> => {
   try {
     const { data, error } = await supabase.functions.invoke("tmdb", {
       body: { 
-        action: "search" 
-      },
-      query: { 
+        action: "search",
         path: `/search/tv?query=${encodeURIComponent(query)}&language=en-US&page=1` 
       }
     });
@@ -51,9 +49,7 @@ export const getShowDetails = async (showId: number): Promise<TMDbShow | null> =
   try {
     const { data, error } = await supabase.functions.invoke("tmdb", {
       body: { 
-        action: "details" 
-      },
-      query: { 
+        action: "details",
         path: `/tv/${showId}?language=en-US` 
       }
     });

@@ -4,9 +4,10 @@ import { useAuth } from "./AuthProvider";
 
 interface RequireAuthProps {
   children: JSX.Element;
+  requireAuth?: boolean;
 }
 
-const RequireAuth = ({ children }: RequireAuthProps) => {
+const RequireAuth = ({ children, requireAuth = true }: RequireAuthProps) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -18,7 +19,8 @@ const RequireAuth = ({ children }: RequireAuthProps) => {
     );
   }
 
-  if (!user) {
+  // If authentication is required and user is not logged in, redirect to auth page
+  if (requireAuth && !user) {
     // Redirect to auth page but save the current location they were trying to access
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }

@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,101 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { TvIcon } from "lucide-react";
+import { useAuth } from "@/components/AuthProvider";
+import { Show } from "@/types/Show";
+
+interface LocationState {
+  from: Location;
+  action?: string;
+  show?: Omit<Show, "id" | "status">;
+  showId?: string;
+  episodeDelta?: number;
+}
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
+  
+  // Get the location state
+  const state = location.state as LocationState;
+  
+  useEffect(() => {
+    // If user is already logged in, redirect to the page they came from
+    if (user) {
+      handlePostLoginActions();
+    }
+  }, [user]);
+
+  const handlePostLoginActions = async () => {
+    if (!user || !state) {
+      navigate("/");
+      return;
+    }
+    
+    try {
+      // Handle post-login actions based on the state
+      if (state.action === 'add_show' && state.show) {
+        const episodesReady = state.show.currentEpisodes >= state.show.episodesNeeded;
+        
+        await supabase
+          .from("user_shows")
+          .insert({
+            user_id: user.id,
+            tmdb_show_id: state.show.tmdbId || 0,
+            title: state.show.title,
+            current_episodes: state.show.currentEpisodes,
+            total_episodes: state.show.episodesNeeded,
+            status: episodesReady ? "completed" : "watching",
+            poster_url: state.show.imageUrl
+          });
+          
+        toast({
+          title: "Show Added",
+          description: `${state.show.title} has been added to your list.`
+        });
+      } 
+      else if (state.action === 'update_show' && state.showId && state.episodeDelta) {
+        // First we need to get the show details
+        const { data } = await supabase
+          .from("user_shows")
+          .select("*")
+          .eq("id", state.showId)
+          .single();
+          
+        if (data) {
+          const newEpisodeCount = Math.max(0, data.current_episodes + state.episodeDelta);
+          const newStatus = newEpisodeCount >= data.total_episodes ? "completed" : "watching";
+          
+          await supabase
+            .from("user_shows")
+            .update({
+              current_episodes: newEpisodeCount,
+              status: newStatus
+            })
+            .eq("id", state.showId);
+            
+          toast({
+            title: "Show Updated",
+            description: `Episode count updated successfully.`
+          });
+        }
+      }
+      
+      // Navigate to the page they came from
+      navigate(state.from?.pathname || "/");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,14 +144,13 @@ const Auth = () => {
       
       if (error) throw error;
       
-      navigate("/");
+      // The redirect will be handled by the useEffect
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.message || "An error occurred during sign in.",
         variant: "destructive"
       });
-    } finally {
       setLoading(false);
     }
   };
@@ -77,7 +164,7 @@ const Auth = () => {
           </div>
           <CardTitle className="text-2xl">Binge & Tonic</CardTitle>
           <CardDescription>
-            Sign in to track your favorite shows
+            {state?.action ? 'Sign in to save your changes' : 'Sign in to track your favorite shows'}
           </CardDescription>
         </CardHeader>
         <Tabs defaultValue="signin" className="w-full">
@@ -111,9 +198,17 @@ const Auth = () => {
                   />
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex flex-col gap-3">
                 <Button className="w-full" type="submit" disabled={loading}>
                   {loading ? "Signing in..." : "Sign In"}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  type="button" 
+                  onClick={() => navigate("/")}
+                >
+                  Cancel
                 </Button>
               </CardFooter>
             </form>
@@ -147,9 +242,17 @@ const Auth = () => {
                   </p>
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex flex-col gap-3">
                 <Button className="w-full" type="submit" disabled={loading}>
                   {loading ? "Signing up..." : "Sign Up"}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  type="button" 
+                  onClick={() => navigate("/")}
+                >
+                  Cancel
                 </Button>
               </CardFooter>
             </form>

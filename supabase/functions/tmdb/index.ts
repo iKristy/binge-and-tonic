@@ -24,12 +24,13 @@ serve(async (req) => {
     }
 
     const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-    const url = new URL(req.url);
-    const path = url.searchParams.get("path");
     
-    if (!path) {
+    // Parse the request body
+    const { action, path } = await req.json();
+    
+    if (!action || !path) {
       return new Response(
-        JSON.stringify({ error: "No path provided" }),
+        JSON.stringify({ error: "Missing action or path" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
       );
     }
