@@ -58,12 +58,12 @@ const Header: React.FC<HeaderProps> = ({
   };
   
   const handleSignIn = () => {
-    navigate("/auth", { state: { from: location } });
+    navigate("/auth", { state: { from: location.pathname } });
     setUserMenuOpen(false);
   };
 
   const handleSignUp = () => {
-    navigate("/auth", { state: { from: location, initialTab: "signup" } });
+    navigate("/auth", { state: { from: location.pathname, initialTab: "signup" } });
     setUserMenuOpen(false);
   };
 
@@ -108,7 +108,11 @@ const Header: React.FC<HeaderProps> = ({
           </Sheet>
           
           {user ? (
-            <Button variant="ghost" onClick={handleSignOut} title="Sign Out">
+            <Button 
+              variant="ghost" 
+              onClick={handleSignOut} 
+              title="Sign Out"
+            >
               <LogOut className="h-5 w-5" />
             </Button>
           ) : (
@@ -121,7 +125,10 @@ const Header: React.FC<HeaderProps> = ({
               <PopoverContent className="w-56 p-3">
                 <div className="flex flex-col space-y-2">
                   <h3 className="font-medium mb-2">Join Binge & Tonic</h3>
-                  <Button onClick={handleSignIn} className="w-full justify-start">
+                  <Button 
+                    onClick={handleSignIn} 
+                    className="w-full justify-start"
+                  >
                     Sign In
                   </Button>
                   <Button 
