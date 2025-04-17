@@ -15,8 +15,15 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onViewDetails }) => {
   const isComplete = show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
   const remainingEpisodes = Math.max(0, show.totalEpisodes - show.releasedEpisodes);
 
+  const handleCardClick = () => {
+    onViewDetails(show);
+  };
+
   return (
-    <Card className="w-full overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl">
+    <Card 
+      className="w-full overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl cursor-pointer"
+      onClick={handleCardClick}
+    >
       <div className="relative aspect-video">
         <img
           src={show.imageUrl || "/placeholder.svg"}
@@ -62,7 +69,10 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onViewDetails }) => {
         <Button 
           size="sm" 
           variant="ghost" 
-          onClick={() => onViewDetails(show)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onViewDetails(show);
+          }}
         >
           <Info className="h-4 w-4 mr-1" /> Details
         </Button>
