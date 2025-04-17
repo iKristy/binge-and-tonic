@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TvIcon, LogOut, PlusCircle, UserRound, SortDesc } from "lucide-react";
@@ -75,7 +76,7 @@ const Header: React.FC<HeaderProps> = ({
     <header className="bg-black sticky top-0 z-10 border-b border-border py-4 px-6">
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         <div className="flex items-center gap-2">
-          <TvIcon className="h-6 w-6 text-primary" />
+          <TvIcon className="h-6 w-6 text-red-500" />
           <h1 className="text-xl font-bold">Binge & Tonic</h1>
         </div>
         <div className="flex items-center gap-4">
