@@ -24,6 +24,7 @@ export function useShowFetch(user: User | null) {
         return;
       }
       
+      // Fetch shows from database
       const { data, error } = await supabase
         .from("user_shows")
         .select("*")
@@ -33,6 +34,7 @@ export function useShowFetch(user: User | null) {
         throw error;
       }
 
+      // Transform shows data for the UI
       if (data) {
         const transformedShows: Show[] = data.map(show => ({
           id: show.id,
@@ -49,6 +51,11 @@ export function useShowFetch(user: User | null) {
         
         // Also save to localStorage as backup
         localStorage.setItem("shows", JSON.stringify(transformedShows));
+        
+        // After fetching shows, trigger the auto-update function if there are shows
+        if (data.length > 0) {
+          await triggerShowsUpdate();
+        }
       }
     } catch (error: any) {
       console.error("Error fetching shows:", error.message);
@@ -59,6 +66,25 @@ export function useShowFetch(user: User | null) {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Function to trigger the update-shows edge function
+  const triggerShowsUpdate = async () => {
+    try {
+      // Call the update-shows edge function without waiting for it to complete
+      supabase.functions.invoke("update-shows", {
+        body: { action: "update" }
+      }).then(({ error }) => {
+        if (error) {
+          console.error("Background update error:", error);
+        } else {
+          console.log("Shows update triggered in background");
+        }
+      });
+    } catch (error) {
+      console.error("Error triggering shows update:", error);
+      // We don't need to show an error toast as this is a background operation
     }
   };
 

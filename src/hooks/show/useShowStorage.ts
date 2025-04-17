@@ -42,7 +42,7 @@ export function useShowStorage(user: User | null) {
           total_episodes: newShow.totalEpisodes,
           released_episodes: newShow.releasedEpisodes,
           season_number: newShow.seasonNumber,
-          description: newShow.description, // Store description in database
+          description: newShow.description || "", // Add default empty string
           status: newShow.releasedEpisodes >= newShow.totalEpisodes ? "completed" : "watching"
         });
 
