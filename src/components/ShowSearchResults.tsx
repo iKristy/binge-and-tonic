@@ -4,7 +4,7 @@ import { TMDbShow } from "@/services/tmdbApi";
 import { getImageUrl } from "@/services/tmdbApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 
 interface ShowSearchResultsProps {
   results: TMDbShow[];
@@ -22,7 +22,10 @@ const ShowSearchResults: React.FC<ShowSearchResultsProps> = ({
   if (isLoading) {
     return (
       <div className="py-4 text-center">
-        <p>Searching for shows...</p>
+        <div className="flex items-center justify-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <p>Searching for shows...</p>
+        </div>
       </div>
     );
   }

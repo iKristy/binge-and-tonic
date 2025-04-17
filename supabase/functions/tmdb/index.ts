@@ -4,6 +4,11 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 const TMDB_API_KEY = Deno.env.get("TMDB_API_KEY") || '';
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
 interface RequestBody {
   action: string;
   path: string;
@@ -12,6 +17,14 @@ interface RequestBody {
 serve(async (req) => {
   console.log('TMDB Edge Function received request');
   
+  // Handle CORS preflight request
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { 
+      headers: corsHeaders,
+      status: 204
+    });
+  }
+  
   // Check API key first
   if (!TMDB_API_KEY) {
     console.error('API key not configured');
@@ -19,7 +32,7 @@ serve(async (req) => {
       error: 'TMDB API key not configured', 
       details: 'Please set TMDB_API_KEY in your Edge Function secrets'
     }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500
     });
   }
@@ -27,15 +40,22 @@ serve(async (req) => {
   // Parse the request body
   let body: RequestBody;
   try {
-    body = await req.json();
-    console.log('Request body:', JSON.stringify(body));
+    const bodyText = await req.text();
+    console.log('Request body (raw):', bodyText);
+    
+    if (!bodyText) {
+      throw new Error('Empty request body');
+    }
+    
+    body = JSON.parse(bodyText);
+    console.log('Request body (parsed):', JSON.stringify(body));
   } catch (error) {
     console.error('Invalid JSON in request body:', error);
     return new Response(JSON.stringify({ 
       error: 'Invalid request body',
-      details: 'Could not parse JSON'
+      details: error instanceof Error ? error.message : 'Could not parse JSON'
     }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400
     });
   }
@@ -46,7 +66,7 @@ serve(async (req) => {
       error: 'Missing required parameters',
       details: 'Both action and path are required'
     }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400
     });
   }
@@ -68,7 +88,7 @@ serve(async (req) => {
           error: 'Invalid action',
           details: `Action "${body.action}" is not supported`
         }), {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 400
         });
     }
@@ -96,7 +116,7 @@ serve(async (req) => {
     console.log('TMDb response received successfully');
 
     return new Response(JSON.stringify(data), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200
     });
 
@@ -105,9 +125,9 @@ serve(async (req) => {
     
     return new Response(JSON.stringify({ 
       error: 'Failed to fetch data from TMDb', 
-      details: error.message 
+      details: error instanceof Error ? error.message : String(error)
     }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500
     });
   }

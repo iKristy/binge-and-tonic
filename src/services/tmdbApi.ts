@@ -38,9 +38,13 @@ export interface TMDbSearchResult {
 }
 
 export const searchShows = async (query: string): Promise<TMDbSearchResult> => {
-  if (!query) return { page: 0, results: [], total_results: 0, total_pages: 0 };
+  if (!query || query.trim().length < 3) {
+    return { page: 0, results: [], total_results: 0, total_pages: 0 };
+  }
   
   try {
+    console.log(`Searching for shows with query: "${query}"`);
+    
     const { data, error } = await supabase.functions.invoke("tmdb", {
       body: { 
         action: "search",
@@ -49,18 +53,29 @@ export const searchShows = async (query: string): Promise<TMDbSearchResult> => {
     });
 
     if (error) {
+      console.error("Supabase function error:", error);
       throw new Error(`Function error: ${error.message}`);
     }
     
+    if (!data) {
+      console.error("No data returned from function");
+      throw new Error("No data returned from search");
+    }
+
+    console.log(`Search results received: ${data.results?.length || 0} shows found`);
     return data;
   } catch (error) {
     console.error("Error searching shows:", error);
-    return { page: 0, results: [], total_results: 0, total_pages: 0 };
+    throw error; // Let the caller handle the error
   }
 };
 
 export const getShowDetails = async (showId: number): Promise<TMDbShow | null> => {
+  if (!showId) return null;
+  
   try {
+    console.log(`Fetching details for show ID: ${showId}`);
+    
     const { data, error } = await supabase.functions.invoke("tmdb", {
       body: { 
         action: "details",
@@ -69,13 +84,20 @@ export const getShowDetails = async (showId: number): Promise<TMDbShow | null> =
     });
     
     if (error) {
+      console.error("Supabase function error:", error);
       throw new Error(`Function error: ${error.message}`);
     }
     
+    if (!data) {
+      console.error("No data returned from function");
+      throw new Error("No data returned when fetching show details");
+    }
+    
+    console.log("Show details received successfully");
     return data;
   } catch (error) {
     console.error("Error fetching show details:", error);
-    return null;
+    throw error; // Let the caller handle the error
   }
 };
 

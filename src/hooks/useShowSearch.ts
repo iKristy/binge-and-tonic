@@ -27,6 +27,12 @@ export function useShowSearch() {
           console.error("Search error:", error);
           setSearchError(error.message || "Failed to search shows");
           setSearchResults([]);
+          
+          toast({
+            title: "Search Error",
+            description: error.message || "Failed to search shows",
+            variant: "destructive"
+          });
         } finally {
           setIsSearching(false);
         }
@@ -37,7 +43,7 @@ export function useShowSearch() {
     }, 500);
 
     return () => clearTimeout(searchTimeout);
-  }, [searchQuery]);
+  }, [searchQuery, toast]);
 
   const fetchShowDetails = async (show: TMDbShow) => {
     setIsLoading(true);
