@@ -85,7 +85,6 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
     // Check if user is authenticated
     if (!user) {
       console.log("User not authenticated, showing login modal");
-      // Prepare show data to be passed to the auth page
       setShowLoginModal(true);
       return;
     }

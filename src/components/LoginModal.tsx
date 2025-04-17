@@ -23,8 +23,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, showData }) =>
   const location = useLocation();
 
   const handleLogin = () => {
-    // Navigate to auth page and pass the current path and show data
-    // but NOT the entire location object
+    // Navigate to auth page with login info and show data
     navigate("/auth", { 
       state: { 
         from: location.pathname,
@@ -32,6 +31,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, showData }) =>
         show: showData
       } 
     });
+    onClose(); // Close modal after navigation
   };
 
   const handleSignup = () => {
@@ -44,6 +44,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, showData }) =>
         initialTab: "signup"
       } 
     });
+    onClose(); // Close modal after navigation
   };
 
   return (
