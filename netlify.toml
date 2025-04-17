@@ -1,0 +1,15 @@
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Handle SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Environment variables can be set here or in the Netlify UI
+[build.environment]
+  # No sensitive variables should be set here - use Netlify UI for those
+  NODE_VERSION = "18"
