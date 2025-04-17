@@ -48,7 +48,7 @@ const Auth = () => {
     try {
       // Handle post-login actions based on the state
       if (state.action === 'add_show' && state.show) {
-        const episodesReady = state.show.currentEpisodes >= state.show.episodesNeeded;
+        const isComplete = state.show.releasedEpisodes >= state.show.totalEpisodes;
         
         await supabase
           .from("user_shows")
@@ -56,10 +56,11 @@ const Auth = () => {
             user_id: user.id,
             tmdb_show_id: state.show.tmdbId || 0,
             title: state.show.title,
-            current_episodes: state.show.currentEpisodes,
-            total_episodes: state.show.episodesNeeded,
-            status: episodesReady ? "completed" : "watching",
-            poster_url: state.show.imageUrl
+            released_episodes: state.show.releasedEpisodes,
+            total_episodes: state.show.totalEpisodes,
+            status: isComplete ? "complete" : "waiting",
+            poster_url: state.show.imageUrl,
+            season_number: state.show.seasonNumber
           });
           
         toast({
@@ -76,13 +77,13 @@ const Auth = () => {
           .single();
           
         if (data) {
-          const newEpisodeCount = Math.max(0, data.current_episodes + state.episodeDelta);
-          const newStatus = newEpisodeCount >= data.total_episodes ? "completed" : "watching";
+          const newEpisodeCount = Math.max(0, data.released_episodes + state.episodeDelta);
+          const newStatus = newEpisodeCount >= data.total_episodes ? "complete" : "waiting";
           
           await supabase
             .from("user_shows")
             .update({
-              current_episodes: newEpisodeCount,
+              released_episodes: newEpisodeCount,
               status: newStatus
             })
             .eq("id", state.showId);

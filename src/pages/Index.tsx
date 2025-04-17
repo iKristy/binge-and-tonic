@@ -101,7 +101,7 @@ const Index: React.FC = () => {
         title: newShow.title,
         total_episodes: newShow.totalEpisodes,
         released_episodes: newShow.releasedEpisodes,
-        status: isComplete ? "completed" : "waiting",
+        status: isComplete ? "complete" : "waiting",
         poster_url: newShow.imageUrl,
         tmdb_show_id: newShow.tmdbId || 0,
         season_number: newShow.seasonNumber || 1

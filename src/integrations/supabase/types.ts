@@ -15,6 +15,8 @@ export type Database = {
           current_episodes: number | null
           id: string
           poster_url: string | null
+          released_episodes: number | null
+          season_number: number | null
           status: string | null
           title: string
           tmdb_show_id: number
@@ -27,6 +29,8 @@ export type Database = {
           current_episodes?: number | null
           id?: string
           poster_url?: string | null
+          released_episodes?: number | null
+          season_number?: number | null
           status?: string | null
           title: string
           tmdb_show_id: number
@@ -39,6 +43,8 @@ export type Database = {
           current_episodes?: number | null
           id?: string
           poster_url?: string | null
+          released_episodes?: number | null
+          season_number?: number | null
           status?: string | null
           title?: string
           tmdb_show_id?: number
