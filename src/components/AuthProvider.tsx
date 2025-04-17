@@ -21,6 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log("Auth state changed:", event);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
@@ -29,6 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Existing session:", currentSession ? "found" : "not found");
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
@@ -40,7 +42,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    console.log("Signing out...");
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Error during signOut:", error);
+      throw error;
+    }
+    // Clear state explicitly to ensure UI updates
+    setUser(null);
+    setSession(null);
+    // Clear localStorage just to be safe
+    localStorage.removeItem("sb-rnjersjdfhalvzdmoqmr-auth-token");
+    console.log("Sign out successful");
   };
 
   const value = {
