@@ -1,59 +1,90 @@
 
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.29.0";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const TMDB_API_KEY = Deno.env.get("TMDB_API_KEY") || '';
+const TMDB_BASE_URL = "https://api.themoviedb.org/3";
+
+interface RequestBody {
+  action: string;
+  path: string;
+}
 
 serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+  // Parse the request body
+  let body: RequestBody;
+  try {
+    body = await req.json();
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Invalid request body' }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 400
+    });
+  }
+
+  if (!body.action || !body.path) {
+    return new Response(JSON.stringify({ error: 'Missing required parameters' }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 400
+    });
+  }
+
+  if (!TMDB_API_KEY) {
+    return new Response(JSON.stringify({ error: 'API key not configured' }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 500
+    });
   }
 
   try {
-    // Get the API key from Supabase secrets
-    const TMDB_API_KEY = Deno.env.get("TMDB_API_KEY");
-    if (!TMDB_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: "TMDB API key not configured" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-      );
+    let url: string;
+    
+    // Handle different actions
+    switch(body.action) {
+      case 'search':
+        url = `${TMDB_BASE_URL}${body.path}`;
+        break;
+      case 'details':
+        // Modified to include seasons info for show details
+        url = `${TMDB_BASE_URL}${body.path}`;
+        break;
+      default:
+        return new Response(JSON.stringify({ error: 'Invalid action' }), {
+          headers: { 'Content-Type': 'application/json' },
+          status: 400
+        });
     }
 
-    const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-    
-    // Parse the request body
-    const { action, path } = await req.json();
-    
-    if (!action || !path) {
-      return new Response(
-        JSON.stringify({ error: "Missing action or path" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
-      );
+    // Add API key
+    url += url.includes('?') ? '&' : '?';
+    url += `api_key=${TMDB_API_KEY}`;
+
+    // Make the request to TMDb
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`TMDb API returned ${response.status} ${response.statusText}`);
     }
 
-    // Build the TMDb URL with the path and API key
-    const tmdbUrl = `${TMDB_BASE_URL}${path}${path.includes("?") ? "&" : "?"}api_key=${TMDB_API_KEY}`;
-    
-    console.log(`Fetching from TMDb: ${path}`);
-    
-    // Forward the request to TMDb
-    const response = await fetch(tmdbUrl);
     const data = await response.json();
 
-    // Return the response from TMDb
-    return new Response(
-      JSON.stringify(data),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify(data), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 200
+    });
+
   } catch (error) {
-    console.error("Error in TMDb function:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal Server Error", details: error.message }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-    );
+    console.error('Edge function error:', error);
+    
+    return new Response(JSON.stringify({ 
+      error: 'Failed to fetch data from TMDb', 
+      details: error.message 
+    }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 500
+    });
   }
-});
+})

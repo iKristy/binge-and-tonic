@@ -4,6 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
+export interface TMDbSeason {
+  air_date: string;
+  episode_count: number;
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string;
+  season_number: number;
+}
+
 export interface TMDbShow {
   id: number;
   name: string;
@@ -11,9 +21,13 @@ export interface TMDbShow {
   backdrop_path: string | null;
   overview: string;
   first_air_date: string;
+  last_air_date: string; 
   number_of_episodes: number;
   number_of_seasons: number;
+  in_production: boolean;
+  status: string;
   genres: Array<{ id: number; name: string }>;
+  seasons: TMDbSeason[];
 }
 
 export interface TMDbSearchResult {
@@ -50,7 +64,7 @@ export const getShowDetails = async (showId: number): Promise<TMDbShow | null> =
     const { data, error } = await supabase.functions.invoke("tmdb", {
       body: { 
         action: "details",
-        path: `/tv/${showId}?language=en-US` 
+        path: `/tv/${showId}?language=en-US&append_to_response=seasons` 
       }
     });
     

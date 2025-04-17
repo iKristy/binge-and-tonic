@@ -20,7 +20,8 @@ interface ShowDetailsProps {
 const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose }) => {
   if (!show) return null;
 
-  const isReady = show.status === "ready" || show.currentEpisodes >= show.episodesNeeded;
+  const isComplete = show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
+  const remainingEpisodes = Math.max(0, show.totalEpisodes - show.releasedEpisodes);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -44,25 +45,32 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose }) => {
           <div className="flex items-center gap-2">
             <CalendarDays className="h-4 w-4" />
             <span>
-              {show.currentEpisodes} / {show.episodesNeeded} episodes
+              {show.releasedEpisodes} / {show.totalEpisodes} episodes released
             </span>
           </div>
-          <Badge className={isReady ? "bg-green-500" : "bg-primary"}>
-            {isReady ? "Ready to Binge!" : "Still Collecting"}
+          <Badge className={isComplete ? "bg-green-500" : "bg-orange-500"}>
+            {isComplete ? "Complete Season!" : `${remainingEpisodes} to go`}
           </Badge>
         </div>
 
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
           <div
-            className={`h-full ${isReady ? "bg-green-500" : "bg-primary"}`}
+            className={`h-full ${isComplete ? "bg-green-500" : "bg-orange-500"}`}
             style={{
               width: `${Math.min(
                 100,
-                (show.currentEpisodes / show.episodesNeeded) * 100
+                (show.releasedEpisodes / show.totalEpisodes) * 100
               )}%`,
             }}
           />
         </div>
+
+        {show.seasonNumber && (
+          <div className="mt-2 flex items-center gap-2">
+            <Film className="h-4 w-4 text-muted-foreground" />
+            <span>Season {show.seasonNumber}</span>
+          </div>
+        )}
 
         {show.description && (
           <div className="mt-4">

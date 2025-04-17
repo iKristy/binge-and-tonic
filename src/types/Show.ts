@@ -3,10 +3,11 @@ export interface Show {
   id: string;
   title: string;
   imageUrl: string;
-  currentEpisodes: number;
-  episodesNeeded: number;
-  status: 'ready' | 'waiting';
+  totalEpisodes: number;
+  releasedEpisodes: number;
+  status: 'complete' | 'waiting';
   description?: string;
   genre?: string;
   tmdbId?: number;
+  seasonNumber?: number;
 }

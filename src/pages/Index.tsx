@@ -26,7 +26,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-type FilterType = "all" | "ready" | "waiting";
+type FilterType = "all" | "complete" | "waiting";
 
 const Index: React.FC = () => {
   const [shows, setShows] = useState<Show[]>([]);
@@ -67,9 +67,10 @@ const Index: React.FC = () => {
           id: show.id,
           title: show.title,
           imageUrl: show.poster_url || "/placeholder.svg",
-          currentEpisodes: show.current_episodes || 0,
-          episodesNeeded: show.total_episodes,
-          status: show.current_episodes >= show.total_episodes ? "ready" : "waiting",
+          totalEpisodes: show.total_episodes,
+          releasedEpisodes: show.released_episodes || 0,
+          status: show.released_episodes >= show.total_episodes ? "complete" : "waiting",
+          seasonNumber: show.season_number,
           tmdbId: show.tmdb_show_id
         }));
         setShows(transformedShows);
@@ -95,14 +96,15 @@ const Index: React.FC = () => {
 
   const handleAddShow = async (newShow: Omit<Show, "id" | "status">) => {
     try {
-      const episodesReady = newShow.currentEpisodes >= newShow.episodesNeeded;
+      const isComplete = newShow.releasedEpisodes >= newShow.totalEpisodes;
       const showData = {
         title: newShow.title,
-        current_episodes: newShow.currentEpisodes,
-        total_episodes: newShow.episodesNeeded,
-        status: episodesReady ? "completed" : "watching",
+        total_episodes: newShow.totalEpisodes,
+        released_episodes: newShow.releasedEpisodes,
+        status: isComplete ? "completed" : "waiting",
         poster_url: newShow.imageUrl,
-        tmdb_show_id: newShow.tmdbId || 0
+        tmdb_show_id: newShow.tmdbId || 0,
+        season_number: newShow.seasonNumber || 1
       };
       
       // If user is logged in, save to Supabase
@@ -122,9 +124,10 @@ const Index: React.FC = () => {
             id: data[0].id,
             title: data[0].title,
             imageUrl: data[0].poster_url || "/placeholder.svg",
-            currentEpisodes: data[0].current_episodes || 0,
-            episodesNeeded: data[0].total_episodes,
-            status: episodesReady ? "ready" : "waiting",
+            totalEpisodes: data[0].total_episodes,
+            releasedEpisodes: data[0].released_episodes || 0,
+            status: isComplete ? "complete" : "waiting",
+            seasonNumber: data[0].season_number,
             tmdbId: data[0].tmdb_show_id
           };
           
@@ -152,63 +155,6 @@ const Index: React.FC = () => {
     }
   };
 
-  const handleUpdateShow = async (id: string, episodeDelta: number) => {
-    try {
-      const show = shows.find(s => s.id === id);
-      if (!show) return;
-      
-      const newEpisodeCount = Math.max(0, show.currentEpisodes + episodeDelta);
-      const newStatus = newEpisodeCount >= show.episodesNeeded ? "completed" : "watching";
-      
-      // If user is logged in, update in Supabase
-      if (user) {
-        const { error } = await supabase
-          .from("user_shows")
-          .update({
-            current_episodes: newEpisodeCount,
-            status: newStatus
-          })
-          .eq("id", id);
-        
-        if (error) throw error;
-      } else {
-        // If not logged in, prompt for login
-        navigate("/auth", { 
-          state: { 
-            from: location, 
-            action: "update_show", 
-            showId: id, 
-            episodeDelta: episodeDelta 
-          } 
-        });
-        return;
-      }
-      
-      // Update local state
-      const updatedShows = shows.map((show) => {
-        if (show.id === id) {
-          const updatedStatus = newEpisodeCount >= show.episodesNeeded ? "ready" : "waiting";
-          return {
-            ...show,
-            currentEpisodes: newEpisodeCount,
-            status: updatedStatus,
-          };
-        }
-        return show;
-      });
-      
-      setShows(updatedShows);
-      localStorage.setItem("shows", JSON.stringify(updatedShows));
-      
-    } catch (error: any) {
-      toast({
-        title: "Error updating show",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
   const handleViewDetails = (show: Show) => {
     setSelectedShow(show);
     setIsDetailsOpen(true);
@@ -224,11 +170,12 @@ const Index: React.FC = () => {
 
   const filteredShows = shows.filter((show) => {
     if (filter === "all") return true;
-    return show.status === filter;
+    if (filter === "complete") return show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
+    return show.status === "waiting" && show.releasedEpisodes < show.totalEpisodes;
   });
   
-  const readyCount = shows.filter(show => 
-    show.status === "ready" || show.currentEpisodes >= show.episodesNeeded
+  const completeCount = shows.filter(show => 
+    show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes
   ).length;
 
   return (
@@ -247,8 +194,8 @@ const Index: React.FC = () => {
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="all">All Shows ({shows.length})</SelectItem>
-                  <SelectItem value="ready">Ready to Binge ({readyCount})</SelectItem>
-                  <SelectItem value="waiting">Still Waiting ({shows.length - readyCount})</SelectItem>
+                  <SelectItem value="complete">Ready to Binge ({completeCount})</SelectItem>
+                  <SelectItem value="waiting">Waiting for Episodes ({shows.length - completeCount})</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -292,7 +239,6 @@ const Index: React.FC = () => {
         ) : (
           <ShowList
             shows={filteredShows}
-            onUpdateShow={handleUpdateShow}
             onViewDetails={handleViewDetails}
           />
         )}

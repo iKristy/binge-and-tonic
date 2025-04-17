@@ -5,13 +5,11 @@ import ShowCard from "./ShowCard";
 
 interface ShowListProps {
   shows: Show[];
-  onUpdateShow: (id: string, episodeDelta: number) => void;
   onViewDetails: (show: Show) => void;
 }
 
 const ShowList: React.FC<ShowListProps> = ({
   shows,
-  onUpdateShow,
   onViewDetails,
 }) => {
   if (shows.length === 0) {
@@ -29,7 +27,6 @@ const ShowList: React.FC<ShowListProps> = ({
         <ShowCard
           key={show.id}
           show={show}
-          onUpdate={onUpdateShow}
           onViewDetails={onViewDetails}
         />
       ))}
