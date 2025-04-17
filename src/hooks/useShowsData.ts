@@ -85,11 +85,16 @@ export function useShowsData(user: User | null) {
       }
       
       const isComplete = newShow.releasedEpisodes >= newShow.totalEpisodes;
+      
+      // Valid status values in the database are: 'watching', 'completed', 'plan_to_watch', 'dropped'
+      // We need to map our app's statuses to these values
+      const dbStatus = isComplete ? "completed" : "watching";
+      
       const showData = {
         title: newShow.title,
         total_episodes: newShow.totalEpisodes,
         released_episodes: newShow.releasedEpisodes,
-        status: isComplete ? "complete" : "watching", // Changed from "waiting" to "watching" to match DB constraint
+        status: dbStatus, // Using database-compatible status values
         poster_url: newShow.imageUrl,
         tmdb_show_id: newShow.tmdbId || 0,
         season_number: newShow.seasonNumber || 1
