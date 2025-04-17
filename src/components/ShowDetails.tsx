@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, Film, Trash2 } from "lucide-react";
+import { CalendarDays, ExternalLink, Film, Trash2 } from "lucide-react";
 
 interface ShowDetailsProps {
   show: Show | null;
@@ -90,7 +90,20 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose, onRemo
           </p>
         </div>
 
-        <DialogFooter className="mt-4">
+        <DialogFooter className="mt-4 flex flex-row justify-between items-center">
+          {show.tmdbId && (
+            <a 
+              href={`https://www.themoviedb.org/tv/${show.tmdbId}`} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex gap-2 items-center"
+            >
+              <Button variant="outline" className="flex gap-2 items-center">
+                <ExternalLink className="h-4 w-4" />
+                View on TMDb
+              </Button>
+            </a>
+          )}
           <Button 
             variant="destructive" 
             onClick={handleRemove}
