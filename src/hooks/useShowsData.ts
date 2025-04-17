@@ -68,8 +68,22 @@ export function useShowsData(user: User | null) {
     fetchShows();
   }, [user]);
 
+  const isShowAlreadyAdded = (tmdbId: number): boolean => {
+    return shows.some(show => show.tmdbId === tmdbId);
+  };
+
   const addShow = async (newShow: Omit<Show, "id" | "status">) => {
     try {
+      // Check if show already exists in the list
+      if (isShowAlreadyAdded(newShow.tmdbId || 0)) {
+        toast({
+          title: "Show already in your list",
+          description: `${newShow.title} is already in your watchlist.`,
+          variant: "destructive"
+        });
+        return false;
+      }
+      
       const isComplete = newShow.releasedEpisodes >= newShow.totalEpisodes;
       const showData = {
         title: newShow.title,
@@ -129,6 +143,53 @@ export function useShowsData(user: User | null) {
     }
   };
 
+  const removeShow = async (showId: string) => {
+    try {
+      if (!user) {
+        // Handle local storage removal for demo
+        const updatedShows = shows.filter(show => show.id !== showId);
+        setShows(updatedShows);
+        localStorage.setItem("shows", JSON.stringify(updatedShows));
+        toast({
+          title: "Show Removed",
+          description: "The show has been removed from your list."
+        });
+        return true;
+      }
+      
+      // Remove from database if logged in
+      const { error } = await supabase
+        .from("user_shows")
+        .delete()
+        .eq('id', showId);
+        
+      if (error) throw error;
+      
+      // Update state
+      const showToRemove = shows.find(show => show.id === showId);
+      const updatedShows = shows.filter(show => show.id !== showId);
+      setShows(updatedShows);
+      
+      // Update local storage as backup
+      localStorage.setItem("shows", JSON.stringify(updatedShows));
+      
+      toast({
+        title: "Show Removed",
+        description: `${showToRemove?.title || 'Show'} has been removed from your list.`
+      });
+      
+      return true;
+    } catch (error: any) {
+      console.error("Error removing show:", error.message);
+      toast({
+        title: "Error removing show",
+        description: error.message,
+        variant: "destructive"
+      });
+      return false;
+    }
+  };
+
   const filteredShows = shows.filter((show) => {
     if (filter === "all") return true;
     if (filter === "complete") return show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
@@ -146,6 +207,7 @@ export function useShowsData(user: User | null) {
     filter,
     setFilter,
     addShow,
+    removeShow,
     completeCount,
     waitingCount: shows.length - completeCount,
     totalCount: shows.length

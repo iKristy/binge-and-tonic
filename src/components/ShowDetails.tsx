@@ -7,21 +7,31 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Film } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CalendarDays, Film, Trash2 } from "lucide-react";
 
 interface ShowDetailsProps {
   show: Show | null;
   isOpen: boolean;
   onClose: () => void;
+  onRemove?: (showId: string) => void;
 }
 
-const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose }) => {
+const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose, onRemove }) => {
   if (!show) return null;
 
   const isComplete = show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
   const remainingEpisodes = Math.max(0, show.totalEpisodes - show.releasedEpisodes);
+
+  const handleRemove = () => {
+    if (show.id && onRemove) {
+      onRemove(show.id);
+      onClose();
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -77,6 +87,17 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose }) => {
             <p className="text-sm text-muted-foreground">{show.description}</p>
           </div>
         )}
+
+        <DialogFooter className="mt-4">
+          <Button 
+            variant="destructive" 
+            onClick={handleRemove}
+            className="flex gap-2 items-center"
+          >
+            <Trash2 className="h-4 w-4" />
+            Remove from my list
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -20,6 +20,7 @@ const Index: React.FC = () => {
     filter, 
     setFilter,
     addShow,
+    removeShow,
     completeCount,
     waitingCount,
     totalCount
@@ -29,8 +30,9 @@ const Index: React.FC = () => {
     selectedShow,
     isDetailsOpen,
     handleViewDetails,
-    handleCloseDetails
-  } = useShowDetails();
+    handleCloseDetails,
+    handleRemoveShow
+  } = useShowDetails(removeShow);
   
   const {
     isAddFormOpen,
@@ -68,6 +70,7 @@ const Index: React.FC = () => {
           show={selectedShow}
           isOpen={isDetailsOpen}
           onClose={handleCloseDetails}
+          onRemove={handleRemoveShow}
         />
       </main>
 
