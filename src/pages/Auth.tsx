@@ -1,265 +1,286 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
-import { TvIcon } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { TvIcon, AlertCircle, LogIn } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
-import { Show } from "@/types/Show";
+import { useToast } from "@/hooks/use-toast";
 
-interface LocationState {
-  from: Location;
-  action?: string;
-  show?: Omit<Show, "id" | "status">;
-  showId?: string;
-  episodeDelta?: number;
-}
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+const signupSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
 
 const Auth = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
-  // Get the location state
-  const state = location.state as LocationState;
+  // Get initial tab from location state
+  const initialTab = location.state?.initialTab === "signup" ? "signup" : "login";
+  const [activeTab, setActiveTab] = useState(initialTab);
   
+  // Get show data from location state
+  const showData = location.state?.show;
+  const action = location.state?.action;
+  const from = location.state?.from || "/";
+
   useEffect(() => {
-    // If user is already logged in, redirect to the page they came from
+    // If user is already logged in, redirect them
     if (user) {
-      handlePostLoginActions();
-    }
-  }, [user]);
-
-  const handlePostLoginActions = async () => {
-    if (!user || !state) {
-      navigate("/");
-      return;
-    }
-    
-    try {
-      // Handle post-login actions based on the state
-      if (state.action === 'add_show' && state.show) {
-        const isComplete = state.show.releasedEpisodes >= state.show.totalEpisodes;
-        
-        await supabase
-          .from("user_shows")
-          .insert({
-            user_id: user.id,
-            tmdb_show_id: state.show.tmdbId || 0,
-            title: state.show.title,
-            released_episodes: state.show.releasedEpisodes,
-            total_episodes: state.show.totalEpisodes,
-            status: isComplete ? "complete" : "waiting",
-            poster_url: state.show.imageUrl,
-            season_number: state.show.seasonNumber
-          });
-          
-        toast({
-          title: "Show Added",
-          description: `${state.show.title} has been added to your list.`
-        });
-      } 
-      else if (state.action === 'update_show' && state.showId && state.episodeDelta) {
-        // First we need to get the show details
-        const { data } = await supabase
-          .from("user_shows")
-          .select("*")
-          .eq("id", state.showId)
-          .single();
-          
-        if (data) {
-          const newEpisodeCount = Math.max(0, data.released_episodes + state.episodeDelta);
-          const newStatus = newEpisodeCount >= data.total_episodes ? "complete" : "waiting";
-          
-          await supabase
-            .from("user_shows")
-            .update({
-              released_episodes: newEpisodeCount,
-              status: newStatus
-            })
-            .eq("id", state.showId);
-            
-          toast({
-            title: "Show Updated",
-            description: `Episode count updated successfully.`
-          });
-        }
+      if (action === "add_show" && showData) {
+        // Navigate back to index but pass the show data
+        navigate("/", { state: { action: "add_show", show: showData } });
+      } else {
+        navigate(from);
       }
-      
-      // Navigate to the page they came from
-      navigate(state.from?.pathname || "/");
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive"
-      });
     }
-  };
+  }, [user, navigate, from, action, showData]);
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Account created!",
-        description: "Please check your email for verification instructions."
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "An error occurred during sign up.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const loginForm = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
+  const signupForm = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onLogin = async (values: z.infer<typeof loginSchema>) => {
+    setIsLoading(true);
+    setAuthError(null);
+
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: values.email,
+        password: values.password,
       });
-      
+
       if (error) throw error;
-      
-      // The redirect will be handled by the useEffect
-    } catch (error: any) {
+
       toast({
-        title: "Error",
-        description: error.message || "An error occurred during sign in.",
-        variant: "destructive"
+        title: "Login successful",
+        description: "You have been logged in successfully.",
       });
-      setLoading(false);
+
+      // Will be redirected by the useEffect
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setAuthError(error.message || "Failed to login. Please try again.");
+      toast({
+        title: "Login failed",
+        description: error.message || "Failed to login. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSignup = async (values: z.infer<typeof signupSchema>) => {
+    setIsLoading(true);
+    setAuthError(null);
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Signup successful",
+        description: "Your account has been created. Check your email for confirmation.",
+      });
+
+      // Will be redirected by the useEffect if email verification is not required
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      setAuthError(error.message || "Failed to sign up. Please try again.");
+      toast({
+        title: "Signup failed",
+        description: error.message || "Failed to sign up. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-2 text-center">
-          <div className="flex justify-center">
-            <TvIcon className="h-10 w-10 text-primary" />
+    <div className="min-h-screen bg-background flex flex-col">
+      <header className="bg-black border-b border-border py-4 px-6">
+        <div className="mx-auto flex max-w-md items-center justify-between">
+          <div className="flex items-center gap-2">
+            <TvIcon className="h-6 w-6 text-primary" />
+            <h1 className="text-xl font-bold">Binge & Tonic</h1>
           </div>
-          <CardTitle className="text-2xl">Binge & Tonic</CardTitle>
-          <CardDescription>
-            {state?.action ? 'Sign in to save your changes' : 'Sign in to track your favorite shows'}
-          </CardDescription>
-        </CardHeader>
-        <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid grid-cols-2 mb-4 mx-6">
-            <TabsTrigger value="signin">Sign In</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="signin">
-            <form onSubmit={handleSignIn}>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email-signin">Email</Label>
-                  <Input 
-                    id="email-signin" 
-                    type="email" 
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password-signin">Password</Label>
-                  <Input 
-                    id="password-signin" 
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-              </CardContent>
-              <CardFooter className="flex flex-col gap-3">
-                <Button className="w-full" type="submit" disabled={loading}>
-                  {loading ? "Signing in..." : "Sign In"}
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
-                  type="button" 
-                  onClick={() => navigate("/")}
-                >
-                  Cancel
-                </Button>
-              </CardFooter>
-            </form>
-          </TabsContent>
-          
-          <TabsContent value="signup">
-            <form onSubmit={handleSignUp}>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email-signup">Email</Label>
-                  <Input 
-                    id="email-signup" 
-                    type="email" 
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password-signup">Password</Label>
-                  <Input 
-                    id="password-signup" 
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Password must be at least 6 characters
-                  </p>
-                </div>
-              </CardContent>
-              <CardFooter className="flex flex-col gap-3">
-                <Button className="w-full" type="submit" disabled={loading}>
-                  {loading ? "Signing up..." : "Sign Up"}
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
-                  type="button" 
-                  onClick={() => navigate("/")}
-                >
-                  Cancel
-                </Button>
-              </CardFooter>
-            </form>
-          </TabsContent>
-        </Tabs>
-      </Card>
+        </div>
+      </header>
+
+      <main className="flex-1 flex items-center justify-center p-6">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl">
+              {showData ? "Sign in to add shows" : "Welcome to Binge & Tonic"}
+            </CardTitle>
+            <CardDescription>
+              {showData 
+                ? "Sign in or create an account to add shows to your watchlist"
+                : "Sign in to your account or create a new one"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {authError && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{authError}</AlertDescription>
+              </Alert>
+            )}
+
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="login">
+                <Form {...loginForm}>
+                  <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4 mt-4">
+                    <FormField
+                      control={loginForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={loginForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="Enter your password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading ? "Logging in..." : "Login"}
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+
+              <TabsContent value="signup">
+                <Form {...signupForm}>
+                  <form onSubmit={signupForm.handleSubmit(onSignup)} className="space-y-4 mt-4">
+                    <FormField
+                      control={signupForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={signupForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="Create a password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={signupForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="Confirm your password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading ? "Signing up..." : "Sign Up"}
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+          <CardFooter className="flex justify-center">
+            <p className="text-sm text-muted-foreground text-center">
+              {activeTab === "login"
+                ? "Don't have an account? "
+                : "Already have an account? "}
+              <Button
+                variant="link"
+                className="p-0 h-auto"
+                onClick={() => setActiveTab(activeTab === "login" ? "signup" : "login")}
+              >
+                {activeTab === "login" ? "Sign Up" : "Login"}
+              </Button>
+            </p>
+          </CardFooter>
+        </Card>
+      </main>
     </div>
   );
 };

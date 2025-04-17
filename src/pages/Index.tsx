@@ -38,6 +38,26 @@ const Index: React.FC = () => {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check if we have show data from Auth page
+  useEffect(() => {
+    const showData = location.state?.show;
+    const action = location.state?.action;
+    
+    if (user && action === "add_show" && showData) {
+      // Clear the location state to prevent repeated processing
+      window.history.replaceState({}, document.title);
+      
+      // Open the add form dialog
+      setIsAddFormOpen(true);
+      
+      // Handle adding the show after a short delay to ensure components are mounted
+      setTimeout(() => {
+        handleAddShow(showData);
+      }, 100);
+    }
+  }, [location, user]);
 
   const fetchShows = async () => {
     try {
