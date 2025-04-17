@@ -1,22 +1,16 @@
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { Show } from "@/types/Show";
-import { searchShows, TMDbShow, getImageUrl, getShowDetails } from "@/services/tmdbApi";
+import { TMDbShow, getImageUrl } from "@/services/tmdbApi";
+import { useShowSearch } from "@/hooks/useShowSearch";
+import SearchBar from "./SearchBar";
 import ShowSearchResults from "./ShowSearchResults";
-import { Search, X } from "lucide-react"; 
-import { useToast } from "@/hooks/use-toast";
+import SelectedShow from "./SelectedShow";
 
 interface AddShowFormProps {
   onAddShow: (show: Omit<Show, "id" | "status">) => void;
@@ -28,13 +22,17 @@ const formSchema = z.object({
 });
 
 const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<TMDbShow[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchError, setSearchError] = useState<string | undefined>();
-  const [selectedShow, setSelectedShow] = useState<TMDbShow | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const {
+    searchQuery,
+    setSearchQuery,
+    searchResults,
+    isSearching,
+    searchError,
+    selectedShow,
+    isLoading,
+    handleShowSelect,
+    handleSearchClear
+  } = useShowSearch();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,68 +40,6 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
       tmdbId: 0,
     },
   });
-
-  useEffect(() => {
-    const searchTimeout = setTimeout(async () => {
-      if (searchQuery.trim().length > 2) {
-        setIsSearching(true);
-        setSearchError(undefined);
-        
-        try {
-          console.log("Searching for:", searchQuery);
-          const results = await searchShows(searchQuery);
-          console.log("Search results:", results);
-          setSearchResults(results.results || []);
-        } catch (error: any) {
-          console.error("Search error:", error);
-          setSearchError(error.message || "Failed to search shows");
-          setSearchResults([]);
-        } finally {
-          setIsSearching(false);
-        }
-      } else {
-        setSearchResults([]);
-        setSearchError(undefined);
-      }
-    }, 500);
-
-    return () => clearTimeout(searchTimeout);
-  }, [searchQuery]);
-
-  const handleShowSelect = async (show: TMDbShow) => {
-    setSelectedShow(show);
-    form.setValue("tmdbId", show.id);
-    
-    // Get detailed info about the show
-    setIsLoading(true);
-    try {
-      const details = await getShowDetails(show.id);
-      if (details) {
-        setSelectedShow({
-          ...show,
-          ...details
-        });
-      }
-    } catch (error: any) {
-      console.error("Error fetching show details:", error);
-      toast({
-        title: "Error",
-        description: `Couldn't fetch show details: ${error.message}`,
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-    
-    setSearchQuery("");
-    setSearchResults([]);
-  };
-
-  const handleSearchClear = () => {
-    setSearchQuery("");
-    setSearchResults([]);
-    setSearchError(undefined);
-  };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!selectedShow) return;
@@ -143,27 +79,11 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
   return (
     <div className="space-y-4">
       <div className="relative">
-        <div className="flex items-center border rounded-md focus-within:ring-1 focus-within:ring-ring">
-          <Search className="ml-2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search for TV shows..."
-            className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-          />
-          {searchQuery && (
-            <Button 
-              type="button" 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8 mr-1"
-              onClick={handleSearchClear}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
+        <SearchBar 
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onSearchClear={handleSearchClear}
+        />
         
         {(searchResults.length > 0 || isSearching || searchError) && (
           <div className="absolute z-10 w-full mt-1 bg-background border rounded-md shadow-md">
@@ -178,27 +98,7 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
       </div>
 
       {selectedShow && (
-        <div className="flex gap-4 p-3 bg-accent/30 rounded-md">
-          <div className="w-20 flex-shrink-0">
-            <img 
-              src={getImageUrl(selectedShow.poster_path, "w154")} 
-              alt={selectedShow.name}
-              className="rounded-sm object-cover w-full h-auto"
-            />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-medium">{selectedShow.name}</h3>
-            <p className="text-sm text-muted-foreground">
-              {selectedShow.first_air_date?.split('-')[0] || 'Unknown year'}
-              {selectedShow.number_of_seasons && ` • ${selectedShow.number_of_seasons} season${selectedShow.number_of_seasons !== 1 ? 's' : ''}`}
-            </p>
-            {isLoading ? (
-              <p className="text-sm mt-1">Loading show details...</p>
-            ) : selectedShow.seasons ? (
-              <p className="text-sm mt-1">Latest: Season {selectedShow.seasons.sort((a, b) => b.season_number - a.season_number)[0]?.season_number}</p>
-            ) : null}
-          </div>
-        </div>
+        <SelectedShow show={selectedShow} isLoading={isLoading} />
       )}
 
       <Form {...form}>
