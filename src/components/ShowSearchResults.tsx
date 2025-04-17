@@ -4,7 +4,7 @@ import { TMDbShow } from "@/services/tmdbApi";
 import { getImageUrl } from "@/services/tmdbApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2, Star } from "lucide-react";
 
 interface ShowSearchResultsProps {
   results: TMDbShow[];
@@ -74,10 +74,18 @@ const ShowSearchResults: React.FC<ShowSearchResultsProps> = ({
               </div>
               <div className="flex-1">
                 <h4 className="font-medium line-clamp-1">{show.name}</h4>
-                <p className="text-xs text-muted-foreground">
-                  {show.first_air_date?.split('-')[0] || 'Unknown year'}
-                  {show.number_of_seasons && ` • ${show.number_of_seasons} season${show.number_of_seasons !== 1 ? 's' : ''}`}
-                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>{show.first_air_date?.split('-')[0] || 'Unknown year'}</span>
+                  {show.number_of_seasons && (
+                    <span>• {show.number_of_seasons} season{show.number_of_seasons !== 1 ? 's' : ''}</span>
+                  )}
+                  {show.vote_average && (
+                    <span className="flex items-center">
+                      • <Star className="h-3 w-3 fill-yellow-400 text-yellow-400 inline ml-1 mr-0.5" />
+                      {show.vote_average.toFixed(1)}
+                    </span>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>

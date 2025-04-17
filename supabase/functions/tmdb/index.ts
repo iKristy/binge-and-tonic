@@ -78,6 +78,12 @@ serve(async (req) => {
     switch(body.action) {
       case 'search':
         url = `${TMDB_BASE_URL}${body.path}`;
+        
+        // For search actions, make sure we're optimizing for popularity if not specified
+        if (!url.includes('sort_by=')) {
+          url += url.includes('?') ? '&' : '?';
+          url += 'sort_by=popularity.desc';
+        }
         break;
       case 'details':
         url = `${TMDB_BASE_URL}${body.path}`;
@@ -117,6 +123,12 @@ serve(async (req) => {
 
     const data = await response.json();
     console.log('TMDb response received successfully');
+    
+    // For search results, further sort by popularity if needed
+    if (body.action === 'search' && data.results && Array.isArray(data.results)) {
+      data.results = data.results.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+      console.log('Search results sorted by popularity');
+    }
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

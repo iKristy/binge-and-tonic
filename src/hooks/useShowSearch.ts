@@ -22,7 +22,13 @@ export function useShowSearch() {
           console.log("Searching for:", searchQuery);
           const results = await searchShows(searchQuery);
           console.log("Search results:", results);
-          setSearchResults(results.results || []);
+          
+          // Ensure results are sorted by popularity (just in case the API doesn't do it properly)
+          const sortedResults = results.results?.sort((a, b) => 
+            (b.popularity || 0) - (a.popularity || 0)
+          ) || [];
+          
+          setSearchResults(sortedResults);
         } catch (error: any) {
           console.error("Search error:", error);
           setSearchError(error.message || "Failed to search shows");

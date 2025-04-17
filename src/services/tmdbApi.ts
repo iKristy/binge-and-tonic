@@ -39,6 +39,8 @@ export interface TMDbShow {
   status: string;
   genres: Array<{ id: number; name: string }>;
   seasons: TMDbSeason[];
+  popularity?: number;
+  vote_average?: number;
 }
 
 export interface TMDbSearchResult {
@@ -59,7 +61,7 @@ export const searchShows = async (query: string): Promise<TMDbSearchResult> => {
     const { data, error } = await supabase.functions.invoke("tmdb", {
       body: { 
         action: "search",
-        path: `/search/tv?query=${encodeURIComponent(query)}&language=en-US&page=1` 
+        path: `/search/tv?query=${encodeURIComponent(query)}&language=en-US&page=1&sort_by=popularity.desc` 
       }
     });
 
