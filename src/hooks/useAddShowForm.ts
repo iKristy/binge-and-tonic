@@ -3,9 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useNavigate } from "react-router-dom";
 import { useShowSearch } from "@/hooks/useShowSearch";
-import { useAuth } from "@/components/AuthProvider";
 import { TMDbShow, getImageUrl, getSeasonDetails } from "@/services/tmdbApi";
 import { Show } from "@/types/Show";
 
@@ -25,10 +23,6 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
     handleShowSelect,
     handleSearchClear
   } = useShowSearch();
-
-  const { user } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -100,15 +94,7 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
       return;
     }
 
-    // Check if user is authenticated
-    if (!user) {
-      console.log("User not authenticated, showing login modal");
-      setShowLoginModal(true);
-      return;
-    }
-
-    // User is authenticated, proceed with adding the show
-    console.log("User authenticated, adding show");
+    // Process and add the show without authentication check
     const formattedShow = await prepareShowData(selectedShow);
     onAddShow(formattedShow);
   };
@@ -121,8 +107,6 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
     searchError,
     selectedShow,
     isLoading,
-    showLoginModal,
-    setShowLoginModal,
     form,
     handleShowSelect,
     handleSearchClear,

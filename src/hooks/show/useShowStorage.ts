@@ -33,6 +33,7 @@ export function useShowStorage(user: User | null) {
         status: newShow.releasedEpisodes >= newShow.totalEpisodes ? "complete" : "waiting"
       };
 
+      // Only store in Supabase if the user is logged in
       if (user) {
         // Use Supabase to store the show
         const { error } = await supabase.from("user_shows").insert({
@@ -51,9 +52,8 @@ export function useShowStorage(user: User | null) {
         }
       }
 
+      // Always update local state and localStorage
       setShows([show, ...currentShows]);
-      
-      // Always update localStorage as a backup
       localStorage.setItem("shows", JSON.stringify([show, ...currentShows]));
       
       toast({
@@ -81,6 +81,7 @@ export function useShowStorage(user: User | null) {
     try {
       const filteredShows = currentShows.filter(show => show.id !== showId);
       
+      // Only remove from Supabase if the user is logged in
       if (user) {
         // Use Supabase to remove the show
         const { error } = await supabase
@@ -93,9 +94,8 @@ export function useShowStorage(user: User | null) {
         }
       }
 
+      // Always update local state and localStorage
       setShows(filteredShows);
-      
-      // Always update localStorage as a backup
       localStorage.setItem("shows", JSON.stringify(filteredShows));
       
       toast({

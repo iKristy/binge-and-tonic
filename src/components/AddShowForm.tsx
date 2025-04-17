@@ -7,7 +7,6 @@ import { useAddShowForm } from "@/hooks/useAddShowForm";
 import SearchBar from "./SearchBar";
 import ShowSearchResults from "./ShowSearchResults";
 import SelectedShow from "./SelectedShow";
-import LoginModal from "./LoginModal";
 
 interface AddShowFormProps {
   onAddShow: (show: Omit<Show, "id" | "status">) => void;
@@ -23,18 +22,11 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
     searchError,
     selectedShow,
     isLoading,
-    showLoginModal,
-    setShowLoginModal,
     form,
     handleShowSelect,
     handleSearchClear,
-    prepareShowData,
     onSubmit
   } = useAddShowForm(onAddShow);
-
-  const handleCloseLoginModal = () => {
-    setShowLoginModal(false);
-  };
 
   // Create a form submission handler that explicitly calls onSubmit with form values
   const handleFormSubmit = form.handleSubmit((values) => {
@@ -84,12 +76,6 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
           </div>
         </form>
       </Form>
-
-      <LoginModal 
-        isOpen={showLoginModal} 
-        onClose={handleCloseLoginModal} 
-        showData={selectedShow ? prepareShowData(selectedShow) : undefined}
-      />
     </div>
   );
 };
