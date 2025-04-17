@@ -118,7 +118,7 @@ const Index: React.FC = () => {
         if (error) throw error;
         
         if (data && data[0]) {
-          const show: Show = {
+          const newShowWithId: Show = {
             id: data[0].id,
             title: data[0].title,
             imageUrl: data[0].poster_url || "/placeholder.svg",
@@ -128,12 +128,12 @@ const Index: React.FC = () => {
             tmdbId: data[0].tmdb_show_id
           };
           
-          setShows([show, ...shows]);
-          localStorage.setItem("shows", JSON.stringify([show, ...shows]));
+          setShows([newShowWithId, ...shows]);
+          localStorage.setItem("shows", JSON.stringify([newShowWithId, ...shows]));
           
           toast({
             title: "Show Added",
-            description: `${show.title} has been added to your list.`
+            description: `${newShowWithId.title} has been added to your list.`
           });
         }
       } else {
