@@ -1,7 +1,7 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TvIcon, LogOut, LogIn, PlusCircle } from "lucide-react";
+import { TvIcon, LogOut, PlusCircle, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -18,6 +18,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import AddShowForm from "@/components/AddShowForm";
 import { useAuth } from "@/components/AuthProvider";
 import { FilterType } from "@/hooks/useShowsData";
@@ -45,13 +50,21 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   
   const handleSignOut = async () => {
     await signOut();
+    setUserMenuOpen(false);
   };
   
   const handleSignIn = () => {
     navigate("/auth", { state: { from: location } });
+    setUserMenuOpen(false);
+  };
+
+  const handleSignUp = () => {
+    navigate("/auth", { state: { from: location, initialTab: "signup" } });
+    setUserMenuOpen(false);
   };
 
   return (
@@ -93,14 +106,34 @@ const Header: React.FC<HeaderProps> = ({
               </div>
             </SheetContent>
           </Sheet>
+          
           {user ? (
             <Button variant="ghost" onClick={handleSignOut} title="Sign Out">
               <LogOut className="h-5 w-5" />
             </Button>
           ) : (
-            <Button variant="ghost" onClick={handleSignIn} title="Sign In">
-              <LogIn className="h-5 w-5" />
-            </Button>
+            <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" title="Account">
+                  <UserRound className="h-5 w-5" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-3">
+                <div className="flex flex-col space-y-2">
+                  <h3 className="font-medium mb-2">Join Binge & Tonic</h3>
+                  <Button onClick={handleSignIn} className="w-full justify-start">
+                    Sign In
+                  </Button>
+                  <Button 
+                    onClick={handleSignUp} 
+                    variant="outline" 
+                    className="w-full justify-start"
+                  >
+                    Create Account
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
           )}
         </div>
       </div>
