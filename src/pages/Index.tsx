@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Show } from "@/types/Show";
 import ShowList from "@/components/ShowList";
@@ -20,40 +21,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { v4 as uuidv4 } from "uuid";
-import { PlusCircle, TvIcon } from "lucide-react";
-
-const INITIAL_SHOWS: Show[] = [
-  {
-    id: "1",
-    title: "Stranger Things",
-    imageUrl: "https://resizing.flixster.com/0xxuABVVuzJDQsS48MvgfrPv9lg=/ems.cHJkLWVtcy1hc3NldHMvdHZzZXJpZXMvUlRUVjI0NTgxMS53ZWJw",
-    currentEpisodes: 3,
-    episodesNeeded: 8,
-    status: "waiting",
-    genre: "Sci-Fi, Horror",
-    description: "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl.",
-  },
-  {
-    id: "2",
-    title: "Breaking Bad",
-    imageUrl: "https://m.media-amazon.com/images/M/MV5BYmQ4YWMxYjUtNjZmYi00MDQ1LWFjMjMtNjA5ZDdiYjdiODU5XkEyXkFqcGdeQXVyMTMzNDExODE5._V1_.jpg",
-    currentEpisodes: 62,
-    episodesNeeded: 20,
-    status: "ready",
-    genre: "Crime, Drama",
-    description: "A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine to secure his family's future.",
-  },
-  {
-    id: "3",
-    title: "The Mandalorian",
-    imageUrl: "https://lumiere-a.akamaihd.net/v1/images/p_themandalorian_20273_3c4470f6.jpeg",
-    currentEpisodes: 6,
-    episodesNeeded: 10,
-    status: "waiting",
-    genre: "Action, Adventure, Sci-Fi",
-    description: "The travels of a lone bounty hunter in the outer reaches of the galaxy, far from the authority of the New Republic.",
-  },
-];
+import { PlusCircle, TvIcon, LogOut } from "lucide-react";
+import { useAuth } from "@/components/AuthProvider";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 type FilterType = "all" | "ready" | "waiting";
 
@@ -63,54 +34,154 @@ const Index: React.FC = () => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [filter, setFilter] = useState<FilterType>("all");
+  const [isLoading, setIsLoading] = useState(true);
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
 
-  useEffect(() => {
-    const savedShows = localStorage.getItem("binge-shows");
-    if (savedShows) {
-      setShows(JSON.parse(savedShows));
-    } else {
-      setShows(INITIAL_SHOWS);
+  // Fetch shows from Supabase
+  const fetchShows = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("user_shows")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data) {
+        // Transform Supabase data to our Show type
+        const transformedShows: Show[] = data.map(show => ({
+          id: show.id,
+          title: show.title,
+          imageUrl: show.poster_url || "/placeholder.svg",
+          currentEpisodes: show.current_episodes,
+          episodesNeeded: show.total_episodes,
+          status: show.current_episodes >= show.total_episodes ? "ready" : "waiting",
+          description: show.description,
+          genre: show.genre
+        }));
+        setShows(transformedShows);
+      }
+    } catch (error: any) {
+      console.error("Error fetching shows:", error.message);
+      toast({
+        title: "Error fetching shows",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
-
-  useEffect(() => {
-    if (shows.length > 0) {
-      localStorage.setItem("binge-shows", JSON.stringify(shows));
-    }
-  }, [shows]);
-
-  const handleAddShow = (newShow: Omit<Show, "id" | "status">) => {
-    const episodesReady = newShow.currentEpisodes >= newShow.episodesNeeded;
-    const show: Show = {
-      ...newShow,
-      id: uuidv4(),
-      status: episodesReady ? "ready" : "waiting",
-    };
-    
-    setShows([...shows, show]);
-    setIsAddFormOpen(false);
   };
 
-  const handleUpdateShow = (id: string, episodeDelta: number) => {
-    setShows(
-      shows.map((show) => {
-        if (show.id === id) {
-          const newEpisodeCount = Math.max(0, show.currentEpisodes + episodeDelta);
-          const newStatus = newEpisodeCount >= show.episodesNeeded ? "ready" : "waiting";
-          return {
-            ...show,
-            currentEpisodes: newEpisodeCount,
-            status: newStatus,
-          };
-        }
-        return show;
-      })
-    );
+  useEffect(() => {
+    fetchShows();
+  }, [user]);
+
+  const handleAddShow = async (newShow: Omit<Show, "id" | "status">) => {
+    try {
+      const episodesReady = newShow.currentEpisodes >= newShow.episodesNeeded;
+      
+      // Save to Supabase
+      const { data, error } = await supabase
+        .from("user_shows")
+        .insert({
+          tmdb_show_id: parseInt(newShow.tmdbId?.toString() || "0"),
+          title: newShow.title,
+          current_episodes: newShow.currentEpisodes,
+          total_episodes: newShow.episodesNeeded,
+          status: episodesReady ? "completed" : "watching",
+          poster_url: newShow.imageUrl,
+          description: newShow.description || "",
+          genre: newShow.genre || ""
+        })
+        .select();
+
+      if (error) throw error;
+      
+      if (data && data[0]) {
+        const show: Show = {
+          id: data[0].id,
+          title: data[0].title,
+          imageUrl: data[0].poster_url || "/placeholder.svg",
+          currentEpisodes: data[0].current_episodes,
+          episodesNeeded: data[0].total_episodes,
+          status: episodesReady ? "ready" : "waiting",
+          description: data[0].description,
+          genre: data[0].genre
+        };
+        
+        setShows([show, ...shows]);
+        
+        toast({
+          title: "Show Added",
+          description: `${show.title} has been added to your list.`
+        });
+      }
+      
+      setIsAddFormOpen(false);
+    } catch (error: any) {
+      toast({
+        title: "Error adding show",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleUpdateShow = async (id: string, episodeDelta: number) => {
+    try {
+      const show = shows.find(s => s.id === id);
+      if (!show) return;
+      
+      const newEpisodeCount = Math.max(0, show.currentEpisodes + episodeDelta);
+      const newStatus = newEpisodeCount >= show.episodesNeeded ? "completed" : "watching";
+      
+      // Update in Supabase
+      const { error } = await supabase
+        .from("user_shows")
+        .update({
+          current_episodes: newEpisodeCount,
+          status: newStatus
+        })
+        .eq("id", id);
+      
+      if (error) throw error;
+      
+      // Update local state
+      setShows(
+        shows.map((show) => {
+          if (show.id === id) {
+            const updatedStatus = newEpisodeCount >= show.episodesNeeded ? "ready" : "waiting";
+            return {
+              ...show,
+              currentEpisodes: newEpisodeCount,
+              status: updatedStatus,
+            };
+          }
+          return show;
+        })
+      );
+      
+    } catch (error: any) {
+      toast({
+        title: "Error updating show",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   const handleViewDetails = (show: Show) => {
     setSelectedShow(show);
     setIsDetailsOpen(true);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   const filteredShows = shows.filter((show) => {
@@ -162,16 +233,25 @@ const Index: React.FC = () => {
                 </div>
               </SheetContent>
             </Sheet>
+            <Button variant="ghost" onClick={handleSignOut} title="Sign Out">
+              <LogOut className="h-5 w-5" />
+            </Button>
           </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl p-6">
-        <ShowList
-          shows={filteredShows}
-          onUpdateShow={handleUpdateShow}
-          onViewDetails={handleViewDetails}
-        />
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-xl">Loading shows...</p>
+          </div>
+        ) : (
+          <ShowList
+            shows={filteredShows}
+            onUpdateShow={handleUpdateShow}
+            onViewDetails={handleViewDetails}
+          />
+        )}
         <ShowDetails
           show={selectedShow}
           isOpen={isDetailsOpen}

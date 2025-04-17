@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -31,6 +30,7 @@ const formSchema = z.object({
   episodesNeeded: z.coerce.number().int().min(1, "Must be at least 1"),
   description: z.string().optional(),
   genre: z.string().optional(),
+  tmdbId: z.number().optional(),
 });
 
 const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
@@ -48,10 +48,10 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
       episodesNeeded: 1,
       description: "",
       genre: "",
+      tmdbId: undefined,
     },
   });
 
-  // Effect to handle searching for shows when the query changes
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
       if (searchQuery.trim().length > 2) {
@@ -72,14 +72,13 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
     
     const genres = show.genres?.map(g => g.name).join(", ") || "";
     
-    // Update form with selected show data
     form.setValue("title", show.name);
     form.setValue("imageUrl", getImageUrl(show.poster_path));
     form.setValue("description", show.overview);
     form.setValue("genre", genres);
     form.setValue("episodesNeeded", show.number_of_episodes || 1);
+    form.setValue("tmdbId", show.id);
     
-    // Clear search results after selection
     setSearchQuery("");
     setSearchResults([]);
   };
@@ -97,12 +96,12 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
       episodesNeeded: values.episodesNeeded,
       description: values.description,
       genre: values.genre,
+      tmdbId: values.tmdbId,
     });
   };
 
   return (
     <div className="space-y-4">
-      {/* Show Search Input */}
       <div className="relative">
         <div className="flex items-center border rounded-md focus-within:ring-1 focus-within:ring-ring">
           <Search className="ml-2 h-4 w-4 text-muted-foreground" />
@@ -137,7 +136,6 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
         )}
       </div>
 
-      {/* Selected Show Preview */}
       {selectedShow && (
         <div className="flex gap-4 p-3 bg-accent/30 rounded-md">
           <div className="w-20 flex-shrink-0">
@@ -159,6 +157,8 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <input type="hidden" {...form.register("tmdbId", { valueAsNumber: true })} />
+          
           <FormField
             control={form.control}
             name="title"

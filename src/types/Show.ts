@@ -8,4 +8,5 @@ export interface Show {
   status: 'ready' | 'waiting';
   description?: string;
   genre?: string;
+  tmdbId?: number;
 }
