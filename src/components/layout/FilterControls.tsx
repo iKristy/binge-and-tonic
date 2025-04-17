@@ -33,11 +33,17 @@ const FilterControls: React.FC<FilterControlsProps> = ({
 }) => {
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
-      <Select value={filter} onValueChange={(value) => onFilterChange(value as FilterType)}>
-        <SelectTrigger className="w-full md:w-[180px]">
+      <Select 
+        value={filter} 
+        onValueChange={(value) => onFilterChange(value as FilterType)}
+      >
+        <SelectTrigger 
+          className="w-full md:w-[180px]" 
+          aria-label="Filter TV Shows"
+        >
           <SelectValue placeholder="Filter Shows" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent aria-label="Show Filter Options">
           <SelectGroup>
             <SelectItem value="all">All Shows ({showCounts.total})</SelectItem>
             <SelectItem value="complete">Ready to Binge ({showCounts.complete})</SelectItem>
@@ -46,14 +52,20 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         </SelectContent>
       </Select>
 
-      <Select value={sortBy} onValueChange={(value) => onSortChange(value as SortType)}>
-        <SelectTrigger className="w-full md:w-[180px]">
+      <Select 
+        value={sortBy} 
+        onValueChange={(value) => onSortChange(value as SortType)}
+      >
+        <SelectTrigger 
+          className="w-full md:w-[180px]" 
+          aria-label="Sort TV Shows"
+        >
           <div className="flex items-center gap-2">
-            <SortDesc className="h-4 w-4" />
+            <SortDesc className="h-4 w-4" aria-hidden="true" />
             <SelectValue placeholder="Sort By" />
           </div>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent aria-label="Sorting Options">
           <SelectGroup>
             <SelectItem value="alphabetical">Alphabetical</SelectItem>
             <SelectItem value="status">By Show Status</SelectItem>
