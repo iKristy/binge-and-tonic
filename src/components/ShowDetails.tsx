@@ -71,14 +71,14 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
               {show.releasedEpisodes} / {show.totalEpisodes} episodes released
             </span>
           </div>
-          <Badge className={isComplete ? "bg-green-500" : "bg-orange-500"}>
+          <Badge className={isComplete ? "bg-primary" : "bg-orange-500"}>
             {isComplete ? "Complete Season!" : `${remainingEpisodes} to go`}
           </Badge>
         </div>
 
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
           <div
-            className={`h-full ${isComplete ? "bg-green-500" : "bg-orange-500"}`}
+            className={`h-full ${isComplete ? "bg-primary" : "bg-orange-500"}`}
             style={{
               width: `${Math.min(
                 100,

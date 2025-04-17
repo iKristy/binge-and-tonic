@@ -37,7 +37,7 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onViewDetails }) => {
         />
         <Badge 
           className={`absolute top-2 right-2 ${
-            isComplete ? "bg-green-500" : "bg-orange-500"
+            isComplete ? "bg-primary" : "bg-orange-500"
           }`}
         >
           {isComplete ? "Complete season!" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
@@ -56,7 +56,7 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onViewDetails }) => {
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
           <div
             className={`h-full ${
-              isComplete ? "bg-green-500" : "bg-orange-500"
+              isComplete ? "bg-primary" : "bg-orange-500"
             }`}
             style={{
               width: `${Math.min(
