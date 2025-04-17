@@ -48,11 +48,12 @@ serve(async (req) => {
   try {
     console.log("Starting periodic update of show information");
 
-    // Get shows that need updating (null last_updated_from_tmdb or updated more than a day ago)
+    // Get shows to update - we'll use updated_at instead of last_updated_from_tmdb
+    // until the schema migration is applied
     const { data: shows, error: fetchError } = await supabase
       .from("user_shows")
       .select("id, tmdb_show_id, title, poster_url, total_episodes, released_episodes, season_number")
-      .or("last_updated_from_tmdb.is.null,last_updated_from_tmdb.lt." + new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      .order("updated_at", { ascending: true })
       .limit(20); // Process in batches
 
     if (fetchError) {
@@ -116,7 +117,7 @@ serve(async (req) => {
               description,
               released_episodes: releasedEpisodes,
               total_episodes: latestSeason?.episode_count || showDetails.number_of_episodes || show.total_episodes,
-              last_updated_from_tmdb: new Date().toISOString()
+              updated_at: new Date().toISOString()
             })
             .eq("id", show.id);
 
@@ -135,7 +136,7 @@ serve(async (req) => {
           await supabase
             .from("user_shows")
             .update({
-              last_updated_from_tmdb: new Date().toISOString()
+              updated_at: new Date().toISOString()
             })
             .eq("id", show.id);
             
