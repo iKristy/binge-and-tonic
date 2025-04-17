@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => ({
       manifest: {
         name: 'Binge & Tonic',
         short_name: 'Binge & Tonic',
-        description: 'Track and plan your binge-watching experience',
+        description: 'Track and plan your binge-watching experience, from season premiere to season finale',
         theme_color: '#0765E9',
         background_color: '#ffffff',
         display: 'standalone',
