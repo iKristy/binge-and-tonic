@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom"; // Add Link import
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,20 +36,16 @@ const Auth = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Get initial tab from location state
   const initialTab = location.state?.initialTab === "signup" ? "signup" : "login";
   const [activeTab, setActiveTab] = useState(initialTab);
   
-  // Get show data from location state
   const showData = location.state?.show;
   const action = location.state?.action;
   const from = location.state?.from || "/";
 
   useEffect(() => {
-    // If user is already logged in, redirect them
     if (user) {
       if (action === "add_show" && showData) {
-        // Navigate back to index but pass the show data
         navigate("/", { state: { action: "add_show", show: showData } });
       } else {
         navigate(from);
@@ -92,7 +87,6 @@ const Auth = () => {
         description: "You have been logged in successfully.",
       });
 
-      // Will be redirected by the useEffect
     } catch (error: any) {
       console.error("Login error:", error);
       setAuthError(error.message || "Failed to login. Please try again.");
@@ -120,10 +114,11 @@ const Auth = () => {
 
       toast({
         title: "Signup successful",
-        description: "Your account has been created. Check your email for confirmation.",
+        description: "Your account has been created. Refreshing...",
       });
 
-      // Will be redirected by the useEffect if email verification is not required
+      window.location.reload();
+
     } catch (error: any) {
       console.error("Signup error:", error);
       setAuthError(error.message || "Failed to sign up. Please try again.");
@@ -141,7 +136,7 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-black border-b border-border py-4 px-6">
         <div className="mx-auto flex max-w-md items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity"> {/* Wrap logo in Link */}
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <TvIcon className="h-6 w-6 text-primary" />
             <h1 className="text-xl font-bold">Binge & Tonic</h1>
           </Link>
