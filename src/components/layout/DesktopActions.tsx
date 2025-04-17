@@ -43,8 +43,8 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
     <>
       <Sheet open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
         <SheetTrigger asChild>
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
+          <Button aria-label="Add new show">
+            <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
             Add Show
           </Button>
         </SheetTrigger>
@@ -65,17 +65,17 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
         <Button 
           variant="ghost" 
           onClick={onSignOut} 
-          title="Sign Out"
           className="flex items-center gap-2 hover:bg-red-900/20"
+          aria-label="Sign out"
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-5 w-5" aria-hidden="true" />
           <span className="sr-only md:not-sr-only md:inline-block">Sign Out</span>
         </Button>
       ) : (
         <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <PopoverTrigger asChild>
-            <Button variant="ghost" title="Account">
-              <UserRound className="h-5 w-5" />
+            <Button variant="ghost" aria-label="Account menu">
+              <UserRound className="h-5 w-5" aria-hidden="true" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-56 p-3">

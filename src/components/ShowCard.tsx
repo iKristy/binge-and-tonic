@@ -25,6 +25,9 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onViewDetails }) => {
         show.watched ? 'opacity-80' : ''
       }`}
       onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${show.title}`}
     >
       <div className="relative aspect-video">
         <img
@@ -75,8 +78,9 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onViewDetails }) => {
             e.stopPropagation();
             onViewDetails(show);
           }}
+          aria-label={`View details for ${show.title}`}
         >
-          <Info className="h-4 w-4 mr-1" /> Details
+          <Info className="h-4 w-4 mr-1" aria-hidden="true" /> Details
         </Button>
       </CardFooter>
     </Card>

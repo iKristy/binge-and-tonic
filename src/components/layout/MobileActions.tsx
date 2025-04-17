@@ -43,8 +43,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
     <div className="flex items-center gap-2">
       <Sheet open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
         <SheetTrigger asChild>
-          <Button size="sm">
-            <PlusCircle className="h-4 w-4" />
+          <Button size="sm" aria-label="Add new show">
+            <PlusCircle className="h-4 w-4" aria-hidden="true" />
           </Button>
         </SheetTrigger>
         <SheetContent>
@@ -64,17 +64,17 @@ const MobileActions: React.FC<MobileActionsProps> = ({
         <Button 
           variant="ghost" 
           onClick={onSignOut} 
-          title="Sign Out"
           size="sm"
           className="hover:bg-red-900/20"
+          aria-label="Sign out"
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-5 w-5" aria-hidden="true" />
         </Button>
       ) : (
         <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" title="Account">
-              <UserRound className="h-5 w-5" />
+            <Button variant="ghost" size="sm" aria-label="Account menu">
+              <UserRound className="h-5 w-5" aria-hidden="true" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-56 p-3">
