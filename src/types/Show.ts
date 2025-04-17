@@ -6,7 +6,6 @@ export interface Show {
   totalEpisodes: number;
   releasedEpisodes: number;
   status: 'complete' | 'waiting';
-  description?: string;
   genre?: string;
   tmdbId?: number;
   seasonNumber?: number;

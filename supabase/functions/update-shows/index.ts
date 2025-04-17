@@ -107,14 +107,10 @@ serve(async (req) => {
             return new Date(episode.air_date) <= today;
           }).length || 0;
 
-          // Get show overview/description
-          const description = showDetails.overview || "";
-
           // Update the show in the database
           const { error: updateError } = await supabase
             .from("user_shows")
             .update({
-              description,
               released_episodes: releasedEpisodes,
               total_episodes: latestSeason?.episode_count || showDetails.number_of_episodes || show.total_episodes,
               updated_at: new Date().toISOString()

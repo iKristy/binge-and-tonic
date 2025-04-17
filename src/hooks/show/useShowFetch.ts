@@ -44,7 +44,6 @@ export function useShowFetch(user: User | null) {
           totalEpisodes: show.total_episodes,
           releasedEpisodes: show.released_episodes || 0,
           status: show.released_episodes >= show.total_episodes ? "complete" : "waiting",
-          description: "", // Add empty description since it's not in the database
           seasonNumber: show.season_number,
           tmdbId: show.tmdb_show_id
         }));
