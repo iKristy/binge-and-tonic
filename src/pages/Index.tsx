@@ -5,6 +5,7 @@ import ShowList from "@/components/ShowList";
 import ShowDetails from "@/components/ShowDetails";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import RefreshShowsButton from "@/components/RefreshShowsButton";
 import { useAuth } from "@/components/AuthProvider";
 import { useShowsData } from "@/hooks/useShowsData";
 import { useShowDetails } from "@/hooks/show/useShowDetails";
@@ -23,7 +24,8 @@ const Index: React.FC = () => {
     removeShow,
     completeCount,
     waitingCount,
-    totalCount
+    totalCount,
+    refreshShows
   } = useShowsData(user);
   
   const {
@@ -56,6 +58,10 @@ const Index: React.FC = () => {
       />
 
       <main className="mx-auto max-w-7xl p-6">
+        <div className="flex justify-end mb-4">
+          <RefreshShowsButton onRefreshComplete={refreshShows} user={user} />
+        </div>
+        
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
             <p className="text-xl">Loading shows...</p>

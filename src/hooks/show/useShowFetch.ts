@@ -41,8 +41,7 @@ export function useShowFetch(user: User | null) {
           totalEpisodes: show.total_episodes,
           releasedEpisodes: show.released_episodes || 0,
           status: show.released_episodes >= show.total_episodes ? "complete" : "waiting",
-          // Use an empty string as fallback if description is not in the database schema
-          description: show.description || "",
+          description: show.description || "", // Safely handle description field
           seasonNumber: show.season_number,
           tmdbId: show.tmdb_show_id
         }));
@@ -70,6 +69,7 @@ export function useShowFetch(user: User | null) {
   return {
     shows,
     setShows,
-    isLoading
+    isLoading,
+    refreshShows: fetchShows
   };
 }

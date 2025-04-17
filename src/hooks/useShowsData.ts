@@ -8,7 +8,7 @@ import { Show } from "@/types/Show";
 export type { FilterType } from "@/hooks/show/useShowFilter";
 
 export function useShowsData(user: User | null) {
-  const { shows, setShows, isLoading } = useShowFetch(user);
+  const { shows, setShows, isLoading, refreshShows } = useShowFetch(user);
   const { filter, setFilter, filteredShows, completeCount, waitingCount, totalCount } = useShowFilter(shows);
   const { isShowAlreadyAdded, addShow: addShowToStorage, removeShow: removeShowFromStorage } = useShowStorage(user);
 
@@ -28,6 +28,7 @@ export function useShowsData(user: User | null) {
     setFilter,
     addShow,
     removeShow,
+    refreshShows,
     completeCount,
     waitingCount,
     totalCount,
