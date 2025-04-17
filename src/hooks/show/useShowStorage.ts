@@ -42,8 +42,8 @@ export function useShowStorage(user: User | null) {
           total_episodes: newShow.totalEpisodes,
           released_episodes: newShow.releasedEpisodes,
           season_number: newShow.seasonNumber,
-          status: newShow.releasedEpisodes >= newShow.totalEpisodes ? "completed" : "watching"
-          // Note: description is not included here as it's not in the database schema
+          status: newShow.releasedEpisodes >= newShow.totalEpisodes ? "completed" : "watching",
+          user_id: user.id // Add the user ID to satisfy the RLS policy
         });
 
         if (error) {
