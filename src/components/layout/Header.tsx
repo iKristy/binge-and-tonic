@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TvIcon, LogOut, PlusCircle, UserRound } from "lucide-react";
+import { TvIcon, LogOut, PlusCircle, UserRound, SortDesc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -25,11 +25,14 @@ import {
 } from "@/components/ui/popover";
 import AddShowForm from "@/components/AddShowForm";
 import { useAuth } from "@/components/AuthProvider";
-import { FilterType } from "@/hooks/useShowsData";
+import { FilterType } from "@/hooks/show/useShowFilter";
+import { SortType } from "@/hooks/show/useShowSort";
 
 interface HeaderProps {
   filter: FilterType;
   onFilterChange: (value: FilterType) => void;
+  sortBy: SortType;
+  onSortChange: (value: SortType) => void;
   onAddShow: (show: any) => void;
   isAddFormOpen: boolean;
   setIsAddFormOpen: (isOpen: boolean) => void;
@@ -43,6 +46,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({
   filter,
   onFilterChange,
+  sortBy,
+  onSortChange,
   onAddShow,
   isAddFormOpen,
   setIsAddFormOpen,
@@ -87,6 +92,23 @@ const Header: React.FC<HeaderProps> = ({
               </SelectGroup>
             </SelectContent>
           </Select>
+          
+          <Select value={sortBy} onValueChange={(value) => onSortChange(value as SortType)}>
+            <SelectTrigger className="w-[180px]">
+              <div className="flex items-center gap-2">
+                <SortDesc className="h-4 w-4" />
+                <SelectValue placeholder="Sort By" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="alphabetical">Alphabetical</SelectItem>
+                <SelectItem value="status">By Show Status</SelectItem>
+                <SelectItem value="releaseDate">By Release Date</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          
           <Sheet open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
             <SheetTrigger asChild>
               <Button>

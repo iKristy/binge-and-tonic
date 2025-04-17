@@ -19,6 +19,8 @@ const Index: React.FC = () => {
     isLoading, 
     filter, 
     setFilter,
+    sortBy,
+    setSortBy,
     addShow,
     removeShow,
     completeCount,
@@ -46,6 +48,8 @@ const Index: React.FC = () => {
       <Header 
         filter={filter}
         onFilterChange={setFilter}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
         onAddShow={handleAddShow}
         isAddFormOpen={isAddFormOpen}
         setIsAddFormOpen={setIsAddFormOpen}
