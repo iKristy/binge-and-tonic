@@ -53,6 +53,7 @@ export type Database = {
           status: string | null
           updated_at: string | null
           user_id: string
+          watched: boolean | null
         }
         Insert: {
           created_at?: string | null
@@ -61,6 +62,7 @@ export type Database = {
           status?: string | null
           updated_at?: string | null
           user_id: string
+          watched?: boolean | null
         }
         Update: {
           created_at?: string | null
@@ -69,6 +71,7 @@ export type Database = {
           status?: string | null
           updated_at?: string | null
           user_id?: string
+          watched?: boolean | null
         }
         Relationships: [
           {

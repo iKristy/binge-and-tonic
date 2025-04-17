@@ -9,5 +9,5 @@ export interface Show {
   genre?: string;
   tmdbId?: number;
   seasonNumber?: number;
-  watched?: boolean;
+  watched?: boolean; // Ensure this matches the database column
 }
