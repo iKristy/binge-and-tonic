@@ -1,37 +1,19 @@
+
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { TvIcon, AlertCircle, LogIn } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { AlertCircle } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
-import { useToast } from "@/hooks/use-toast";
-
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-const signupSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+import AuthHeader from "@/components/auth/AuthHeader";
+import LoginForm from "@/components/auth/LoginForm";
+import SignupForm from "@/components/auth/SignupForm";
 
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { user } = useAuth();
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,95 +35,9 @@ const Auth = () => {
     }
   }, [user, navigate, from, action, showData]);
 
-  const loginForm = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  const signupForm = useForm<z.infer<typeof signupSchema>>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-
-  const onLogin = async (values: z.infer<typeof loginSchema>) => {
-    setIsLoading(true);
-    setAuthError(null);
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Login successful",
-        description: "You have been logged in successfully.",
-      });
-
-    } catch (error: any) {
-      console.error("Login error:", error);
-      setAuthError(error.message || "Failed to login. Please try again.");
-      toast({
-        title: "Login failed",
-        description: error.message || "Failed to login. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const onSignup = async (values: z.infer<typeof signupSchema>) => {
-    setIsLoading(true);
-    setAuthError(null);
-
-    try {
-      const { error } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Signup successful",
-        description: "Your account has been created. Refreshing...",
-      });
-
-      window.location.reload();
-
-    } catch (error: any) {
-      console.error("Signup error:", error);
-      setAuthError(error.message || "Failed to sign up. Please try again.");
-      toast({
-        title: "Signup failed",
-        description: error.message || "Failed to sign up. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="bg-black border-b border-border py-4 px-6">
-        <div className="mx-auto flex max-w-md items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <TvIcon className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold">Binge & Tonic</h1>
-          </Link>
-        </div>
-      </header>
+      <AuthHeader />
 
       <main className="flex-1 flex items-center justify-center p-6">
         <Card className="w-full max-w-md">
@@ -170,93 +66,11 @@ const Auth = () => {
               </TabsList>
 
               <TabsContent value="login">
-                <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4 mt-4">
-                    <FormField
-                      control={loginForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter your email" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={loginForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="Enter your password" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? "Logging in..." : "Login"}
-                    </Button>
-                  </form>
-                </Form>
+                <LoginForm setIsLoading={setIsLoading} setAuthError={setAuthError} />
               </TabsContent>
 
               <TabsContent value="signup">
-                <Form {...signupForm}>
-                  <form onSubmit={signupForm.handleSubmit(onSignup)} className="space-y-4 mt-4">
-                    <FormField
-                      control={signupForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter your email" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={signupForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="Create a password" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={signupForm.control}
-                      name="confirmPassword"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirm Password</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="Confirm your password" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? "Signing up..." : "Sign Up"}
-                    </Button>
-                  </form>
-                </Form>
+                <SignupForm setIsLoading={setIsLoading} setAuthError={setAuthError} />
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -281,3 +95,4 @@ const Auth = () => {
 };
 
 export default Auth;
+
