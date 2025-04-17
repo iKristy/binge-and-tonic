@@ -23,6 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { toast } from "sonner";
 import AddShowForm from "@/components/AddShowForm";
 import { useAuth } from "@/components/AuthProvider";
 import { FilterType } from "@/hooks/show/useShowFilter";
@@ -58,8 +59,13 @@ const Header: React.FC<HeaderProps> = ({
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   
   const handleSignOut = async () => {
-    await signOut();
-    setUserMenuOpen(false);
+    try {
+      await signOut();
+      toast.success("Successfully signed out");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out. Please try again.");
+    }
   };
   
   const handleSignIn = () => {
@@ -135,8 +141,10 @@ const Header: React.FC<HeaderProps> = ({
               variant="ghost" 
               onClick={handleSignOut} 
               title="Sign Out"
+              className="flex items-center gap-2 hover:bg-red-900/20"
             >
               <LogOut className="h-5 w-5" />
+              <span className="sr-only md:not-sr-only md:inline-block">Sign Out</span>
             </Button>
           ) : (
             <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
