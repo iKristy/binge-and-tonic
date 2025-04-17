@@ -14,6 +14,17 @@ export interface TMDbSeason {
   season_number: number;
 }
 
+export interface TMDbEpisode {
+  air_date: string;
+  episode_number: number;
+  id: number;
+  name: string;
+  overview: string;
+  runtime: number;
+  season_number: number;
+  still_path: string | null;
+}
+
 export interface TMDbShow {
   id: number;
   name: string;
@@ -98,6 +109,37 @@ export const getShowDetails = async (showId: number): Promise<TMDbShow | null> =
   } catch (error) {
     console.error("Error fetching show details:", error);
     throw error; // Let the caller handle the error
+  }
+};
+
+export const getSeasonDetails = async (showId: number, seasonNumber: number): Promise<{ episodes: TMDbEpisode[] } | null> => {
+  if (!showId || seasonNumber < 0) return null;
+  
+  try {
+    console.log(`Fetching season ${seasonNumber} details for show ID: ${showId}`);
+    
+    const { data, error } = await supabase.functions.invoke("tmdb", {
+      body: { 
+        action: "season",
+        path: `/tv/${showId}/season/${seasonNumber}?language=en-US` 
+      }
+    });
+    
+    if (error) {
+      console.error("Supabase function error:", error);
+      throw new Error(`Function error: ${error.message}`);
+    }
+    
+    if (!data) {
+      console.error("No data returned from function");
+      throw new Error("No data returned when fetching season details");
+    }
+    
+    console.log(`Season details received: ${data.episodes?.length || 0} episodes`);
+    return data;
+  } catch (error) {
+    console.error("Error fetching season details:", error);
+    throw error;
   }
 };
 

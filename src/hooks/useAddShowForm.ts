@@ -6,7 +6,7 @@ import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { useShowSearch } from "@/hooks/useShowSearch";
 import { useAuth } from "@/components/AuthProvider";
-import { TMDbShow, getImageUrl } from "@/services/tmdbApi";
+import { TMDbShow, getImageUrl, getSeasonDetails } from "@/services/tmdbApi";
 import { Show } from "@/types/Show";
 
 const formSchema = z.object({
@@ -42,25 +42,43 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
     form.setValue("tmdbId", selectedShow.id);
   }
 
-  const prepareShowData = (show: TMDbShow) => {
+  const prepareShowData = async (show: TMDbShow) => {
     const latestSeason = show.seasons?.sort((a, b) => b.season_number - a.season_number)[0];
     const seasonNumber = latestSeason?.season_number || 1;
     const totalEpisodes = latestSeason?.episode_count || show.number_of_episodes || 0;
     
-    // For calculating released episodes, we would ideally need episode air dates
-    // As a simplification, we'll assume all episodes are released if the show's last_air_date is more than 
-    // the average time it would take for all episodes to air (roughly 1 week per episode)
-    const lastAirDate = new Date(show.last_air_date || show.first_air_date);
-    const today = new Date();
-    const timeDiff = today.getTime() - lastAirDate.getTime();
-    const daysSinceLastAir = timeDiff / (1000 * 3600 * 24);
+    // Initialize with default values
+    let releasedEpisodes = 0;
     
-    // Estimate released episodes based on time since last air date
-    // This is a simplified approach and could be improved with actual episode air dates
-    let releasedEpisodes = totalEpisodes;
-    if (show.in_production && show.status === 'Returning Series') {
-      // If show is still in production, estimate based on weekly releases
-      releasedEpisodes = Math.min(totalEpisodes, Math.ceil(daysSinceLastAir / 7));
+    try {
+      // Get actual episode data from TMDb
+      const seasonDetails = await getSeasonDetails(show.id, seasonNumber);
+      
+      if (seasonDetails?.episodes) {
+        const today = new Date();
+        // Count episodes that have already aired
+        releasedEpisodes = seasonDetails.episodes.filter(episode => {
+          if (!episode.air_date) return false;
+          const airDate = new Date(episode.air_date);
+          return airDate <= today;
+        }).length;
+        
+        console.log(`Based on air dates: ${releasedEpisodes} of ${totalEpisodes} episodes have been released`);
+      }
+    } catch (error) {
+      console.error("Error fetching season details:", error);
+      // Fallback to the old logic if we can't get episode data
+      const lastAirDate = new Date(show.last_air_date || show.first_air_date);
+      const today = new Date();
+      const timeDiff = today.getTime() - lastAirDate.getTime();
+      const daysSinceLastAir = timeDiff / (1000 * 3600 * 24);
+      
+      releasedEpisodes = totalEpisodes;
+      if (show.in_production && show.status === 'Returning Series') {
+        releasedEpisodes = Math.min(totalEpisodes, Math.ceil(daysSinceLastAir / 7));
+      }
+      
+      console.log(`Using fallback logic: ${releasedEpisodes} of ${totalEpisodes} episodes have been released`);
     }
 
     return {
@@ -91,7 +109,7 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
 
     // User is authenticated, proceed with adding the show
     console.log("User authenticated, adding show");
-    const formattedShow = prepareShowData(selectedShow);
+    const formattedShow = await prepareShowData(selectedShow);
     onAddShow(formattedShow);
   };
 

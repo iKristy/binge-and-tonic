@@ -82,6 +82,9 @@ serve(async (req) => {
       case 'details':
         url = `${TMDB_BASE_URL}${body.path}`;
         break;
+      case 'season':
+        url = `${TMDB_BASE_URL}${body.path}`;
+        break;
       default:
         console.error('Invalid action:', body.action);
         return new Response(JSON.stringify({ 
