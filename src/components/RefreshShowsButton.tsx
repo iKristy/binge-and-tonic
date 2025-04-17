@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
@@ -67,7 +66,7 @@ const RefreshShowsButton: React.FC<RefreshShowsButtonProps> = ({
       aria-label={isRefreshing ? "Refreshing shows..." : "Refresh shows list"}
     >
       <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} aria-hidden="true" />
-      {isRefreshing ? "Refreshing..." : "Refresh Shows"}
+      {isRefreshing ? "Refreshing..." : "Refresh shows"}
     </Button>
   );
 };

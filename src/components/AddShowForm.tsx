@@ -71,7 +71,7 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
               type="submit" 
               disabled={!selectedShow || isLoading}
             >
-              {isLoading ? "Loading..." : "Add Show"}
+              {isLoading ? "Loading..." : "Add show"}
             </Button>
           </div>
         </form>

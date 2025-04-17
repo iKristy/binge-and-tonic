@@ -39,15 +39,15 @@ const FilterControls: React.FC<FilterControlsProps> = ({
       >
         <SelectTrigger 
           className="w-full md:w-[180px]" 
-          aria-label="Filter TV Shows"
+          aria-label="Filter TV shows"
         >
-          <SelectValue placeholder="Filter Shows" />
+          <SelectValue placeholder="Filter shows" />
         </SelectTrigger>
-        <SelectContent aria-label="Show Filter Options">
+        <SelectContent aria-label="Show filter options">
           <SelectGroup>
-            <SelectItem value="all">All Shows ({showCounts.total})</SelectItem>
-            <SelectItem value="complete">Ready to Binge ({showCounts.complete})</SelectItem>
-            <SelectItem value="waiting">Waiting for Episodes ({showCounts.waiting})</SelectItem>
+            <SelectItem value="all">All shows ({showCounts.total})</SelectItem>
+            <SelectItem value="complete">Ready to binge ({showCounts.complete})</SelectItem>
+            <SelectItem value="waiting">Waiting for episodes ({showCounts.waiting})</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -58,19 +58,19 @@ const FilterControls: React.FC<FilterControlsProps> = ({
       >
         <SelectTrigger 
           className="w-full md:w-[180px]" 
-          aria-label="Sort TV Shows"
+          aria-label="Sort TV shows"
         >
           <div className="flex items-center gap-2">
             <SortDesc className="h-4 w-4" aria-hidden="true" />
-            <SelectValue placeholder="Sort By" />
+            <SelectValue placeholder="Sort by" />
           </div>
         </SelectTrigger>
-        <SelectContent aria-label="Sorting Options">
+        <SelectContent aria-label="Sorting options">
           <SelectGroup>
             <SelectItem value="alphabetical">Alphabetical</SelectItem>
-            <SelectItem value="status">By Show Status</SelectItem>
-            <SelectItem value="releaseDate">By Release Date</SelectItem>
-            <SelectItem value="dateAdded">By Date Added</SelectItem>
+            <SelectItem value="status">By show status</SelectItem>
+            <SelectItem value="releaseDate">By release date</SelectItem>
+            <SelectItem value="dateAdded">By date added</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

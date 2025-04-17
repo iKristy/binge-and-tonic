@@ -1,4 +1,3 @@
-
 import React from "react";
 import { TMDbShow } from "@/services/tmdbApi";
 import { getImageUrl } from "@/services/tmdbApi";

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -62,7 +61,7 @@ const Auth = () => {
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                <TabsTrigger value="signup">Sign up</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
@@ -84,7 +83,7 @@ const Auth = () => {
                 className="p-0 h-auto"
                 onClick={() => setActiveTab(activeTab === "login" ? "signup" : "login")}
               >
-                {activeTab === "login" ? "Sign Up" : "Login"}
+                {activeTab === "login" ? "Sign up" : "Login"}
               </Button>
             </p>
           </CardFooter>
@@ -95,4 +94,3 @@ const Auth = () => {
 };
 
 export default Auth;
-

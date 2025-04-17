@@ -40,7 +40,7 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onViewDetails }) => {
             isComplete ? "bg-green-500" : "bg-orange-500"
           }`}
         >
-          {isComplete ? "Complete Season!" : `${remainingEpisodes} Episode${remainingEpisodes !== 1 ? 's' : ''} Remaining`}
+          {isComplete ? "Complete season!" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
         </Badge>
       </div>
       <CardHeader className="p-4">
