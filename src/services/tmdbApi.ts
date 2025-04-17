@@ -1,6 +1,6 @@
 
 // TMDb API service for fetching show information
-const TMDB_API_KEY = "YOUR_API_KEY"; // Replace with your actual TMDb API key
+const TMDB_API_KEY = "d833109ce4971eb3006edc79fcdd402a";
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 export interface TMDbShow {
