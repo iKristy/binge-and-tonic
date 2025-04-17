@@ -36,7 +36,7 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Add New Show</SheetTitle>
+            <SheetTitle>Add new Show</SheetTitle>
           </SheetHeader>
           <div className="mt-6">
             <AddShowForm onAddShow={onAddShow} onCancel={() => setIsAddFormOpen(false)} />
@@ -46,7 +46,7 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
 
       {isAuthenticated ? <Button variant="ghost" onClick={onSignOut} aria-label="Sign out" className="flex items-center gap-2 hover:bg-blue-900/50">
           <LogOut className="h-5 w-5" aria-hidden="true" />
-          <span className="sr-only md:not-sr-only md:inline-block">Sign Out</span>
+          <span className="sr-only md:not-sr-only md:inline-block">Sign out</span>
         </Button> : <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <PopoverTrigger asChild>
             <Button variant="ghost" aria-label="Account menu">
