@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Show } from "@/types/Show";
 import {
   sortAlphabetically,
@@ -11,8 +11,15 @@ import {
 export type SortType = "alphabetical" | "status" | "releaseDate" | "dateAdded";
 
 export function useShowSort(shows: Show[]) {
-  const [sortBy, setSortBy] = useState<SortType>("alphabetical");
+  const [sortBy, setSortBy] = useState<SortType>(() => {
+    const savedSort = localStorage.getItem("showSort");
+    return (savedSort as SortType) || "alphabetical";
+  });
   
+  useEffect(() => {
+    localStorage.setItem("showSort", sortBy);
+  }, [sortBy]);
+
   const getSortFunction = (sortType: SortType) => {
     switch (sortType) {
       case "alphabetical":
