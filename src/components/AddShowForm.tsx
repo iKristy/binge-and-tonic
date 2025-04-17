@@ -16,6 +16,7 @@ import { Show } from "@/types/Show";
 import { searchShows, TMDbShow, getImageUrl, getShowDetails } from "@/services/tmdbApi";
 import ShowSearchResults from "./ShowSearchResults";
 import { Search, X } from "lucide-react"; 
+import { useToast } from "@/hooks/use-toast";
 
 interface AddShowFormProps {
   onAddShow: (show: Omit<Show, "id" | "status">) => void;
@@ -30,8 +31,10 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<TMDbShow[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | undefined>();
   const [selectedShow, setSelectedShow] = useState<TMDbShow | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,11 +47,23 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
     const searchTimeout = setTimeout(async () => {
       if (searchQuery.trim().length > 2) {
         setIsSearching(true);
-        const results = await searchShows(searchQuery);
-        setSearchResults(results.results || []);
-        setIsSearching(false);
+        setSearchError(undefined);
+        
+        try {
+          console.log("Searching for:", searchQuery);
+          const results = await searchShows(searchQuery);
+          console.log("Search results:", results);
+          setSearchResults(results.results || []);
+        } catch (error: any) {
+          console.error("Search error:", error);
+          setSearchError(error.message || "Failed to search shows");
+          setSearchResults([]);
+        } finally {
+          setIsSearching(false);
+        }
       } else {
         setSearchResults([]);
+        setSearchError(undefined);
       }
     }, 500);
 
@@ -69,8 +84,13 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
           ...details
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching show details:", error);
+      toast({
+        title: "Error",
+        description: `Couldn't fetch show details: ${error.message}`,
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -82,6 +102,7 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
   const handleSearchClear = () => {
     setSearchQuery("");
     setSearchResults([]);
+    setSearchError(undefined);
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -144,12 +165,13 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
           )}
         </div>
         
-        {(searchResults.length > 0 || isSearching) && (
+        {(searchResults.length > 0 || isSearching || searchError) && (
           <div className="absolute z-10 w-full mt-1 bg-background border rounded-md shadow-md">
             <ShowSearchResults 
               results={searchResults} 
               onSelectShow={handleShowSelect}
               isLoading={isSearching}
+              error={searchError}
             />
           </div>
         )}

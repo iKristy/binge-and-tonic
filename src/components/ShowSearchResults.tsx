@@ -4,22 +4,36 @@ import { TMDbShow } from "@/services/tmdbApi";
 import { getImageUrl } from "@/services/tmdbApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AlertCircle } from "lucide-react";
 
 interface ShowSearchResultsProps {
   results: TMDbShow[];
   onSelectShow: (show: TMDbShow) => void;
   isLoading: boolean;
+  error?: string;
 }
 
 const ShowSearchResults: React.FC<ShowSearchResultsProps> = ({ 
   results, 
   onSelectShow, 
-  isLoading 
+  isLoading,
+  error
 }) => {
   if (isLoading) {
     return (
       <div className="py-4 text-center">
         <p>Searching for shows...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="py-4 text-center text-destructive">
+        <div className="flex items-center justify-center gap-2">
+          <AlertCircle className="h-4 w-4" />
+          <p>Error: {error}</p>
+        </div>
       </div>
     );
   }
@@ -43,11 +57,17 @@ const ShowSearchResults: React.FC<ShowSearchResultsProps> = ({
           >
             <CardContent className="p-3 flex gap-3 items-center">
               <div className="w-12 h-16 flex-shrink-0 overflow-hidden rounded-sm">
-                <img 
-                  src={getImageUrl(show.poster_path, "w92")} 
-                  alt={show.name} 
-                  className="w-full h-full object-cover"
-                />
+                {show.poster_path ? (
+                  <img 
+                    src={getImageUrl(show.poster_path, "w92")} 
+                    alt={show.name} 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">
+                    No img
+                  </div>
+                )}
               </div>
               <div className="flex-1">
                 <h4 className="font-medium line-clamp-1">{show.name}</h4>
