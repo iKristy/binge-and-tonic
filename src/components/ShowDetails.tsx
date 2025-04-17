@@ -82,11 +82,13 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({ show, isOpen, onClose, onRemo
           </div>
         )}
 
-        {show.description && (
-          <div className="mt-4">
-            <p className="text-sm text-muted-foreground">{show.description}</p>
-          </div>
-        )}
+        {/* Add synopsis section */}
+        <div className="mt-4 border-t border-border pt-4">
+          <h4 className="text-sm font-medium mb-2">Synopsis</h4>
+          <p className="text-sm text-muted-foreground">
+            {show.description || "No synopsis available for this show."}
+          </p>
+        </div>
 
         <DialogFooter className="mt-4">
           <Button 
