@@ -111,7 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // If user just logged in or signed up, migrate their local shows
         if (
-          (event === "SIGNED_IN" || event === "SIGNED_UP") && 
+          (event === "SIGNED_IN" || event === "USER_UPDATED") && 
           currentSession?.user
         ) {
           // Use setTimeout to prevent auth state deadlock
