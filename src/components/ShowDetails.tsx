@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Show } from "@/types/Show";
 import {
@@ -94,20 +95,22 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           </div>
         )}
 
+        {show.tmdbId && (
+          <div className="mt-2 flex items-center gap-2">
+            <a 
+              href={`https://www.themoviedb.org/tv/${show.tmdbId}`} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-blue-500 hover:underline"
+            >
+              <ExternalLink className="h-4 w-4" />
+              View on TMDb
+            </a>
+          </div>
+        )}
+
         <DialogFooter className="mt-4 flex flex-row justify-between items-center gap-2">
           <div className="flex gap-2">
-            {show.tmdbId && (
-              <a 
-                href={`https://www.themoviedb.org/tv/${show.tmdbId}`} 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <Button variant="outline" className="flex gap-2 items-center">
-                  <ExternalLink className="h-4 w-4" />
-                  View on TMDb
-                </Button>
-              </a>
-            )}
             <Button 
               variant="outline"
               onClick={handleWatchedToggle}
