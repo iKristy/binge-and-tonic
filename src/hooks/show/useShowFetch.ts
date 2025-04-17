@@ -24,36 +24,49 @@ export function useShowFetch(user: User | null) {
         return;
       }
       
-      // Fetch shows from database
-      const { data, error } = await supabase
-        .from("user_shows")
-        .select("*")
-        .eq("user_id", user.id) // Ensure we only get shows for current user
+      // Fetch shows for current user with the new relational structure
+      const { data: relations, error: relationsError } = await supabase
+        .from("user_show_relations")
+        .select(`
+          id,
+          status,
+          show:show_id(
+            id,
+            tmdb_id,
+            title,
+            poster_url,
+            total_episodes,
+            released_episodes,
+            season_number
+          )
+        `)
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (error) {
-        throw error;
+      if (relationsError) {
+        throw relationsError;
       }
 
-      // Transform shows data for the UI
-      if (data) {
-        const transformedShows: Show[] = data.map(show => ({
-          id: show.id,
-          title: show.title,
-          imageUrl: show.poster_url || "/placeholder.svg",
-          totalEpisodes: show.total_episodes,
-          releasedEpisodes: show.released_episodes || 0,
-          status: show.released_episodes >= show.total_episodes ? "complete" : "waiting",
-          seasonNumber: show.season_number,
-          tmdbId: show.tmdb_show_id
+      // Transform joined data for the UI
+      if (relations) {
+        const transformedShows: Show[] = relations.map((relation: any) => ({
+          id: relation.id,
+          title: relation.show.title,
+          imageUrl: relation.show.poster_url || "/placeholder.svg",
+          totalEpisodes: relation.show.total_episodes,
+          releasedEpisodes: relation.show.released_episodes || 0,
+          status: relation.show.released_episodes >= relation.show.total_episodes ? "complete" : "waiting",
+          seasonNumber: relation.show.season_number,
+          tmdbId: relation.show.tmdb_id
         }));
+        
         setShows(transformedShows);
         
         // Also save to localStorage as backup
         localStorage.setItem("shows", JSON.stringify(transformedShows));
         
         // After fetching shows, trigger the auto-update function if there are shows
-        if (data.length > 0) {
+        if (relations.length > 0) {
           await triggerShowsUpdate();
         }
       }

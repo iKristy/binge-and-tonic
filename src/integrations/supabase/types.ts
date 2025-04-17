@@ -9,6 +9,77 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      shows: {
+        Row: {
+          created_at: string | null
+          id: number
+          poster_url: string | null
+          released_episodes: number | null
+          season_number: number | null
+          title: string
+          tmdb_id: number
+          total_episodes: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          poster_url?: string | null
+          released_episodes?: number | null
+          season_number?: number | null
+          title: string
+          tmdb_id: number
+          total_episodes: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          poster_url?: string | null
+          released_episodes?: number | null
+          season_number?: number | null
+          title?: string
+          tmdb_id?: number
+          total_episodes?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_show_relations: {
+        Row: {
+          created_at: string | null
+          id: string
+          show_id: number
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          show_id: number
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          show_id?: number
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_show_relations_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "shows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_shows: {
         Row: {
           created_at: string | null

@@ -11,16 +11,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface Show {
-  id: string;
-  tmdb_show_id: number;
-  title: string;
-  poster_url: string | null;
-  total_episodes: number;
-  released_episodes: number;
-  season_number: number;
-}
-
 serve(async (req) => {
   // Handle CORS preflight request
   if (req.method === "OPTIONS") {
@@ -48,13 +38,12 @@ serve(async (req) => {
   try {
     console.log("Starting periodic update of show information");
 
-    // Get shows to update - we'll use updated_at instead of last_updated_from_tmdb
-    // until the schema migration is applied
+    // Get shows to update from the shows table - we'll limit to 20 to avoid hitting API rate limits
     const { data: shows, error: fetchError } = await supabase
-      .from("user_shows")
-      .select("id, tmdb_show_id, title, poster_url, total_episodes, released_episodes, season_number")
+      .from("shows")
+      .select("id, tmdb_id, title, total_episodes, released_episodes, season_number")
       .order("updated_at", { ascending: true })
-      .limit(20); // Process in batches
+      .limit(20);
 
     if (fetchError) {
       throw new Error(`Error fetching shows: ${fetchError.message}`);
@@ -77,11 +66,11 @@ serve(async (req) => {
       shows.map(async (show) => {
         try {
           // Fetch show details from TMDB
-          const showDetailsUrl = `${TMDB_BASE_URL}/tv/${show.tmdb_show_id}?api_key=${TMDB_API_KEY}&language=en-US&append_to_response=seasons`;
+          const showDetailsUrl = `${TMDB_BASE_URL}/tv/${show.tmdb_id}?api_key=${TMDB_API_KEY}&language=en-US&append_to_response=seasons`;
           const showResponse = await fetch(showDetailsUrl);
           
           if (!showResponse.ok) {
-            throw new Error(`TMDB API returned ${showResponse.status} for show ${show.tmdb_show_id}`);
+            throw new Error(`TMDB API returned ${showResponse.status} for show ${show.tmdb_id}`);
           }
           
           const showDetails = await showResponse.json();
@@ -91,7 +80,7 @@ serve(async (req) => {
           const seasonNumber = latestSeason?.season_number || show.season_number || 1;
           
           // Get season details for latest episode count
-          const seasonDetailsUrl = `${TMDB_BASE_URL}/tv/${show.tmdb_show_id}/season/${seasonNumber}?api_key=${TMDB_API_KEY}&language=en-US`;
+          const seasonDetailsUrl = `${TMDB_BASE_URL}/tv/${show.tmdb_id}/season/${seasonNumber}?api_key=${TMDB_API_KEY}&language=en-US`;
           const seasonResponse = await fetch(seasonDetailsUrl);
           
           if (!seasonResponse.ok) {
@@ -107,9 +96,9 @@ serve(async (req) => {
             return new Date(episode.air_date) <= today;
           }).length || 0;
 
-          // Update the show in the database
+          // Update the show in the shows table
           const { error: updateError } = await supabase
-            .from("user_shows")
+            .from("shows")
             .update({
               released_episodes: releasedEpisodes,
               total_episodes: latestSeason?.episode_count || showDetails.number_of_episodes || show.total_episodes,
@@ -127,10 +116,10 @@ serve(async (req) => {
             updated: true
           };
         } catch (error) {
-          console.error(`Error updating show ${show.tmdb_show_id}:`, error);
+          console.error(`Error updating show ${show.tmdb_id}:`, error);
           // Still mark as updated even if there was an error, to avoid repeatedly trying to update failing shows
           await supabase
-            .from("user_shows")
+            .from("shows")
             .update({
               updated_at: new Date().toISOString()
             })
