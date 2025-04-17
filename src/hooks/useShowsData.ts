@@ -75,7 +75,7 @@ export function useShowsData(user: User | null) {
         title: newShow.title,
         total_episodes: newShow.totalEpisodes,
         released_episodes: newShow.releasedEpisodes,
-        status: isComplete ? "complete" : "waiting",
+        status: isComplete ? "complete" : "watching", // Changed from "waiting" to "watching" to match DB constraint
         poster_url: newShow.imageUrl,
         tmdb_show_id: newShow.tmdbId || 0,
         season_number: newShow.seasonNumber || 1
@@ -100,7 +100,7 @@ export function useShowsData(user: User | null) {
             imageUrl: data[0].poster_url || "/placeholder.svg",
             totalEpisodes: data[0].total_episodes,
             releasedEpisodes: data[0].released_episodes || 0,
-            status: isComplete ? "complete" : "waiting",
+            status: isComplete ? "complete" : "waiting", // We keep our application logic as is
             seasonNumber: data[0].season_number,
             tmdbId: data[0].tmdb_show_id
           };
@@ -119,6 +119,7 @@ export function useShowsData(user: User | null) {
       
       return false;
     } catch (error: any) {
+      console.error("Error adding show:", error.message);
       toast({
         title: "Error adding show",
         description: error.message,
