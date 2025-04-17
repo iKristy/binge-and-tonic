@@ -1,8 +1,8 @@
-
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { TvIcon, LogOut, PlusCircle, UserRound, SortDesc } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { LogOut, PlusCircle, UserRound, SortDesc } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/Logo";
 import {
   Select,
   SelectContent,
@@ -88,10 +88,7 @@ const Header: React.FC<HeaderProps> = ({
     <header className="bg-black sticky top-0 z-10 border-b border-border py-4 px-4 md:px-6">
       <div className="mx-auto flex max-w-7xl flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between mb-4 md:mb-0">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <TvIcon className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold">Binge & Tonic</h1>
-          </Link>
+          <Logo />
           
           {isMobile && (
             <div className="flex items-center gap-2">
