@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TvIcon, LogOut, PlusCircle, UserRound, SortDesc } from "lucide-react";
@@ -61,7 +62,12 @@ const Header: React.FC<HeaderProps> = ({
     try {
       await signOut();
       toast.success("Successfully signed out");
-      navigate("/");
+      // Navigate to home first, then refresh the page
+      navigate("/", { replace: true });
+      // Add a slight delay before refreshing to ensure navigation completes
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } catch (error) {
       console.error("Error signing out:", error);
       toast.error("Failed to sign out. Please try again.");
