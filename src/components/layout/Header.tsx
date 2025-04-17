@@ -61,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({
     try {
       await signOut();
       toast.success("Successfully signed out");
-      window.location.href = '/';
+      navigate("/");
     } catch (error) {
       console.error("Error signing out:", error);
       toast.error("Failed to sign out. Please try again.");

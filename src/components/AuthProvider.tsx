@@ -43,17 +43,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     console.log("Signing out...");
-    const { error } = await supabase.auth.signOut();
-    if (error) {
+    try {
+      // Whether the API call succeeds or fails, we'll clear the local state
+      await supabase.auth.signOut();
+      console.log("Sign out API call completed");
+    } catch (error) {
       console.error("Error during signOut:", error);
-      throw error;
+      // We continue with local cleanup even if the API call fails
+    } finally {
+      // Clear state explicitly to ensure UI updates
+      setUser(null);
+      setSession(null);
+      // Clear localStorage items related to auth
+      localStorage.removeItem("sb-rnjersjdfhalvzdmoqmr-auth-token");
+      console.log("Sign out local cleanup completed");
     }
-    // Clear state explicitly to ensure UI updates
-    setUser(null);
-    setSession(null);
-    // Clear localStorage just to be safe
-    localStorage.removeItem("sb-rnjersjdfhalvzdmoqmr-auth-token");
-    console.log("Sign out successful");
   };
 
   const value = {
