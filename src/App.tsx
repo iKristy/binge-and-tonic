@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import RequireAuth from "./components/RequireAuth";
+import IconGenerator from "./pages/IconGenerator";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
                   <Index />
                 </RequireAuth>
               } />
+              <Route path="/icon-generator" element={<IconGenerator />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
