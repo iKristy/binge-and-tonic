@@ -20,10 +20,16 @@ export default defineConfig(({ mode }) => ({
         name: 'Binge & Tonic',
         short_name: 'Binge & Tonic',
         description: 'Track and plan your binge-watching experience',
-        theme_color: '#ffffff',
+        theme_color: '#0765E9',
         background_color: '#ffffff',
         display: 'standalone',
         icons: [
+          {
+            src: 'favicon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          },
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
@@ -33,14 +39,10 @@ export default defineConfig(({ mode }) => ({
             src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
+          }
         ],
+        start_url: '/',
+        scope: '/'
       },
     }),
   ].filter(Boolean),
