@@ -36,6 +36,12 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
     setShowLoginModal(false);
   };
 
+  // Create a form submission handler that explicitly calls onSubmit with form values
+  const handleFormSubmit = form.handleSubmit((values) => {
+    console.log("Form submitted with values:", values);
+    onSubmit(values);
+  });
+
   return (
     <div className="space-y-4">
       <div className="relative">
@@ -62,7 +68,7 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
       )}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleFormSubmit} className="space-y-4">
           <input type="hidden" {...form.register("tmdbId", { valueAsNumber: true })} />
           
           <div className="flex justify-end space-x-2">

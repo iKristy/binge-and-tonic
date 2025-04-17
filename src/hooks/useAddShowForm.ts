@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useShowSearch } from "@/hooks/useShowSearch";
 import { useAuth } from "@/components/AuthProvider";
 import { TMDbShow, getImageUrl } from "@/services/tmdbApi";
@@ -29,7 +29,6 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
   const { user } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,6 +36,11 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
       tmdbId: 0,
     },
   });
+
+  // When a show is selected, update the form value
+  if (selectedShow && selectedShow.id !== form.getValues().tmdbId) {
+    form.setValue("tmdbId", selectedShow.id);
+  }
 
   const prepareShowData = (show: TMDbShow) => {
     const latestSeason = show.seasons?.sort((a, b) => b.season_number - a.season_number)[0];
@@ -72,16 +76,22 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!selectedShow) return;
+    console.log("onSubmit called with values:", values);
+    if (!selectedShow) {
+      console.error("No show selected");
+      return;
+    }
 
     // Check if user is authenticated
     if (!user) {
+      console.log("User not authenticated, showing login modal");
       // Prepare show data to be passed to the auth page
       setShowLoginModal(true);
       return;
     }
 
     // User is authenticated, proceed with adding the show
+    console.log("User authenticated, adding show");
     const formattedShow = prepareShowData(selectedShow);
     onAddShow(formattedShow);
   };
