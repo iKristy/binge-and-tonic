@@ -17,7 +17,7 @@ export default {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         primary: {
-          DEFAULT: 'theme("colors.blue.700")',
+          DEFAULT: 'theme("colors.blue.600")',
           foreground: 'var(--primary-foreground)'
         },
         secondary: {
