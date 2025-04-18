@@ -6,9 +6,9 @@
   :root {
     --background: theme('colors.gray.950');
     --foreground: theme('colors.gray.50');
-    --overlay: rgb(theme('colors.gray.950') / 0.8);
-    --surface1: rgb(theme('colors.gray.950') / 0.8);
-    --surface2: rgb(theme('colors.gray.900') / 0.8);
+    --overlay: theme('colors.gray.950/80');
+    --surface1: theme('colors.gray.950/80');
+    --surface2: theme('colors.gray.900/80');
 
     --card: theme('colors.gray.950');
     --card-foreground: theme('colors.gray.50');
