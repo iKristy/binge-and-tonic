@@ -64,7 +64,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           <SelectGroup>
             <SelectItem 
               value="all" 
-              className="relative pr-16"
+              className="relative"
             >
               <span>All shows</span> 
               <CountBadge 
@@ -74,7 +74,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
             </SelectItem>
             <SelectItem 
               value="complete" 
-              className="relative pr-16"
+              className="relative"
             >
               <span>Ready to binge</span> 
               <CountBadge 
@@ -84,7 +84,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
             </SelectItem>
             <SelectItem 
               value="waiting" 
-              className="relative pr-16"
+              className="relative"
             >
               <span>Waiting for episodes</span> 
               <CountBadge 
