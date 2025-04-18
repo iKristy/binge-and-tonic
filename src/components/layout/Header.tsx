@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="bg-black sticky top-0 z-10 border-b border-border py-4 px-4 md:px-6">
+    <header className="bg-background sticky top-0 z-10 border-b border-border py-4 px-4 md:px-6">
       <div className="mx-auto flex max-w-7xl flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between mb-4 md:mb-0">
           <Logo />
