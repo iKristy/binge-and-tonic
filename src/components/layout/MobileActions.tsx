@@ -42,7 +42,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
     <div className="flex items-center gap-2">
       <Sheet open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
         <SheetTrigger asChild>
-          <Button size="icon" variant="ghost" aria-label="Add new show">
+          <Button size="icon" aria-label="Add new show">
             <PlusCircle className="h-5 w-5" aria-hidden="true" />
           </Button>
         </SheetTrigger>
