@@ -5,5 +5,9 @@
 
 Track and plan your binge-watching experience, from season premiere to season finale
 
-https://bingeandtonic.netlify.app/
+https://bingeandtonic.netlify.app
+
+---
+
+Made by [@iKristy](https://twitter.com/ikristy)
 
