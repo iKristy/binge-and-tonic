@@ -5,28 +5,29 @@
 @layer base {
   :root {
     --background: theme('colors.gray.950');
-    --foreground: #F9FAFB;
+    --foreground: theme('colors.white.50');
 
     --card: theme('colors.gray.900');
-    --card-foreground: #F9FAFB;
+    --card-foreground: theme('colors.white.50');
 
     --popover: #1E1E1E;
-    --popover-foreground: #F9FAFB;
+    --popover-foreground: theme('colors.white.50');
 
     --primary: theme('colors.blue.700');
-    --primary-foreground: #F9FAFB;
+    --primary-foreground: theme('colors.white.50');
 
     --secondary: #283042;
-    --secondary-foreground: #F9FAFB;
+    --secondary-foreground: theme('colors.white.50');
 
     --muted: theme('colors.gray.800');
     --muted-foreground: theme('colors.gray.500');
 
     --accent: theme('colors.blue.700');
-    --accent-foreground: #F9FAFB;
+    --accent-foreground: theme('colors.white.50');
 
     --destructive: theme('colors.red.600');
-    --destructive-foreground: #F9FAFB;
+    --destructive-foreground: theme('colors.red.100');
+    --destructive-border: theme('colors.red.900');
 
     --border: theme('colors.gray.800');
     --input: theme('colors.gray.800');

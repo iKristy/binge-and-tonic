@@ -72,7 +72,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
             </span>
           </div>
           <Badge className={isComplete ? "bg-primary" : "bg-orange-500"}>
-            {isComplete ? "Complete Season!" : `${remainingEpisodes} to go`}
+            {isComplete ? "Complete season" : `${remainingEpisodes} to go`}
           </Badge>
         </div>
 
