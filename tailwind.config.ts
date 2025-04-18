@@ -15,6 +15,7 @@ export default {
         input: 'var(--input)',
         ring: 'var(--ring)',
         background: 'var(--background)',
+        backgroundBackdrop: 'var(--backgroundBackdrop)',
         foreground: 'var(--foreground)',
         primary: {
           DEFAULT: 'theme("colors.blue.600")',
@@ -86,7 +87,7 @@ export default {
       addUtilities({
         '.modal-overlay': {
           '@apply fixed inset-0 z-50 backdrop-blur-md': {},
-          'background-color': 'theme(colors.backgroundBackdrop)'
+          'background-color': 'var(--backgroundBackdrop)'
         }
       })
     }
