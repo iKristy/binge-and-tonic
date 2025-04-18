@@ -15,6 +15,7 @@ export default {
         input: 'var(--input)',
         ring: 'var(--ring)',
         background: 'var(--background)',
+        overlay: 'var(--overlay)',
         surface1: 'var(--surface1)',
         surface2: 'var(--surface2)',
         foreground: 'var(--foreground)',
