@@ -1,3 +1,4 @@
+
 import React from "react";
 import { SortDesc } from "lucide-react";
 import {
@@ -31,6 +32,16 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   onSortChange,
   showCounts
 }) => {
+  // Get the appropriate count based on current filter
+  const getFilterCount = () => {
+    switch(filter) {
+      case "all": return showCounts.total;
+      case "complete": return showCounts.complete;
+      case "waiting": return showCounts.waiting;
+      default: return showCounts.total;
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
       <Select 
@@ -41,7 +52,13 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           className="w-full md:w-[180px]" 
           aria-label="Filter TV shows"
         >
-          <SelectValue placeholder="Filter shows" />
+          <div className="flex items-center justify-between w-full">
+            <SelectValue placeholder="Filter shows" />
+            <CountBadge
+              count={getFilterCount()}
+              className="ml-2"
+            />
+          </div>
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>
