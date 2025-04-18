@@ -30,7 +30,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   onFilterChange,
   sortBy,
   onSortChange,
-  showCounts,
+  showCounts
 }) => {
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
@@ -46,14 +46,35 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>
-            <SelectItem value="all" className="flex items-center justify-between">
-              All shows <CountBadge count={showCounts.total} />
+            <SelectItem 
+              value="all" 
+              className="flex items-center justify-between"
+            >
+              <span>All shows</span> 
+              <CountBadge 
+                count={showCounts.total} 
+                className="ml-auto" 
+              />
             </SelectItem>
-            <SelectItem value="complete" className="flex items-center justify-between">
-              Ready to binge <CountBadge count={showCounts.complete} />
+            <SelectItem 
+              value="complete" 
+              className="flex items-center justify-between"
+            >
+              <span>Ready to binge</span> 
+              <CountBadge 
+                count={showCounts.complete} 
+                className="ml-auto" 
+              />
             </SelectItem>
-            <SelectItem value="waiting" className="flex items-center justify-between">
-              Waiting for episodes <CountBadge count={showCounts.waiting} />
+            <SelectItem 
+              value="waiting" 
+              className="flex items-center justify-between"
+            >
+              <span>Waiting for episodes</span> 
+              <CountBadge 
+                count={showCounts.waiting} 
+                className="ml-auto" 
+              />
             </SelectItem>
           </SelectGroup>
         </SelectContent>
