@@ -6,7 +6,8 @@
   :root {
     --background: theme('colors.gray.950');
     --foreground: theme('colors.gray.50');
-    --backgroundBackdrop: theme('colors.gray.950' / 80%);
+    --surface1: theme('colors.gray.950' / 80%);
+    --surface2: theme('colors.gray.900' / 80%);
 
     --card: theme('colors.gray.950');
     --card-foreground: theme('colors.gray.50');
@@ -36,7 +37,6 @@
 
     --radius: 0.5rem;
 
-    --sidebarBackground: theme('colors.gray.900 / 80%');
     --sidebar-background: theme('colors.gray.900');
     --sidebar-foreground: theme('colors.gray.50');
     --sidebar-primary: #0765E9;
@@ -55,5 +55,15 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .surface1-blur {
+    @apply bg-surface1 backdrop-blur-lg;
+  }
+
+  .surface2-blur {
+    @apply bg-surface2 backdrop-blur-sm;
   }
 }
