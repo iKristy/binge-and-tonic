@@ -113,7 +113,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           </div>
         )}
 
-        <DialogFooter className="mt-4 flex flex-col sm:flex-row gap-2">
+        <DialogFooter>
           <Button 
             variant="outline"
             onClick={handleWatchedToggle}
