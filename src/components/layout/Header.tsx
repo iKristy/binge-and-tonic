@@ -46,12 +46,7 @@ const Header: React.FC<HeaderProps> = ({
     try {
       await signOut();
       toast({
-        title: (
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-green-400" />
-            <span>Signed out</span>
-          </div>
-        ),
+        title: "Signed out",
         description: "You have been successfully signed out",
       });
       navigate("/", { replace: true });
@@ -79,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="bg-background sticky top-0 z-10 border-b border-border py-4">
+    <header className="bg-backgroundBackdrop sticky top-0 z-10 border-b border-border py-4">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="flex items-center justify-between mb-4 md:mb-0">
