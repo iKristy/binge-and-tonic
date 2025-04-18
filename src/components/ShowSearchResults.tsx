@@ -1,3 +1,4 @@
+
 import React from "react";
 import { TMDbShow } from "@/services/tmdbApi";
 import { getImageUrl } from "@/services/tmdbApi";
@@ -49,7 +50,7 @@ const ShowSearchResults: React.FC<ShowSearchResultsProps> = ({
   }
 
   return (
-    <ScrollArea className="h-72 rounded-md border">
+    <ScrollArea className="max-h-[calc(100vh-16rem)] rounded-md border">
       <div className="p-4 grid gap-2">
         {results.map((show) => (
           <Card 
