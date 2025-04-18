@@ -19,7 +19,7 @@
     --secondary: theme('colors.gray.600');
     --secondary-foreground: theme('colors.gray.50');
 
-    --muted: theme('colors.gray.900');
+    --muted: theme('colors.gray.800');
     --muted-foreground: theme('colors.gray.400');
 
     --accent: theme('colors.blue.700');
@@ -35,12 +35,12 @@
 
     --radius: 0.5rem;
 
-    --sidebar-background: #141414;
-    --sidebar-foreground: #F9FAFB;
+    --sidebar-background: theme('colors.gray.900');
+    --sidebar-foreground: theme('colors.gray.50');
     --sidebar-primary: #0765E9;
-    --sidebar-primary-foreground: #F9FAFB;
+    --sidebar-primary-foreground: theme('colors.gray.50');
     --sidebar-accent: #2C3444;
-    --sidebar-accent-foreground: #F9FAFB;
+    --sidebar-accent-foreground: theme('colors.gray.50');
     --sidebar-border: #2C3444;
     --sidebar-ring: #0765E9;
   }

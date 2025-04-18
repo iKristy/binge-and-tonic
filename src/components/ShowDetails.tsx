@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Show } from "@/types/Show";
 import {
@@ -76,7 +75,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           </Badge>
         </div>
 
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
           <div
             className={`h-full ${isComplete ? "bg-primary" : "bg-orange-500"}`}
             style={{
@@ -109,32 +108,30 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           </div>
         )}
 
-        <DialogFooter className="mt-4 flex flex-row justify-between items-center gap-2">
-          <div className="flex gap-2">
-            <Button 
-              variant="outline"
-              onClick={handleWatchedToggle}
-              className="flex gap-2 items-center"
-            >
-              {show.watched ? (
-                <>
-                  <EyeOff className="h-4 w-4" />
-                  Mark as Unwatched
-                </>
-              ) : (
-                <>
-                  <Eye className="h-4 w-4" />
-                  Mark as Watched
-                </>
-              )}
-            </Button>
-          </div>
+        <DialogFooter className="mt-4 flex flex-row gap-2">
+          <Button 
+            variant="outline"
+            onClick={handleWatchedToggle}
+            className="flex-1"
+          >
+            {show.watched ? (
+              <>
+                <EyeOff className="h-4 w-4 mr-2" />
+                Mark as Unwatched
+              </>
+            ) : (
+              <>
+                <Eye className="h-4 w-4 mr-2" />
+                Mark as Watched
+              </>
+            )}
+          </Button>
           <Button 
             variant="destructiveOutline" 
             onClick={handleRemove}
-            className="flex gap-2 items-center"
+            className="flex-1"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-4 w-4 mr-2" />
             Remove from my list
           </Button>
         </DialogFooter>
