@@ -30,18 +30,8 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   onFilterChange,
   sortBy,
   onSortChange,
-  showCounts
+  showCounts,
 }) => {
-  // Get the appropriate count based on current filter
-  const getFilterCount = () => {
-    switch(filter) {
-      case "all": return showCounts.total;
-      case "complete": return showCounts.complete;
-      case "waiting": return showCounts.waiting;
-      default: return showCounts.total;
-    }
-  };
-
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
       <Select 
@@ -52,45 +42,18 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           className="w-full md:w-[180px]" 
           aria-label="Filter TV shows"
         >
-          <div className="flex items-center justify-between w-full">
-            <SelectValue placeholder="Filter shows" />
-            <CountBadge
-              count={getFilterCount()}
-              className="ml-2"
-            />
-          </div>
+          <SelectValue placeholder="Filter shows" />
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>
-            <SelectItem 
-              value="all" 
-              className="relative"
-            >
-              <span>All shows</span> 
-              <CountBadge 
-                count={showCounts.total} 
-                className="absolute right-2"
-              />
+            <SelectItem value="all" className="flex items-center justify-between">
+              All shows <CountBadge count={showCounts.total} />
             </SelectItem>
-            <SelectItem 
-              value="complete" 
-              className="relative"
-            >
-              <span>Ready to binge</span> 
-              <CountBadge 
-                count={showCounts.complete} 
-                className="absolute right-2"
-              />
+            <SelectItem value="complete" className="flex items-center justify-between">
+              Ready to binge <CountBadge count={showCounts.complete} />
             </SelectItem>
-            <SelectItem 
-              value="waiting" 
-              className="relative"
-            >
-              <span>Waiting for episodes</span> 
-              <CountBadge 
-                count={showCounts.waiting} 
-                className="absolute right-2"
-              />
+            <SelectItem value="waiting" className="flex items-center justify-between">
+              Waiting for episodes <CountBadge count={showCounts.waiting} />
             </SelectItem>
           </SelectGroup>
         </SelectContent>
