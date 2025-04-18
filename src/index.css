@@ -16,10 +16,10 @@
     --primary: theme('colors.blue.700');
     --primary-foreground: theme('colors.gray.50');
 
-    --secondary: #283042;
+    --secondary: theme('colors.gray.800');
     --secondary-foreground: theme('colors.gray.50');
 
-    --muted: theme('colors.gray.600');
+    --muted: theme('colors.gray.500');
     --muted-foreground: theme('colors.gray.500');
 
     --accent: theme('colors.blue.700');
