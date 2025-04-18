@@ -4,33 +4,33 @@
 
 @layer base {
   :root {
-    --background: theme('colors.slate.950');
+    --background: theme('colors.gray.950');
     --foreground: #F9FAFB;
 
-    --card: theme('colors.slate.900');
+    --card: theme('colors.gray.900');
     --card-foreground: #F9FAFB;
 
     --popover: #1E1E1E;
     --popover-foreground: #F9FAFB;
 
-    --primary: theme('colors.blue.500');
+    --primary: theme('colors.blue.700');
     --primary-foreground: #F9FAFB;
 
     --secondary: #283042;
     --secondary-foreground: #F9FAFB;
 
-    --muted: theme('colors.slate.800');
-    --muted-foreground: theme('colors.slate.500');
+    --muted: theme('colors.gray.800');
+    --muted-foreground: theme('colors.gray.500');
 
-    --accent: theme('colors.blue.500');
+    --accent: theme('colors.blue.700');
     --accent-foreground: #F9FAFB;
 
     --destructive: theme('colors.red.600');
     --destructive-foreground: #F9FAFB;
 
-    --border: theme('colors.slate.800');
-    --input: theme('colors.slate.800');
-    --ring: theme('colors.blue.500');
+    --border: theme('colors.gray.800');
+    --input: theme('colors.gray.800');
+    --ring: theme('colors.blue.700');
 
     --radius: 0.5rem;
 
@@ -54,7 +54,7 @@
     --popover: #FFFFFF;
     --popover-foreground: #111827;
 
-    --primary: theme('colors.blue.500');
+    --primary: theme('colors.blue.700');
     --primary-foreground: #F9FAFB;
 
     --secondary: #E5E7EB;
