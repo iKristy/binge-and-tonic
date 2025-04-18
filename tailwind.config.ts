@@ -85,7 +85,7 @@ export default {
     function({ addUtilities }) {
       addUtilities({
         '.modal-overlay': {
-          '@apply fixed inset-0 z-50 backdrop-blur-sm': {},
+          '@apply fixed inset-0 z-50 backdrop-blur-md': {},
           'background-color': 'theme(colors.gray.950 / 80%)'
         }
       })
