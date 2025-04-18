@@ -83,14 +83,14 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 onClick={onSignIn} 
                 className="w-full justify-start"
               >
-                Sign In
+                Sign in
               </Button>
               <Button 
                 onClick={onSignUp} 
                 variant="outline" 
                 className="w-full justify-start"
               >
-                Create Account
+                Create account
               </Button>
             </div>
           </PopoverContent>

@@ -50,7 +50,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={"max-w-md w-[95vw] sm:w-full p-4 sm:p-6 ${show.watched ? 'opacity-50' : ''}"}>
+      <DialogContent className={`max-w-md w-[95vw] sm:w-full p-4 sm:p-6 overflow-hidden ${show.watched ? 'opacity-50' : ''}`}>
         <DialogHeader className="px-0">
           <DialogTitle className="break-words text-lg sm:text-xl">{show.title}</DialogTitle>
           {show.genre && (
@@ -67,9 +67,9 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
         </div>
 
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <CalendarDays className="h-4 w-4 flex-shrink-0" />
-            <span className="break-words text-sm sm:text-base">
+            <span className="break-words text-sm sm:text-base truncate">
               {show.releasedEpisodes} / {show.totalEpisodes} episodes released
             </span>
           </div>
@@ -105,9 +105,9 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
               href={`https://www.themoviedb.org/tv/${show.tmdbId}`} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-blue-500 hover:underline text-sm sm:text-base"
+              className="flex items-center gap-2 text-blue-500 hover:underline text-sm sm:text-base truncate"
             >
-              <ExternalLink className="h-4 w-4" />
+              <ExternalLink className="h-4 w-4 flex-shrink-0" />
               View on TMDb
             </a>
           </div>

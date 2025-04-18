@@ -102,7 +102,7 @@ const SignupForm = ({ setIsLoading, setAuthError }: SignupFormProps) => {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
+              <FormLabel>Confirm password</FormLabel>
               <FormControl>
                 <Input type="password" placeholder="Confirm your password" {...field} />
               </FormControl>
@@ -112,7 +112,7 @@ const SignupForm = ({ setIsLoading, setAuthError }: SignupFormProps) => {
         />
 
         <Button type="submit" className="w-full">
-          Sign Up
+          Sign up
         </Button>
       </form>
     </Form>
