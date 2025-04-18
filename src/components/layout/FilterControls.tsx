@@ -46,14 +46,23 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>
-            <SelectItem value="all" className="flex items-center justify-between">
-              All shows <CountBadge count={showCounts.total} />
+            <SelectItem value="all" className="flex items-center justify-between pr-8">
+              All shows
+              <span className="absolute right-2">
+                <CountBadge count={showCounts.total} />
+              </span>
             </SelectItem>
-            <SelectItem value="complete" className="flex items-center justify-between">
-              Ready to binge <CountBadge count={showCounts.complete} />
+            <SelectItem value="complete" className="flex items-center justify-between pr-8">
+              Ready to binge
+              <span className="absolute right-2">
+                <CountBadge count={showCounts.complete} />
+              </span>
             </SelectItem>
-            <SelectItem value="waiting" className="flex items-center justify-between">
-              Waiting for episodes <CountBadge count={showCounts.waiting} />
+            <SelectItem value="waiting" className="flex items-center justify-between pr-8">
+              Waiting for episodes
+              <span className="absolute right-2">
+                <CountBadge count={showCounts.waiting} />
+              </span>
             </SelectItem>
           </SelectGroup>
         </SelectContent>
@@ -86,3 +95,4 @@ const FilterControls: React.FC<FilterControlsProps> = ({
 };
 
 export default FilterControls;
+
