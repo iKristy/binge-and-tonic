@@ -21,7 +21,7 @@ const ShowCard: React.FC<ShowCardProps> = ({
       <div className="relative aspect-video">
         <img src={show.imageUrl || "/placeholder.svg"} alt={show.title} className="h-full w-full object-cover" />
         <Badge className={`absolute top-2 right-2 ${isComplete ? "bg-primary" : "bg-orange-500"}`}>
-          {isComplete ? "Complete season!" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
+          {isComplete ? "Complete season" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
         </Badge>
       </div>
       <CardHeader className="p-4">
