@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CalendarDays, ExternalLink, Film, Trash2, Eye, EyeOff } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ShowDetailsProps {
   show: Show | null;
@@ -27,6 +28,8 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
   onRemove,
   onWatchedToggle 
 }) => {
+  const isMobile = useIsMobile();
+  
   if (!show) return null;
 
   const isComplete = show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
@@ -47,11 +50,11 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md w-[95vw] sm:w-full">
+      <DialogContent className="max-w-md w-[95vw] sm:w-full p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="break-words">{show.title}</DialogTitle>
+          <DialogTitle className="break-words text-lg sm:text-xl">{show.title}</DialogTitle>
           {show.genre && (
-            <DialogDescription className="break-words">{show.genre}</DialogDescription>
+            <DialogDescription className="break-words text-sm sm:text-base">{show.genre}</DialogDescription>
           )}
         </DialogHeader>
 
@@ -66,7 +69,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <CalendarDays className="h-4 w-4 flex-shrink-0" />
-            <span className="break-words">
+            <span className="break-words text-sm sm:text-base">
               {show.releasedEpisodes} / {show.totalEpisodes} episodes released
             </span>
           </div>
@@ -92,7 +95,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
         {show.seasonNumber && (
           <div className="mt-2 flex items-center gap-2">
             <Film className="h-4 w-4 text-muted-foreground" />
-            <span>Season {show.seasonNumber}</span>
+            <span className="text-sm sm:text-base">Season {show.seasonNumber}</span>
           </div>
         )}
 
@@ -102,7 +105,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
               href={`https://www.themoviedb.org/tv/${show.tmdbId}`} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-blue-500 hover:underline"
+              className="flex items-center gap-2 text-blue-500 hover:underline text-sm sm:text-base"
             >
               <ExternalLink className="h-4 w-4" />
               View on TMDb
@@ -110,11 +113,11 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           </div>
         )}
 
-        <DialogFooter className="mt-4 flex flex-row gap-2">
+        <DialogFooter className="mt-4 flex flex-col sm:flex-row gap-2">
           <Button 
             variant="outline"
             onClick={handleWatchedToggle}
-            className="flex-1"
+            className="w-full sm:flex-1"
           >
             {show.watched ? (
               <>
@@ -131,7 +134,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           <Button 
             variant="destructiveOutline" 
             onClick={handleRemove}
-            className="flex-1"
+            className="w-full sm:flex-1"
           >
             <Trash2 className="h-4 w-4 mr-2" />
             Remove from my list
