@@ -50,7 +50,7 @@ const ShowSearchResults: React.FC<ShowSearchResultsProps> = ({
   }
 
   return (
-    <ScrollArea className="max-h-[calc(100vh-16rem)] rounded-md border">
+    <ScrollArea className="max-h-[calc(100vh-16rem)] overflow-y-auto">
       <div className="p-4 grid gap-2">
         {results.map((show) => (
           <Card 
