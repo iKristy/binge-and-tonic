@@ -19,7 +19,7 @@
     --secondary: theme('colors.gray.600');
     --secondary-foreground: theme('colors.gray.50');
 
-    --muted: theme('colors.gray.800');
+    --muted: theme('colors.gray.900');
     --muted-foreground: theme('colors.gray.400');
 
     --accent: theme('colors.blue.700');
@@ -27,7 +27,7 @@
 
     --destructive: theme('colors.red.600');
     --destructive-foreground: theme('colors.red.100');
-    --destructive-border: theme('colors.red.900');
+    --destructive-border: theme('colors.red.950');
 
     --border: theme('colors.gray.800');
     --input: theme('colors.gray.800');
