@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Show } from "@/types/Show";
 import {
   Dialog,
@@ -70,9 +70,11 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
               {show.releasedEpisodes} / {show.totalEpisodes} episodes released
             </span>
           </div>
-          <Badge className={isComplete ? "bg-primary" : "bg-orange-500"}>
-            {isComplete ? "Complete season" : `${remainingEpisodes} to go`}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant={isComplete ? "complete" : "inProgress"}>
+              {isComplete ? "Complete season" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
+            </Badge>
+          </div>
         </div>
 
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">

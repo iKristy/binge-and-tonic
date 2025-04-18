@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
@@ -16,6 +15,10 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground",
         outline: "text-foreground",
+        complete:
+          "border-transparent bg-primary text-primary-foreground",
+        inProgress:
+          "border-transparent bg-orange-500 text-white",
       },
     },
     defaultVariants: {
@@ -26,7 +29,9 @@ const badgeVariants = cva(
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  variant?: "default" | "secondary" | "destructive" | "outline" | "complete" | "inProgress"
+}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return (

@@ -1,13 +1,15 @@
-import React from "react";
+import * as React from "react";
 import { Show } from "@/types/Show";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, Info } from "lucide-react";
+
 interface ShowCardProps {
   show: Show;
   onViewDetails: (show: Show) => void;
 }
+
 const ShowCard: React.FC<ShowCardProps> = ({
   show,
   onViewDetails
@@ -20,7 +22,7 @@ const ShowCard: React.FC<ShowCardProps> = ({
   return <Card className={`w-full overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl cursor-pointer ${show.watched ? 'opacity-50' : ''}`} onClick={handleCardClick} role="button" tabIndex={0} aria-label={`View details for ${show.title}`}>
       <div className="relative aspect-video">
         <img src={show.imageUrl || "/placeholder.svg"} alt={show.title} className="h-full w-full object-cover" />
-        <Badge className={`absolute top-2 right-2 ${isComplete ? "bg-primary" : "bg-orange-500"}`}>
+        <Badge variant={isComplete ? "complete" : "inProgress"}>
           {isComplete ? "Complete season" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
         </Badge>
       </div>
@@ -51,4 +53,5 @@ const ShowCard: React.FC<ShowCardProps> = ({
       </CardFooter>
     </Card>;
 };
+
 export default ShowCard;
