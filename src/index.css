@@ -6,9 +6,9 @@
   :root {
     --background: theme('colors.gray.950');
     --foreground: theme('colors.gray.50');
-    --overlay: theme('colors.gray.950/80');
-    --surface1: theme('colors.gray.950/80');
-    --surface2: theme('colors.gray.900/80');
+    --overlay: theme('colors.black / 0.4');
+    --surface1: theme('colors.gray.950 / 0.8');
+    --surface2: theme('colors.gray.900 / 0.6');
 
     --card: theme('colors.gray.950');
     --card-foreground: theme('colors.gray.50');
@@ -40,12 +40,12 @@
 
     --sidebar-background: theme('colors.gray.900');
     --sidebar-foreground: theme('colors.gray.50');
-    --sidebar-primary: #0765E9;
+    --sidebar-primary: theme('colors.blue.700');
     --sidebar-primary-foreground: theme('colors.gray.50');
-    --sidebar-accent: #2C3444;
+    --sidebar-accent: theme('colors.gray.800');
     --sidebar-accent-foreground: theme('colors.gray.50');
-    --sidebar-border: #2C3444;
-    --sidebar-ring: #0765E9;
+    --sidebar-border: theme('colors.gray.800');
+    --sidebar-ring: theme('colors.blue.700');
   }
 }
 
@@ -62,21 +62,16 @@
 @layer components {
   .modal-overlay {
     @apply fixed inset-0 z-50 backdrop-blur-md;
-    background-color: theme('colors.overlay');
+    background-color: var(--overlay);
   }
 
   .surface1-blur {
     @apply backdrop-blur-md;
-    background-color: theme('colors.surface1');
+    background-color: var(--surface1);
   }
 
   .surface2-blur {
-    @apply backdrop-blur-sm;
-    background-color: theme('colors.surface2');
-  }
-
-  .modal-overlay {
-    @apply backdrop-blur-sm;
-    background-color: theme('colors.overlay');
+    @apply backdrop-blur-md;
+    background-color: var(--surface2);
   }
 }
