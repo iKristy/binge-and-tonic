@@ -84,14 +84,6 @@ export default {
     }
   },
   plugins: [
-    require("tailwindcss-animate"),
-    function({ addUtilities }) {
-      addUtilities({
-        '.modal-overlay': {
-          '@apply fixed inset-0 z-50 backdrop-blur-md': {},
-          'background-color': 'var(--overlay)'
-        }
-      })
-    }
+    require("tailwindcss-animate")
   ]
 } satisfies Config;

@@ -60,15 +60,23 @@
 }
 
 @layer components {
+  .modal-overlay {
+    @apply fixed inset-0 z-50 backdrop-blur-md;
+    background-color: theme('colors.overlay');
+  }
+
   .surface1-blur {
-    @apply bg-gray-950/80 backdrop-blur-md;
+    @apply backdrop-blur-md;
+    background-color: theme('colors.surface1');
   }
 
   .surface2-blur {
-    @apply bg-gray-900/80 backdrop-blur-sm;
+    @apply backdrop-blur-sm;
+    background-color: theme('colors.surface2');
   }
 
   .modal-overlay {
-    @apply bg-black/80 backdrop-blur-sm;
+    @apply backdrop-blur-sm;
+    background-color: theme('colors.overlay');
   }
 }
