@@ -1,4 +1,3 @@
-
 import React from "react";
 import { LogOut, PlusCircle, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,9 +42,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
     <div className="flex items-center gap-2">
       <Sheet open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
         <SheetTrigger asChild>
-          <Button size="sm" aria-label="Add new show">
-            <PlusCircle className="h-4 w-4" aria-hidden="true" />
-            <span className="ml-2">Add show</span>
+          <Button size="icon" variant="ghost" aria-label="Add new show">
+            <PlusCircle className="h-5 w-5" aria-hidden="true" />
           </Button>
         </SheetTrigger>
         <SheetContent>
@@ -65,19 +63,17 @@ const MobileActions: React.FC<MobileActionsProps> = ({
         <Button 
           variant="ghost" 
           onClick={onSignOut} 
-          size="sm"
+          size="icon"
           className="hover:bg-red-900/20"
           aria-label="Sign out"
         >
           <LogOut className="h-5 w-5" aria-hidden="true" />
-          <span className="ml-2">Sign out</span>
         </Button>
       ) : (
         <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" aria-label="Account menu">
+            <Button variant="ghost" size="icon" aria-label="Account menu">
               <UserRound className="h-5 w-5" aria-hidden="true" />
-              <span className="ml-2">Account</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-56 p-3">
