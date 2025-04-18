@@ -34,7 +34,7 @@ const ShowCard: React.FC<ShowCardProps> = ({
             {show.releasedEpisodes} / {show.totalEpisodes} episodes released
           </span>
         </div>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
           <div className={`h-full ${isComplete ? "bg-primary" : "bg-orange-500"}`} style={{
           width: `${Math.min(100, show.releasedEpisodes / show.totalEpisodes * 100)}%`
         }} />

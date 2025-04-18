@@ -25,7 +25,7 @@
     --accent: theme('colors.blue.700');
     --accent-foreground: theme('colors.gray.50');
 
-    --destructive: theme('colors.red.600');
+    --destructive: theme('colors.red.500');
     --destructive-foreground: theme('colors.red.100');
     --destructive-border: theme('colors.red.950');
 
