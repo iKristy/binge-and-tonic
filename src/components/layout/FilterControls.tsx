@@ -50,31 +50,34 @@ const FilterControls: React.FC<FilterControlsProps> = ({
               value="all" 
               className="flex items-center justify-between"
             >
-              <span>All shows</span> 
-              <CountBadge 
-                count={showCounts.total} 
-                className="ml-auto" 
-              />
+              <div className="flex justify-between w-full items-center">
+                <span>All shows</span> 
+                <CountBadge 
+                  count={showCounts.total} 
+                />
+              </div>
             </SelectItem>
             <SelectItem 
               value="complete" 
               className="flex items-center justify-between"
             >
-              <span>Ready to binge</span> 
-              <CountBadge 
-                count={showCounts.complete} 
-                className="ml-auto" 
-              />
+              <div className="flex justify-between w-full items-center">
+                <span>Ready to binge</span> 
+                <CountBadge 
+                  count={showCounts.complete} 
+                />
+              </div>
             </SelectItem>
             <SelectItem 
               value="waiting" 
               className="flex items-center justify-between"
             >
-              <span>Waiting for episodes</span> 
-              <CountBadge 
-                count={showCounts.waiting} 
-                className="ml-auto" 
-              />
+              <div className="flex justify-between w-full items-center">
+                <span>Waiting for episodes</span> 
+                <CountBadge 
+                  count={showCounts.waiting} 
+                />
+              </div>
             </SelectItem>
           </SelectGroup>
         </SelectContent>
