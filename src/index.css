@@ -17,7 +17,7 @@
     --popover-foreground: theme('colors.gray.50');
 
     --primary: theme('colors.blue.700');
-    --primary-foreground: theme('colors.gray.50');
+    --primary-foreground: theme('colors.blue.50');
 
     --secondary: theme('colors.gray.600');
     --secondary-foreground: theme('colors.gray.50');
@@ -25,8 +25,8 @@
     --muted: theme('colors.gray.800');
     --muted-foreground: theme('colors.gray.400');
 
-    --accent: theme('colors.blue.700');
-    --accent-foreground: theme('colors.gray.50');
+    --accent: theme('colors.orange.400');
+    --accent-foreground: theme('colors.orange.50');
 
     --destructive: theme('colors.red.500');
     --destructive-foreground: theme('colors.red.100');
