@@ -29,7 +29,7 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
   return <>
       <Sheet open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
         <SheetTrigger asChild>
-          <Button variant="default" aria-label="Add new show">
+          <Button size="sm" aria-label="Add new show">
             <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
             Add show
           </Button>
