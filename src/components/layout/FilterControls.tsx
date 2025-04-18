@@ -1,4 +1,3 @@
-
 import React from "react";
 import { SortDesc } from "lucide-react";
 import {
@@ -33,13 +32,13 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   showCounts
 }) => {
   return (
-    <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+    <div className="flex flex-col sm:flex-row md:items-center gap-3 md:gap-4">
       <Select 
         value={filter} 
         onValueChange={(value) => onFilterChange(value as FilterType)}
       >
         <SelectTrigger 
-          className="w-full md:w-[220px]" 
+          className="w-full sm:w-[220px]" 
           aria-label="Filter TV shows"
         >
           <SelectValue placeholder="Filter shows" />
@@ -64,7 +63,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         onValueChange={(value) => onSortChange(value as SortType)}
       >
         <SelectTrigger 
-          className="w-full md:w-[180px]" 
+          className="w-full sm:w-[180px]" 
           aria-label="Sort TV shows"
         >
           <div className="flex items-center gap-2">
@@ -86,4 +85,3 @@ const FilterControls: React.FC<FilterControlsProps> = ({
 };
 
 export default FilterControls;
-
