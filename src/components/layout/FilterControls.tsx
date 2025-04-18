@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CountBadge } from "@/components/ui/count-badge";
 import { FilterType } from "@/hooks/show/useShowFilter";
 import { SortType } from "@/hooks/show/useShowSort";
 
@@ -45,9 +46,15 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>
-            <SelectItem value="all">All shows ({showCounts.total})</SelectItem>
-            <SelectItem value="complete">Ready to binge ({showCounts.complete})</SelectItem>
-            <SelectItem value="waiting">Waiting for episodes ({showCounts.waiting})</SelectItem>
+            <SelectItem value="all" className="flex items-center justify-between">
+              All shows <CountBadge count={showCounts.total} />
+            </SelectItem>
+            <SelectItem value="complete" className="flex items-center justify-between">
+              Ready to binge <CountBadge count={showCounts.complete} />
+            </SelectItem>
+            <SelectItem value="waiting" className="flex items-center justify-between">
+              Waiting for episodes <CountBadge count={showCounts.waiting} />
+            </SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
