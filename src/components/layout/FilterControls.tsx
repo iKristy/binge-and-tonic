@@ -1,4 +1,3 @@
-
 import React from "react";
 import { SortDesc } from "lucide-react";
 import {
@@ -48,36 +47,33 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           <SelectGroup>
             <SelectItem 
               value="all" 
-              className="flex items-center justify-between"
+              className="relative pr-16"
             >
-              <div className="flex justify-between w-full items-center">
-                <span>All shows</span> 
-                <CountBadge 
-                  count={showCounts.total} 
-                />
-              </div>
+              <span>All shows</span> 
+              <CountBadge 
+                count={showCounts.total} 
+                className="absolute right-2"
+              />
             </SelectItem>
             <SelectItem 
               value="complete" 
-              className="flex items-center justify-between"
+              className="relative pr-16"
             >
-              <div className="flex justify-between w-full items-center">
-                <span>Ready to binge</span> 
-                <CountBadge 
-                  count={showCounts.complete} 
-                />
-              </div>
+              <span>Ready to binge</span> 
+              <CountBadge 
+                count={showCounts.complete} 
+                className="absolute right-2"
+              />
             </SelectItem>
             <SelectItem 
               value="waiting" 
-              className="flex items-center justify-between"
+              className="relative pr-16"
             >
-              <div className="flex justify-between w-full items-center">
-                <span>Waiting for episodes</span> 
-                <CountBadge 
-                  count={showCounts.waiting} 
-                />
-              </div>
+              <span>Waiting for episodes</span> 
+              <CountBadge 
+                count={showCounts.waiting} 
+                className="absolute right-2"
+              />
             </SelectItem>
           </SelectGroup>
         </SelectContent>
