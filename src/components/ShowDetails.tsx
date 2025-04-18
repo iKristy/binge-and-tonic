@@ -130,7 +130,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
             </Button>
           </div>
           <Button 
-            variant="destructive" 
+            variant="destructiveOutline" 
             onClick={handleRemove}
             className="flex gap-2 items-center"
           >
