@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -18,7 +17,7 @@ export default {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         primary: {
-          DEFAULT: 'var(--primary)',
+          DEFAULT: 'theme("colors.blue.500")',
           foreground: 'var(--primary-foreground)'
         },
         secondary: {

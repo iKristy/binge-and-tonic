@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,7 +13,7 @@
     --popover: #1E1E1E;
     --popover-foreground: #F9FAFB;
 
-    --primary: #0765E9;
+    --primary: theme('colors.blue.500');
     --primary-foreground: #F9FAFB;
 
     --secondary: #283042;
@@ -55,7 +54,7 @@
     --popover: #FFFFFF;
     --popover-foreground: #111827;
 
-    --primary: #0765E9;
+    --primary: theme('colors.blue.500');
     --primary-foreground: #F9FAFB;
 
     --secondary: #E5E7EB;
