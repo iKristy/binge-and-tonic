@@ -6,7 +6,7 @@
   :root {
     --background: theme('colors.gray.950');
     --foreground: theme('colors.gray.50');
-    --overlay: theme('colors.black / 0.4');
+    --overlay: theme('colors.gray.950 / 0.7');
     --surface1: theme('colors.gray.950 / 0.8');
     --surface2: theme('colors.gray.900 / 0.6');
 
@@ -61,7 +61,7 @@
 
 @layer components {
   .modal-overlay {
-    @apply fixed inset-0 z-50 backdrop-blur-md;
+    @apply fixed inset-0 z-50 backdrop-blur-lg;
     background-color: var(--overlay);
   }
 
