@@ -30,7 +30,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   onFilterChange,
   sortBy,
   onSortChange,
-  showCounts,
+  showCounts
 }) => {
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
@@ -39,7 +39,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         onValueChange={(value) => onFilterChange(value as FilterType)}
       >
         <SelectTrigger 
-          className="w-full md:w-[180px]" 
+          className="w-full md:w-[220px]" 
           aria-label="Filter TV shows"
         >
           <SelectValue placeholder="Filter shows" />
@@ -86,3 +86,4 @@ const FilterControls: React.FC<FilterControlsProps> = ({
 };
 
 export default FilterControls;
+
