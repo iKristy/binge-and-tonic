@@ -61,10 +61,10 @@
 
 @layer components {
   .surface1-blur {
-    @apply bg-[var(--surface1)] backdrop-blur-md;
+    @apply bg-surface1 backdrop-blur-md;
   }
 
   .surface2-blur {
-    @apply bg-[var(--surface2)] backdrop-blur-sm;
+    @apply bg-surface2 backdrop-blur-sm;
   }
 }
