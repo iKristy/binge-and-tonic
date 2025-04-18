@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
+import { CheckCircle2 } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useAuth } from "@/components/AuthProvider";
 import { FilterType } from "@/hooks/show/useShowFilter";
@@ -39,18 +40,31 @@ const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   
   const handleSignOut = async () => {
     try {
       await signOut();
-      toast.success("Successfully signed out");
+      toast({
+        title: (
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-green-400" />
+            <span>Signed out</span>
+          </div>
+        ),
+        description: "You have been successfully signed out",
+      });
       navigate("/", { replace: true });
       setTimeout(() => {
         window.location.reload();
       }, 100);
     } catch (error) {
       console.error("Error signing out:", error);
-      toast.error("Failed to sign out. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
     }
   };
   
@@ -65,7 +79,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="bg-backgroundBackdrop sticky top-0 z-10 border-b border-border py-4">
+    <header className="bg-background sticky top-0 z-10 border-b border-border py-4">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="flex items-center justify-between mb-4 md:mb-0">
