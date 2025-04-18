@@ -22,7 +22,7 @@ const ShowCard: React.FC<ShowCardProps> = ({
   return <Card className={`w-full overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl cursor-pointer ${show.watched ? 'opacity-50' : ''}`} onClick={handleCardClick} role="button" tabIndex={0} aria-label={`View details for ${show.title}`}>
       <div className="relative aspect-video">
         <img src={show.imageUrl || "/placeholder.svg"} alt={show.title} className="h-full w-full object-cover" />
-        <Badge variant={isComplete ? "complete" : "inProgress"}>
+        <Badge variant={isComplete ? "complete" : "inProgress"} className="absolute top-2 right-2">
           {isComplete ? "Complete season" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
         </Badge>
       </div>
