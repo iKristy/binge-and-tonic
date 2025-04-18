@@ -4,10 +4,10 @@
 
 @layer base {
   :root {
-    --background: #141414;
+    --background: theme('colors.slate.950');
     --foreground: #F9FAFB;
 
-    --card: #1A1A1A;
+    --card: theme('colors.slate.900');
     --card-foreground: #F9FAFB;
 
     --popover: #1E1E1E;
@@ -19,18 +19,18 @@
     --secondary: #283042;
     --secondary-foreground: #F9FAFB;
 
-    --muted: #2C3444;
-    --muted-foreground: #6B7280;
+    --muted: theme('colors.slate.800');
+    --muted-foreground: theme('colors.slate.500');
 
-    --accent: #0765E9;
+    --accent: theme('colors.blue.500');
     --accent-foreground: #F9FAFB;
 
-    --destructive: #DC2626;
+    --destructive: theme('colors.red.600');
     --destructive-foreground: #F9FAFB;
 
-    --border: #2C3444;
-    --input: #2C3444;
-    --ring: #0765E9;
+    --border: theme('colors.slate.800');
+    --input: theme('colors.slate.800');
+    --ring: theme('colors.blue.500');
 
     --radius: 0.5rem;
 

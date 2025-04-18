@@ -44,13 +44,6 @@ export default {
           DEFAULT: 'var(--card)',
           foreground: 'var(--card-foreground)'
         },
-        netflix: {
-          red: '#E50914',
-          black: '#141414',
-          dark: '#1A1A1A',
-          gray: '#2F2F2F',
-          light: '#B9B9B9'
-        },
         sidebar: {
           DEFAULT: 'var(--sidebar-background)',
           foreground: 'var(--sidebar-foreground)',

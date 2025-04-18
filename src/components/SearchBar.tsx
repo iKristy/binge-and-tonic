@@ -33,7 +33,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           type="text"
           value={searchQuery}
           onChange={handleChange}
-          placeholder="Search for TV shows... (min 3 characters)"
+          placeholder="Search for TV shows..."
           className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           aria-label="Search TV shows"
         />
