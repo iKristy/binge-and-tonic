@@ -47,11 +47,11 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md w-[95vw] sm:w-full">
         <DialogHeader>
-          <DialogTitle>{show.title}</DialogTitle>
+          <DialogTitle className="break-words">{show.title}</DialogTitle>
           {show.genre && (
-            <DialogDescription>{show.genre}</DialogDescription>
+            <DialogDescription className="break-words">{show.genre}</DialogDescription>
           )}
         </DialogHeader>
 
@@ -63,10 +63,10 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           />
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <CalendarDays className="h-4 w-4" />
-            <span>
+            <CalendarDays className="h-4 w-4 flex-shrink-0" />
+            <span className="break-words">
               {show.releasedEpisodes} / {show.totalEpisodes} episodes released
             </span>
           </div>
