@@ -4,17 +4,15 @@ import { cn } from "@/lib/utils";
 
 interface CountBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   count: number;
-  align?: "left" | "right";
 }
 
 const CountBadge = React.forwardRef<HTMLSpanElement, CountBadgeProps>(
-  ({ count, className, align = "right", ...props }, ref) => {
+  ({ count, className, ...props }, ref) => {
     return (
       <span
         ref={ref}
         className={cn(
-          "rounded-full bg-[#0765E9]/10 px-2 py-0.5 text-xs font-normal text-[#0765E9]",
-          align === "right" ? "ml-auto" : "ml-2",
+          "ml-2 rounded-full bg-[#0765E9]/10 px-2 py-0.5 text-xs font-normal text-[#0765E9]",
           className
         )}
         {...props}

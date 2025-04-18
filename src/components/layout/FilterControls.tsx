@@ -1,3 +1,4 @@
+
 import React from "react";
 import { SortDesc } from "lucide-react";
 import {
@@ -38,22 +39,21 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         onValueChange={(value) => onFilterChange(value as FilterType)}
       >
         <SelectTrigger 
-          className="w-full md:w-[180px] flex items-center" 
+          className="w-full md:w-[180px]" 
           aria-label="Filter TV shows"
         >
-          <SelectValue placeholder="Filter shows" className="flex-grow" />
-          <CountBadge count={showCounts.total} />
+          <SelectValue placeholder="Filter shows" />
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>
             <SelectItem value="all" className="flex items-center justify-between">
-              All shows <CountBadge count={showCounts.total} align="right" />
+              All shows <CountBadge count={showCounts.total} />
             </SelectItem>
             <SelectItem value="complete" className="flex items-center justify-between">
-              Ready to binge <CountBadge count={showCounts.complete} align="right" />
+              Ready to binge <CountBadge count={showCounts.complete} />
             </SelectItem>
             <SelectItem value="waiting" className="flex items-center justify-between">
-              Waiting for episodes <CountBadge count={showCounts.waiting} align="right" />
+              Waiting for episodes <CountBadge count={showCounts.waiting} />
             </SelectItem>
           </SelectGroup>
         </SelectContent>
