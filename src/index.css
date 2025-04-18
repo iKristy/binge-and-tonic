@@ -19,7 +19,7 @@
     --secondary: #283042;
     --secondary-foreground: theme('colors.gray.50');
 
-    --muted: theme('colors.gray.700');
+    --muted: theme('colors.gray.600');
     --muted-foreground: theme('colors.gray.500');
 
     --accent: theme('colors.blue.700');
