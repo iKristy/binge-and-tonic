@@ -39,7 +39,7 @@ const ShowCard: React.FC<ShowCardProps> = ({
           width: `${Math.min(100, show.releasedEpisodes / show.totalEpisodes * 100)}%`
         }} />
         </div>
-        {show.seasonNumber && <p className="text-sm mt-2 font-normal text-slate-400">Season {show.seasonNumber}</p>}
+        {show.seasonNumber && <p className="text-sm mt-2 font-normal text-muted-foreground">Season {show.seasonNumber}</p>}
       </CardContent>
       <CardFooter className="flex justify-end p-4 pt-0">
         <Button size="sm" variant="ghost" onClick={e => {
