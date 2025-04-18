@@ -65,48 +65,50 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="bg-background sticky top-0 z-10 border-b border-border py-4 px-6">
-      <div className="mx-auto flex max-w-7xl flex-col md:flex-row md:items-center md:justify-between">
-        <div className="flex items-center justify-between mb-4 md:mb-0">
-          <Logo />
+    <header className="bg-background sticky top-0 z-10 border-b border-border py-4">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center justify-between mb-4 md:mb-0">
+            <Logo />
+            
+            {isMobile && (
+              <MobileActions
+                isAuthenticated={!!user}
+                isAddFormOpen={isAddFormOpen}
+                setIsAddFormOpen={setIsAddFormOpen}
+                onAddShow={onAddShow}
+                onSignOut={handleSignOut}
+                onSignIn={handleSignIn}
+                onSignUp={handleSignUp}
+                userMenuOpen={userMenuOpen}
+                setUserMenuOpen={setUserMenuOpen}
+              />
+            )}
+          </div>
           
-          {isMobile && (
-            <MobileActions
-              isAuthenticated={!!user}
-              isAddFormOpen={isAddFormOpen}
-              setIsAddFormOpen={setIsAddFormOpen}
-              onAddShow={onAddShow}
-              onSignOut={handleSignOut}
-              onSignIn={handleSignIn}
-              onSignUp={handleSignUp}
-              userMenuOpen={userMenuOpen}
-              setUserMenuOpen={setUserMenuOpen}
+          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+            <FilterControls
+              filter={filter}
+              onFilterChange={onFilterChange}
+              sortBy={sortBy}
+              onSortChange={onSortChange}
+              showCounts={showCounts}
             />
-          )}
-        </div>
-        
-        <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
-          <FilterControls
-            filter={filter}
-            onFilterChange={onFilterChange}
-            sortBy={sortBy}
-            onSortChange={onSortChange}
-            showCounts={showCounts}
-          />
-          
-          {!isMobile && (
-            <DesktopActions
-              isAuthenticated={!!user}
-              isAddFormOpen={isAddFormOpen}
-              setIsAddFormOpen={setIsAddFormOpen}
-              onAddShow={onAddShow}
-              onSignOut={handleSignOut}
-              onSignIn={handleSignIn}
-              onSignUp={handleSignUp}
-              userMenuOpen={userMenuOpen}
-              setUserMenuOpen={setUserMenuOpen}
-            />
-          )}
+            
+            {!isMobile && (
+              <DesktopActions
+                isAuthenticated={!!user}
+                isAddFormOpen={isAddFormOpen}
+                setIsAddFormOpen={setIsAddFormOpen}
+                onAddShow={onAddShow}
+                onSignOut={handleSignOut}
+                onSignIn={handleSignIn}
+                onSignUp={handleSignUp}
+                userMenuOpen={userMenuOpen}
+                setUserMenuOpen={setUserMenuOpen}
+              />
+            )}
+          </div>
         </div>
       </div>
     </header>
