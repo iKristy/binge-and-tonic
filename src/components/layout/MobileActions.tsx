@@ -45,6 +45,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
         <SheetTrigger asChild>
           <Button size="sm" aria-label="Add new show">
             <PlusCircle className="h-4 w-4" aria-hidden="true" />
+            <span className="ml-2">Add show</span>
           </Button>
         </SheetTrigger>
         <SheetContent>
@@ -69,12 +70,14 @@ const MobileActions: React.FC<MobileActionsProps> = ({
           aria-label="Sign out"
         >
           <LogOut className="h-5 w-5" aria-hidden="true" />
+          <span className="ml-2">Sign out</span>
         </Button>
       ) : (
         <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <PopoverTrigger asChild>
             <Button variant="ghost" size="sm" aria-label="Account menu">
               <UserRound className="h-5 w-5" aria-hidden="true" />
+              <span className="ml-2">Account</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-56 p-3">
