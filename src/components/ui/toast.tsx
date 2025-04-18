@@ -29,7 +29,7 @@ const toastVariants = cva(
       variant: {
         default: "bg-blue-800/70 border-blue-800 backdrop-blur-md text-primary-foreground",
         destructive:
-          "destructive group border-destructive bg-destructive text-destructive-foreground",
+          "destructive group border-destructive bg-red-600/70 text-destructive-foreground",
       },
     },
     defaultVariants: {
@@ -42,17 +42,21 @@ const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
     VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
+>(({ className, variant, children, ...props }, ref) => {
   return (
     <ToastPrimitives.Root
       ref={ref}
       className={cn(toastVariants({ variant }), className)}
       {...props}
     >
-      {variant === "default" && (
-        <CheckCircle2 className="h-5 w-5 text-current" />
-      )}
-      {props.children}
+      <div className="flex items-center gap-2">
+        {variant === "default" && (
+          <CheckCircle2 className="h-5 w-5 text-current" />
+        )}
+        <div className="flex-1">
+          {children}
+        </div>
+      </div>
     </ToastPrimitives.Root>
   )
 })
@@ -109,7 +113,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn("text-sm opacity-90", className)}
+    className={cn("text-sm", className)}
     {...props}
   />
 ))

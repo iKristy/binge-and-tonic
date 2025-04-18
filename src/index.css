@@ -36,6 +36,7 @@
 
     --radius: 0.5rem;
 
+    --sidebarBackground: theme('colors.gray.900 / 80%');
     --sidebar-background: theme('colors.gray.900');
     --sidebar-foreground: theme('colors.gray.50');
     --sidebar-primary: #0765E9;
