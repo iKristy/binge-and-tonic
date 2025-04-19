@@ -11,7 +11,7 @@ const CountBadge = React.forwardRef<HTMLSpanElement, CountBadgeProps>(
       <span
         ref={ref}
         className={cn(
-          "rounded-full bg-blue-950/80 px-2 py-0.5 font-['Inconsolata'] tracking-wide text-xs font-bold text-blue-400",
+          "rounded-full bg-blue-900/60 px-2 py-0.5 font-['Inconsolata'] tracking-wide text-xs font-bold text-blue-400",
           className
         )}
         {...props}
