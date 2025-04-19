@@ -61,10 +61,9 @@ const MobileActions: React.FC<MobileActionsProps> = ({
 
       {isAuthenticated ? (
         <Button 
-          variant="ghost" 
+          variant="outline" 
           onClick={onSignOut} 
           size="icon"
-          className="hover:bg-red-900/20"
           aria-label="Sign out"
         >
           <LogOut className="h-5 w-5" aria-hidden="true" />
