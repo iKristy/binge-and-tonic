@@ -20,15 +20,15 @@
     --popover: theme('colors.gray.950');
     --popover-foreground: theme('colors.gray.50');
 
-    --primary: theme('colors.blue.700');
+    --primary: theme('colors.blue.600');
     --primary-foreground: theme('colors.blue.50');
-    --primary-action: theme('colors.blue.600');
+    --primary-action: theme('colors.blue.500');
 
     --secondary: theme('colors.gray.600');
     --secondary-foreground: theme('colors.gray.50');
 
     --muted: theme('colors.gray.800');
-    --muted-foreground: theme('colors.gray.400');
+    --muted-foreground: theme('colors.gray.500');
 
     --accent: theme('colors.orange.400');
     --accent-foreground: theme('colors.orange.50');
