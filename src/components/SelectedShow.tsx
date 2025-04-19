@@ -53,7 +53,7 @@ const SelectedShow: React.FC<SelectedShowProps> = ({ show, isLoading }) => {
     .sort((a, b) => new Date(a.air_date).getTime() - new Date(b.air_date).getTime())[0];
 
   return (
-    <div className="flex gap-4 p-3 bg-surface2 rounded-md">
+    <div className="flex gap-4 p-3 bg-gray-800 border border-gray-700 rounded-md">
       <div className="w-20 flex-shrink-0">
         <img 
           src={getImageUrl(show.poster_path, "w154")} 
