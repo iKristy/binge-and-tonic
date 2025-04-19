@@ -8,6 +8,18 @@ const Select = SelectPrimitive.Root
 
 const SelectGroup = SelectPrimitive.Group
 
+const SelectTriggerWrapper = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center justify-between w-full", className)}
+    {...props}
+  />
+));
+SelectTriggerWrapper.displayName = "SelectTriggerWrapper";
+
 const SelectValue = SelectPrimitive.Value
 
 const SelectTrigger = React.forwardRef<
@@ -151,6 +163,7 @@ SelectSeparator.displayName = SelectPrimitive.Separator.displayName
 export {
   Select,
   SelectGroup,
+  SelectTriggerWrapper,
   SelectValue,
   SelectTrigger,
   SelectContent,
