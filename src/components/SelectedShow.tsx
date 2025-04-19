@@ -81,13 +81,13 @@ const SelectedShow: React.FC<SelectedShowProps> = ({ show, isLoading }) => {
                 </p>
                 
                 {latestAired && (
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-primary-foreground mt-1">
                     Latest episode: E{latestAired.episode_number} aired {new Date(latestAired.air_date).toLocaleDateString()}
                   </p>
                 )}
                 
                 {nextAiring && (
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-primary-foreground mt-1">
                     Next episode: E{nextAiring.episode_number} on {new Date(nextAiring.air_date).toLocaleDateString()}
                   </p>
                 )}

@@ -55,7 +55,7 @@ const ShowSearchResults: React.FC<ShowSearchResultsProps> = ({
         {results.map((show) => (
           <Card 
             key={show.id} 
-            className="cursor-pointer hover:bg-primary/50 transition-colors"
+            className="cursor-pointer hover:bg-surface2 transition-colors"
             onClick={() => onSelectShow(show)}
           >
             <CardContent className="p-3 flex gap-3 items-center">
