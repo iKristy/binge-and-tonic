@@ -53,7 +53,7 @@ const SelectedShow: React.FC<SelectedShowProps> = ({ show, isLoading }) => {
     .sort((a, b) => new Date(a.air_date).getTime() - new Date(b.air_date).getTime())[0];
 
   return (
-    <div className="flex gap-4 p-3 bg-primary rounded-md">
+    <div className="flex gap-4 p-3 bg-surface2 rounded-md">
       <div className="w-20 flex-shrink-0">
         <img 
           src={getImageUrl(show.poster_path, "w154")} 
@@ -81,13 +81,13 @@ const SelectedShow: React.FC<SelectedShowProps> = ({ show, isLoading }) => {
                 </p>
                 
                 {latestAired && (
-                  <p className="text-xs text-primary-foreground mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Latest episode: E{latestAired.episode_number} aired {new Date(latestAired.air_date).toLocaleDateString()}
                   </p>
                 )}
                 
                 {nextAiring && (
-                  <p className="text-xs text-primary-foreground mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Next episode: E{nextAiring.episode_number} on {new Date(nextAiring.air_date).toLocaleDateString()}
                   </p>
                 )}
