@@ -41,21 +41,40 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         onValueChange={(value) => onFilterChange(value as FilterType)}
       >
         <SelectTrigger 
-          className={`w-full ${isTablet ? 'sm:w-[200px]' : 'sm:w-[220px]'}`}
+          className={`w-full min-w-[200px] ${isTablet ? 'sm:w-[200px]' : 'sm:w-[220px]'}`}
           aria-label="Filter TV shows"
         >
-          <SelectValue placeholder="Filter shows" />
+          <SelectValue placeholder="Filter shows">
+            <div className="flex items-center justify-between w-full">
+              <span className="truncate">
+                {filter === "all" && "All shows"}
+                {filter === "complete" && "Ready to binge"}
+                {filter === "waiting" && "Waiting for episodes"}
+              </span>
+              <CountBadge 
+                count={
+                  filter === "all" ? showCounts.total :
+                  filter === "complete" ? showCounts.complete :
+                  showCounts.waiting
+                } 
+                className="ml-2 flex-shrink-0"
+              />
+            </div>
+          </SelectValue>
         </SelectTrigger>
-        <SelectContent aria-label="Show filter options">
+        <SelectContent aria-label="Show filter options" className="min-w-[200px]">
           <SelectGroup>
             <SelectItem value="all" className="flex items-center justify-between">
-              All shows <CountBadge count={showCounts.total} />
+              <span className="truncate">All shows</span>
+              <CountBadge count={showCounts.total} />
             </SelectItem>
             <SelectItem value="complete" className="flex items-center justify-between">
-              Ready to binge <CountBadge count={showCounts.complete} />
+              <span className="truncate">Ready to binge</span>
+              <CountBadge count={showCounts.complete} />
             </SelectItem>
             <SelectItem value="waiting" className="flex items-center justify-between">
-              Waiting for episodes <CountBadge count={showCounts.waiting} />
+              <span className="truncate">Waiting for episodes</span>
+              <CountBadge count={showCounts.waiting} />
             </SelectItem>
           </SelectGroup>
         </SelectContent>
@@ -66,20 +85,35 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         onValueChange={(value) => onSortChange(value as SortType)}
       >
         <SelectTrigger 
-          className={`w-full ${isTablet ? 'sm:w-[160px]' : 'sm:w-[180px]'}`}
+          className={`w-full min-w-[180px] ${isTablet ? 'sm:w-[160px]' : 'sm:w-[180px]'}`}
           aria-label="Sort TV shows"
         >
           <div className="flex items-center gap-2">
-            <SortDesc className="h-4 w-4" aria-hidden="true" />
-            <SelectValue placeholder="Sort by" />
+            <SortDesc className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+            <SelectValue placeholder="Sort by">
+              <span className="truncate">
+                {sortBy === "alphabetical" && "Alphabetical"}
+                {sortBy === "status" && "By show status"}
+                {sortBy === "releaseDate" && "By release date"}
+                {sortBy === "dateAdded" && "By date added"}
+              </span>
+            </SelectValue>
           </div>
         </SelectTrigger>
-        <SelectContent aria-label="Sorting options">
+        <SelectContent aria-label="Sorting options" className="min-w-[180px]">
           <SelectGroup>
-            <SelectItem value="alphabetical">Alphabetical</SelectItem>
-            <SelectItem value="status">By show status</SelectItem>
-            <SelectItem value="releaseDate">By release date</SelectItem>
-            <SelectItem value="dateAdded">By date added</SelectItem>
+            <SelectItem value="alphabetical">
+              <span className="truncate">Alphabetical</span>
+            </SelectItem>
+            <SelectItem value="status">
+              <span className="truncate">By show status</span>
+            </SelectItem>
+            <SelectItem value="releaseDate">
+              <span className="truncate">By release date</span>
+            </SelectItem>
+            <SelectItem value="dateAdded">
+              <span className="truncate">By date added</span>
+            </SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import AddShowForm from "@/components/AddShowForm";
+import { useIsTablet } from "@/hooks/use-tablet";
+
 interface DesktopActionsProps {
   isAuthenticated: boolean;
   isAddFormOpen: boolean;
@@ -15,6 +17,7 @@ interface DesktopActionsProps {
   userMenuOpen: boolean;
   setUserMenuOpen: (open: boolean) => void;
 }
+
 const DesktopActions: React.FC<DesktopActionsProps> = ({
   isAuthenticated,
   isAddFormOpen,
@@ -26,7 +29,10 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
   userMenuOpen,
   setUserMenuOpen
 }) => {
-  return <>
+  const isTablet = useIsTablet();
+
+  return (
+    <div className="flex items-center gap-2">
       <Sheet open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
         <SheetTrigger asChild>
           <Button aria-label="Add new show">
@@ -44,10 +50,18 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
         </SheetContent>
       </Sheet>
 
-      {isAuthenticated ? <Button variant="outline" onClick={onSignOut} aria-label="Sign out" className="flex items-center gap-2">
-          <LogOut className="h-5 w-5" aria-hidden="true" />
-          <span className="sr-only md:not-sr-only md:inline-block">Sign out</span>
-        </Button> : <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
+      {isAuthenticated ? (
+        <Button 
+          variant="outline" 
+          onClick={onSignOut} 
+          aria-label="Sign out" 
+          className="flex items-center gap-2 min-w-[40px]"
+        >
+          <LogOut className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+          <span className={`${isTablet ? 'hidden' : 'inline-block'} truncate`}>Sign out</span>
+        </Button>
+      ) : (
+        <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <PopoverTrigger asChild>
             <Button variant="outline" aria-label="Account menu">
               <UserRound className="h-5 w-5" aria-hidden="true" />
@@ -64,7 +78,10 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
               </Button>
             </div>
           </PopoverContent>
-        </Popover>}
-    </>;
+        </Popover>
+      )}
+    </div>
+  );
 };
+
 export default DesktopActions;
