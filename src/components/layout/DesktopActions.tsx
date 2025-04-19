@@ -49,7 +49,7 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
           <span className="sr-only md:not-sr-only md:inline-block">Sign out</span>
         </Button> : <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <PopoverTrigger asChild>
-            <Button variant="ghost" aria-label="Account menu">
+            <Button variant="outline" aria-label="Account menu">
               <UserRound className="h-5 w-5" aria-hidden="true" />
             </Button>
           </PopoverTrigger>

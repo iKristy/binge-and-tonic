@@ -71,7 +71,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
       ) : (
         <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Account menu">
+            <Button variant="outline" size="icon" aria-label="Account menu">
               <UserRound className="h-5 w-5" aria-hidden="true" />
             </Button>
           </PopoverTrigger>
