@@ -111,7 +111,7 @@ const SignupForm = ({ setIsLoading, setAuthError }: SignupFormProps) => {
           )}
         />
 
-        <Button type="submit" className="w-full">
+        <Button size="md" type="submit" className="w-full">
           Sign up
         </Button>
       </form>

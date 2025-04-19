@@ -90,7 +90,7 @@ const LoginForm = ({ setIsLoading, setAuthError }: LoginFormProps) => {
           )}
         />
 
-        <Button type="submit" className="w-full">
+        <Button size="md" type="submit" className="w-full">
           Login
         </Button>
       </form>

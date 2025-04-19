@@ -44,7 +44,7 @@ const ShowCard: React.FC<ShowCardProps> = ({
         {show.seasonNumber && <p className="text-sm mt-2 font-normal text-muted-foreground">Season {show.seasonNumber}</p>}
       </CardContent>
       <CardFooter className="flex justify-end p-4 pt-0">
-        <Button size="sm" variant="outline" onClick={e => {
+        <Button variant="outline" onClick={e => {
         e.stopPropagation();
         onViewDetails(show);
       }} aria-label={`View details for ${show.title}`}>

@@ -60,9 +60,9 @@ const RefreshShowsButton: React.FC<RefreshShowsButtonProps> = ({
   return (
     <Button
       variant="outline"
-      size="sm"
       onClick={handleRefresh}
       disabled={isRefreshing || !user}
+      className="w-full"
       aria-label={isRefreshing ? "Refreshing shows..." : "Refresh shows list"}
     >
       <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} aria-hidden="true" />
