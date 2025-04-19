@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
@@ -12,7 +11,7 @@ const CountBadge = React.forwardRef<HTMLSpanElement, CountBadgeProps>(
       <span
         ref={ref}
         className={cn(
-          "ml-2 rounded-full bg-blue-950/60 px-2 py-0.5 font-['Inconsolata'] tracking-wide text-xs font-bold text-blue-500",
+          "rounded-full bg-blue-950/60 px-2 py-0.5 font-['Inconsolata'] tracking-wide text-xs font-bold text-blue-500",
           className
         )}
         {...props}
