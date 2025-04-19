@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2 } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useAuth } from "@/components/AuthProvider";
 import { FilterType } from "@/hooks/show/useShowFilter";

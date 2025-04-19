@@ -50,8 +50,8 @@ const Toast = React.forwardRef<
       {...props}
     >
       <div className="flex items-center gap-2">
-        {variant === "default" && (
-          <CheckCircle2 className="h-5 w-5 text-current" />
+        {(!variant || variant === "default") && (
+          <CheckCircle2 className="h-5 w-5 text-current shrink-0" />
         )}
         <div className="flex-1">
           {children}
