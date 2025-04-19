@@ -44,7 +44,12 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           className={`w-full ${isTablet ? 'sm:w-[200px]' : 'sm:w-[220px]'}`}
           aria-label="Filter TV shows"
         >
-          <SelectValue placeholder="Filter shows" />
+          <div className="flex-1 flex items-center justify-between">
+            <SelectValue placeholder="Filter shows" />
+            <div className="ml-2">
+              <CountBadge count={showCounts[filter]} />
+            </div>
+          </div>
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>
