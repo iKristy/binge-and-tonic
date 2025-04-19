@@ -44,32 +44,22 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           className={`w-full ${isTablet ? 'sm:w-[200px]' : 'sm:w-[220px]'}`}
           aria-label="Filter TV shows"
         >
-          <div className="flex-1 flex items-center justify-between">
-            <SelectValue placeholder="Filter shows" />
-            <div className="ml-2">
-              <CountBadge count={showCounts[filter]} />
-            </div>
-          </div>
+          <SelectValue placeholder="Filter shows" />
+          <CountBadge count={showCounts[filter]} />
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>
-            <SelectItem value="all" className="relative pr-8">
+            <SelectItem value="all" className="flex items-center justify-between">
               <span>All shows</span>
-              <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                <CountBadge count={showCounts.total} />
-              </div>
+              <CountBadge count={showCounts.total} />
             </SelectItem>
-            <SelectItem value="complete" className="relative pr-8">
+            <SelectItem value="complete" className="flex items-center justify-between">
               <span>Ready to binge</span>
-              <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                <CountBadge count={showCounts.complete} />
-              </div>
+              <CountBadge count={showCounts.complete} />
             </SelectItem>
-            <SelectItem value="waiting" className="relative pr-8">
+            <SelectItem value="waiting" className="flex items-center justify-between">
               <span>Waiting for episodes</span>
-              <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                <CountBadge count={showCounts.waiting} />
-              </div>
+              <CountBadge count={showCounts.waiting} />
             </SelectItem>
           </SelectGroup>
         </SelectContent>
