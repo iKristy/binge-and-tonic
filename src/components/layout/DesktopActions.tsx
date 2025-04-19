@@ -44,7 +44,7 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
         </SheetContent>
       </Sheet>
 
-      {isAuthenticated ? <Button variant="ghost" onClick={onSignOut} aria-label="Sign out" className="flex items-center gap-2 hover:bg-blue-900/50">
+      {isAuthenticated ? <Button variant="ghost" onClick={onSignOut} aria-label="Sign out" className="flex items-center gap-2">
           <LogOut className="h-5 w-5" aria-hidden="true" />
           <span className="sr-only md:not-sr-only md:inline-block">Sign out</span>
         </Button> : <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
