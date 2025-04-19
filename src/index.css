@@ -18,6 +18,7 @@
 
     --primary: theme('colors.blue.700');
     --primary-foreground: theme('colors.blue.50');
+    --primary-action: theme('colors.blue.600');
 
     --secondary: theme('colors.gray.600');
     --secondary-foreground: theme('colors.gray.50');
