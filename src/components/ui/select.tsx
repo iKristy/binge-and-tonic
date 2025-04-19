@@ -34,7 +34,9 @@ const SelectTrigger = React.forwardRef<
     )}
     {...props}
   >
-    {children}
+    <div className="flex items-center justify-between w-full">
+      {children}
+    </div>
     <SelectPrimitive.Icon asChild>
       <ChevronDown 
         className="h-4 w-4 opacity-50" 
