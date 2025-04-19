@@ -56,7 +56,7 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
           <PopoverContent className="w-56 p-3">
             <div className="flex flex-col space-y-2">
               <h3 className="font-medium mb-2">Join Binge & Tonic</h3>
-              <Button onClick={onSignIn} className="w-full justify-start">
+              <Button onClick={onSignIn} variant="outline" className="w-full justify-start">
                 Sign in
               </Button>
               <Button onClick={onSignUp} variant="outline" className="w-full justify-start">

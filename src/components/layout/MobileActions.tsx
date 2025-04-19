@@ -80,6 +80,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <h3 className="font-medium mb-2">Join Binge & Tonic</h3>
               <Button 
                 onClick={onSignIn} 
+                variant="outline"
                 className="w-full justify-start"
               >
                 Sign in
