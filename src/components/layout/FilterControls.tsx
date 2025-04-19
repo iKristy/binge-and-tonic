@@ -45,7 +45,6 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           aria-label="Filter TV shows"
         >
           <SelectValue placeholder="Filter shows" />
-          {filter !== "all" && <CountBadge count={showCounts[filter]} />}
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>

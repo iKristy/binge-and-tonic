@@ -9,15 +9,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import MobileActions from "./MobileActions";
 import DesktopActions from "./DesktopActions";
 import FilterControls from "./FilterControls";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectTriggerWrapper,
-  SelectValue,
-} from "@/components/ui/select";
-import { CountBadge } from "@/components/ui/count-badge";
 
 interface HeaderProps {
   filter: FilterType;
