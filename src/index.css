@@ -28,7 +28,7 @@
     --secondary-foreground: theme('colors.gray.50');
 
     --muted: theme('colors.gray.800');
-    --muted-foreground: theme('colors.gray.500');
+    --muted-foreground: theme('colors.gray.400');
 
     --accent: theme('colors.orange.400');
     --accent-foreground: theme('colors.orange.50');

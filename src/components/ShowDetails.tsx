@@ -105,7 +105,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
               href={`https://www.themoviedb.org/tv/${show.tmdbId}`} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-primary-action underline-offset-4 hover:underline hover:text-blue-500 text-sm sm:text-base truncate"
+              className="flex items-center gap-2 text-primary-action underline-offset-4 hover:underline hover:text-blue-400 text-sm sm:text-base truncate"
             >
               <ExternalLink className="h-4 w-4 flex-shrink-0" />
               View on TMDb
