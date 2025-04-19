@@ -20,7 +20,7 @@ export default {
         surface2: 'var(--surface2)',
         foreground: 'var(--foreground)',
         primary: {
-          DEFAULT: 'theme("colors.blue.600")',
+          DEFAULT: 'var(--primary)',
           foreground: 'var(--primary-foreground)',
           action: 'var(--primary-action)'
         },

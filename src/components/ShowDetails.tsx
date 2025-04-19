@@ -75,7 +75,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <Badge variant={isComplete ? "complete" : "inProgress"}>
-              {isComplete ? "Complete season" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
+              {isComplete ? "Season completed" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
             </Badge>
           </div>
         </div>

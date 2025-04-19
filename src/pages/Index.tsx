@@ -55,12 +55,12 @@ const Index: React.FC = () => {
             <p className="text-xl">Loading shows...</p>
           </div> : <>
             <section>
-              <h2 className="text-2xl text-primary font-semibold mb-4">My shows</h2>
+              <h2 className="text-2xl text-muted-foreground font-semibold mb-4">My shows</h2>
               <ShowList shows={unwatchedShows} onViewDetails={handleViewDetails} />
             </section>
 
             {watchedShows.length > 0 && <section>
-                <h2 className="text-2xl text-primary font-semibold mb-4">Watched</h2>
+                <h2 className="text-2xl text-muted-foreground font-semibold mb-4">Watched</h2>
                 <ShowList shows={watchedShows} onViewDetails={handleViewDetails} />
               </section>}
           </>}

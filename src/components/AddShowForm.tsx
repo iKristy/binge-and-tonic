@@ -62,7 +62,7 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
         <form onSubmit={handleFormSubmit} className="space-y-4">
           <input type="hidden" {...form.register("tmdbId", { valueAsNumber: true })} />
           
-          <div className="flex flex-col sm:flex-row justify-end gap-2">
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancel
             </Button>
