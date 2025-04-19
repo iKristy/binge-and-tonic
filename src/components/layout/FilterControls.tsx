@@ -46,7 +46,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         >
           <SelectValue placeholder="Filter shows">
             <div className="flex items-center justify-between w-full">
-              <span>
+              <span className="truncate">
                 {filter === "all" && "All shows"}
                 {filter === "complete" && "Ready to binge"}
                 {filter === "waiting" && "Waiting for episodes"}
@@ -91,7 +91,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           <div className="flex items-center gap-2">
             <SortDesc className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
             <SelectValue placeholder="Sort by">
-              <span>
+              <span className="truncate">
                 {sortBy === "alphabetical" && "Alphabetical"}
                 {sortBy === "status" && "By show status"}
                 {sortBy === "releaseDate" && "By release date"}
