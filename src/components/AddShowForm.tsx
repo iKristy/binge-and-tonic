@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -63,7 +62,7 @@ const AddShowForm: React.FC<AddShowFormProps> = ({ onAddShow, onCancel }) => {
         <form onSubmit={handleFormSubmit} className="space-y-4">
           <input type="hidden" {...form.register("tmdbId", { valueAsNumber: true })} />
           
-          <div className="flex justify-end space-x-2">
+          <div className="flex flex-col sm:flex-row justify-end gap-2">
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancel
             </Button>
