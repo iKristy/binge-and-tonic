@@ -45,21 +45,17 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           aria-label="Filter TV shows"
         >
           <SelectValue placeholder="Filter shows" />
-          <CountBadge count={showCounts[filter]} />
         </SelectTrigger>
         <SelectContent aria-label="Show filter options">
           <SelectGroup>
             <SelectItem value="all" className="flex items-center justify-between">
-              <span>All shows</span>
-              <CountBadge count={showCounts.total} />
+              All shows <CountBadge count={showCounts.total} />
             </SelectItem>
             <SelectItem value="complete" className="flex items-center justify-between">
-              <span>Ready to binge</span>
-              <CountBadge count={showCounts.complete} />
+              Ready to binge <CountBadge count={showCounts.complete} />
             </SelectItem>
             <SelectItem value="waiting" className="flex items-center justify-between">
-              <span>Waiting for episodes</span>
-              <CountBadge count={showCounts.waiting} />
+              Waiting for episodes <CountBadge count={showCounts.waiting} />
             </SelectItem>
           </SelectGroup>
         </SelectContent>

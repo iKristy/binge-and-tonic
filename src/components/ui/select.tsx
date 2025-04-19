@@ -22,12 +22,10 @@ const SelectTrigger = React.forwardRef<
     )}
     {...props}
   >
-    <div className="flex-1 flex items-center justify-between">
-      {children}
-    </div>
+    {children}
     <SelectPrimitive.Icon asChild>
       <ChevronDown 
-        className="h-4 w-4 opacity-50 ml-2" 
+        className="h-4 w-4 opacity-50" 
         aria-hidden="true" 
       />
     </SelectPrimitive.Icon>
@@ -133,9 +131,7 @@ const SelectItem = React.forwardRef<
       </SelectPrimitive.ItemIndicator>
     </span>
 
-    <div className="flex-1 flex items-center justify-between">
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-    </div>
+    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
 ))
 SelectItem.displayName = SelectPrimitive.Item.displayName
