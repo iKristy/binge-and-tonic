@@ -49,9 +49,9 @@ const Toast = React.forwardRef<
       className={cn(toastVariants({ variant }), className)}
       {...props}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-start gap-3">
         {(!variant || variant === "default") && (
-          <CheckCircle2 className="h-5 w-5 text-current shrink-0" />
+          <CheckCircle2 className="h-5 w-5 text-current shrink-0 mt-0.5" />
         )}
         <div className="flex-1">
           {children}
