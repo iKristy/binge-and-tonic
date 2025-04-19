@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,7 +26,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   
   return (
     <form onSubmit={handleSubmit} className="w-full">
-      <div className="flex items-center border rounded-md focus-within:ring-1 focus-within:ring-ring">
+      <div className="flex items-center border rounded-md focus-within:ring-1 focus-within:ring-ring bg-background">
         <Search className="ml-2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <Input
           type="text"
