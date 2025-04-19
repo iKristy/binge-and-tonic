@@ -41,7 +41,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         onValueChange={(value) => onFilterChange(value as FilterType)}
       >
         <SelectTrigger 
-          className={`w-full min-w-[200px] ${isTablet ? 'sm:w-[200px]' : 'sm:w-[220px]'}`}
+          className={`w-full ${isTablet ? 'sm:w-[200px]' : 'sm:w-[220px]'}`}
           aria-label="Filter TV shows"
         >
           <SelectValue placeholder="Filter shows">
@@ -62,7 +62,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
             </div>
           </SelectValue>
         </SelectTrigger>
-        <SelectContent aria-label="Show filter options" className="min-w-[200px]">
+        <SelectContent aria-label="Show filter options">
           <SelectGroup>
             <SelectItem value="all" className="flex items-center justify-between">
               <span>All shows</span>
@@ -85,7 +85,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         onValueChange={(value) => onSortChange(value as SortType)}
       >
         <SelectTrigger 
-          className={`w-full min-w-[180px] ${isTablet ? 'sm:w-[160px]' : 'sm:w-[180px]'}`}
+          className={`w-full ${isTablet ? 'sm:w-[160px]' : 'sm:w-[180px]'}`}
           aria-label="Sort TV shows"
         >
           <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
             </SelectValue>
           </div>
         </SelectTrigger>
-        <SelectContent aria-label="Sorting options" className="min-w-[180px]">
+        <SelectContent aria-label="Sorting options">
           <SelectGroup>
             <SelectItem value="alphabetical">
               <span>Alphabetical</span>
