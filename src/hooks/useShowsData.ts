@@ -16,6 +16,7 @@ export function useShowsData(user: User | null) {
   const { filter, setFilter, filteredShows, completeCount, waitingCount, totalCount } = useShowFilter(shows);
   const { sortBy, setSortBy, sortedShows } = useShowSort(filteredShows);
   const { isShowAlreadyAdded, addShow: addShowToStorage, removeShow: removeShowFromStorage } = useShowStorage(user);
+  const { toast } = useToast();
 
   const addShow = async (newShow: Omit<Show, "id" | "status">) => {
     return addShowToStorage(shows, setShows, newShow);
@@ -26,6 +27,10 @@ export function useShowsData(user: User | null) {
   };
 
   const toggleWatched = async (showId: string) => {
+    const show = shows.find(s => s.id === showId);
+    if (!show) return false;
+
+    // Optimistically update the UI
     const updatedShows = shows.map(show => {
       if (show.id === showId) {
         return { ...show, watched: !show.watched };
@@ -40,7 +45,7 @@ export function useShowsData(user: User | null) {
       try {
         const { error } = await supabase
           .from("user_show_relations")
-          .update({ watched: !shows.find(s => s.id === showId)?.watched })
+          .update({ watched: !show.watched })
           .eq("id", showId);
 
         if (error) throw error;
@@ -48,7 +53,12 @@ export function useShowsData(user: User | null) {
         return true;
       } catch (error: any) {
         console.error("Error toggling watched status:", error);
-        useToast().toast({
+        
+        // Revert the optimistic update on error
+        setShows(shows);
+        localStorage.setItem("shows", JSON.stringify(shows));
+        
+        toast({
           title: "Failed to update watched status",
           description: error.message,
           variant: "destructive"

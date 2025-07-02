@@ -66,11 +66,6 @@ export function useShowFetch(user: User | null) {
         
         // Also save to localStorage as backup
         localStorage.setItem("shows", JSON.stringify(transformedShows));
-        
-        // After fetching shows, trigger the auto-update function if there are shows
-        if (relations.length > 0) {
-          await triggerShowsUpdate();
-        }
       }
     } catch (error: any) {
       console.error("Error fetching shows:", error.message);
@@ -84,27 +79,37 @@ export function useShowFetch(user: User | null) {
     }
   };
 
-  // Function to trigger the update-shows edge function
-  const triggerShowsUpdate = async () => {
-    try {
-      // Call the update-shows edge function without waiting for it to complete
-      supabase.functions.invoke("update-shows", {
-        body: { action: "update" }
-      }).then(({ error }) => {
-        if (error) {
-          console.error("Background update error:", error);
-        } else {
-          console.log("Shows update triggered in background");
-        }
-      });
-    } catch (error) {
-      console.error("Error triggering shows update:", error);
-      // We don't need to show an error toast as this is a background operation
-    }
-  };
-
   useEffect(() => {
     fetchShows();
+  }, [user]);
+
+  // Set up real-time updates for shows table
+  useEffect(() => {
+    if (!user) return;
+
+    console.log("Setting up real-time updates for shows");
+    
+    const channel = supabase
+      .channel('show-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'shows'
+        },
+        (payload) => {
+          console.log('Show update received:', payload);
+          // Refresh shows when any show is updated
+          fetchShows();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      console.log("Cleaning up real-time subscription");
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   return {
