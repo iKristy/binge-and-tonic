@@ -18,8 +18,10 @@ export type Database = {
         Row: {
           created_at: string | null
           id: number
+          last_error: string | null
           poster_url: string | null
           released_episodes: number | null
+          retry_count: number | null
           season_number: number | null
           title: string
           tmdb_id: number
@@ -29,8 +31,10 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: number
+          last_error?: string | null
           poster_url?: string | null
           released_episodes?: number | null
+          retry_count?: number | null
           season_number?: number | null
           title: string
           tmdb_id: number
@@ -40,8 +44,10 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: number
+          last_error?: string | null
           poster_url?: string | null
           released_episodes?: number | null
+          retry_count?: number | null
           season_number?: number | null
           title?: string
           tmdb_id?: number
