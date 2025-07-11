@@ -102,8 +102,19 @@ serve(async (req) => {
             const showDetails = await showResponse.json();
             
             // Fetch season details to get accurate episode information
-            const latestSeason = showDetails.seasons?.sort((a: any, b: any) => b.season_number - a.season_number)[0];
-            const seasonNumber = latestSeason?.season_number || show.season_number || 1;
+            // Only consider seasons that have actually aired (have an air_date in the past)
+            const today = new Date();
+            const airedSeasons = showDetails.seasons?.filter((season: any) => {
+              // Season 0 is usually specials, skip it
+              if (season.season_number === 0) return false;
+              // Check if season has aired by looking at air_date
+              if (!season.air_date) return false;
+              return new Date(season.air_date) <= today;
+            }) || [];
+            
+            // Get the latest aired season, fallback to current stored season or 1
+            const latestAiredSeason = airedSeasons.sort((a: any, b: any) => b.season_number - a.season_number)[0];
+            const seasonNumber = latestAiredSeason?.season_number || show.season_number || 1;
             
             // Get season details for latest episode count
             const seasonDetailsUrl = `${TMDB_BASE_URL}/tv/${show.tmdb_id}/season/${seasonNumber}?api_key=${TMDB_API_KEY}&language=en-US`;
@@ -126,8 +137,9 @@ serve(async (req) => {
             const { error: updateError } = await supabase
               .from("shows")
               .update({
+                season_number: seasonNumber,
                 released_episodes: releasedEpisodes,
-                total_episodes: latestSeason?.episode_count || showDetails.number_of_episodes || show.total_episodes,
+                total_episodes: latestAiredSeason?.episode_count || showDetails.number_of_episodes || show.total_episodes,
                 updated_at: new Date().toISOString(),
                 retry_count: 0, // Reset retry count on successful update
                 last_error: null // Clear any previous errors
@@ -138,14 +150,14 @@ serve(async (req) => {
               throw new Error(`Error updating show ${show.title}: ${updateError.message}`);
             }
 
-            console.log(`Successfully updated ${show.title} - Released: ${releasedEpisodes}/${latestSeason?.episode_count || showDetails.number_of_episodes}`);
+            console.log(`Successfully updated ${show.title} - Released: ${releasedEpisodes}/${latestAiredSeason?.episode_count || showDetails.number_of_episodes}`);
 
             return {
               id: show.id,
               title: show.title,
               updated: true,
               releasedEpisodes,
-              totalEpisodes: latestSeason?.episode_count || showDetails.number_of_episodes
+              totalEpisodes: latestAiredSeason?.episode_count || showDetails.number_of_episodes
             };
           } catch (error) {
             console.error(`Error updating show ${show.tmdb_id} (${show.title}):`, error);
