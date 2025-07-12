@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { LatestEpisode } from "@/types/Show";
-
-const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-const TMDB_API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZjY5NTY3MDQwN2U4ZGZlMzFiYWEzOWZjNzA5M2Q0MSIsIm5iZiI6MTczOTcxMzA4My44NDksInN1YiI6IjY3NjFmYjkzNzI5ZjZmNjMyMzg0ZGJjZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.xaC0xKGsGnLpBaQCxtUxE6KZ3Z6LJjMcFfm9QHGhJyk";
+import { supabase } from "@/integrations/supabase/client";
 
 export function useLatestEpisode(tmdbId: number | undefined, seasonNumber: number | undefined) {
   const [latestEpisode, setLatestEpisode] = useState<LatestEpisode | null>(null);
@@ -20,18 +18,25 @@ export function useLatestEpisode(tmdbId: number | undefined, seasonNumber: numbe
         setIsLoading(true);
         setError(null);
 
-        const seasonDetailsUrl = `${TMDB_BASE_URL}/tv/${tmdbId}/season/${seasonNumber}?api_key=${TMDB_API_KEY}&language=en-US`;
-        const response = await fetch(seasonDetailsUrl);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch season details: ${response.status}`);
+        // Use the TMDB edge function to fetch season details
+        const { data, error: functionError } = await supabase.functions.invoke('tmdb', {
+          body: {
+            action: 'season',
+            path: `/tv/${tmdbId}/season/${seasonNumber}?language=en-US`
+          }
+        });
+
+        if (functionError) {
+          throw new Error(`Failed to fetch season details: ${functionError.message}`);
         }
-        
-        const seasonDetails = await response.json();
+
+        if (!data) {
+          throw new Error('No data returned from TMDB API');
+        }
         
         // Find the latest aired episode
         const today = new Date();
-        const airedEpisodes = seasonDetails.episodes?.filter((episode: any) => {
+        const airedEpisodes = data.episodes?.filter((episode: any) => {
           if (!episode.air_date) return false;
           return new Date(episode.air_date) <= today;
         }) || [];
