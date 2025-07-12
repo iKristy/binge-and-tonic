@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, ExternalLink, Film, Trash2, Eye, EyeOff } from "lucide-react";
+import { CalendarDays, ExternalLink, Film, Trash2, Eye, EyeOff, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLatestEpisode } from "@/hooks/show/useLatestEpisode";
 
 interface ShowDetailsProps {
   show: Show | null;
@@ -29,11 +30,21 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
   onWatchedToggle 
 }) => {
   const isMobile = useIsMobile();
+  const { latestEpisode, isLoading: isLoadingEpisode } = useLatestEpisode(show?.tmdbId, show?.seasonNumber);
   
   if (!show) return null;
 
   const isComplete = show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
   const remainingEpisodes = Math.max(0, show.totalEpisodes - show.releasedEpisodes);
+
+  const formatAirDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  };
 
   const handleRemove = () => {
     if (show.id && onRemove) {
@@ -96,6 +107,28 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           <div className="mt-2 flex items-center gap-2">
             <Film className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm sm:text-base">Season {show.seasonNumber}</span>
+          </div>
+        )}
+
+        {latestEpisode && !isLoadingEpisode && (
+          <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">Latest Episode</span>
+            </div>
+            <div className="space-y-1">
+              <div className="text-sm sm:text-base font-medium">
+                Episode {latestEpisode.episodeNumber}: {latestEpisode.name}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Aired {formatAirDate(latestEpisode.airDate)}
+              </div>
+              {latestEpisode.overview && (
+                <div className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                  {latestEpisode.overview}
+                </div>
+              )}
+            </div>
           </div>
         )}
 

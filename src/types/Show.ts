@@ -1,3 +1,10 @@
+export interface LatestEpisode {
+  episodeNumber: number;
+  name: string;
+  airDate: string;
+  overview?: string;
+}
+
 export interface Show {
   id: string;
   title: string;
@@ -9,4 +16,5 @@ export interface Show {
   tmdbId?: number;
   seasonNumber?: number;
   watched?: boolean; // Ensure this matches the database column
+  latestEpisode?: LatestEpisode;
 }
