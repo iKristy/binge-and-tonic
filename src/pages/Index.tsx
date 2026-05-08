@@ -66,7 +66,7 @@ const Index: React.FC = () => {
                 <ShowList shows={watchedShows} onViewDetails={handleViewDetails} />
               </section>}
           </>}
-        <ShowDetails show={selectedShow} isOpen={isDetailsOpen} onClose={handleCloseDetails} onRemove={handleRemoveShow} onWatchedToggle={handleWatchedToggle} />
+        <ShowDetails show={selectedShow} isOpen={isDetailsOpen} onClose={handleCloseDetails} onRemove={handleRemoveShow} onWatchedToggle={handleWatchedToggle} onRefresh={handleManualRefresh} isRefreshing={isRefreshing} />
       </main>
 
       <Footer />
