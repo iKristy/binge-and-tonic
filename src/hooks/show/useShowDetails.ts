@@ -68,6 +68,8 @@ export function useShowDetails(
     handleViewDetails,
     handleCloseDetails,
     handleRemoveShow,
-    handleWatchedToggle
+    handleWatchedToggle,
+    handleManualRefresh,
+    isRefreshing,
   };
 }
