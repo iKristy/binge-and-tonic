@@ -34,8 +34,10 @@ const Index: React.FC = () => {
     handleViewDetails,
     handleCloseDetails,
     handleRemoveShow,
-    handleWatchedToggle
-  } = useShowDetails(removeShow, toggleWatched);
+    handleWatchedToggle,
+    handleManualRefresh,
+    isRefreshing
+  } = useShowDetails(removeShow, toggleWatched, refreshShows);
   const {
     isAddFormOpen,
     setIsAddFormOpen,
@@ -64,7 +66,7 @@ const Index: React.FC = () => {
                 <ShowList shows={watchedShows} onViewDetails={handleViewDetails} />
               </section>}
           </>}
-        <ShowDetails show={selectedShow} isOpen={isDetailsOpen} onClose={handleCloseDetails} onRemove={handleRemoveShow} onWatchedToggle={handleWatchedToggle} />
+        <ShowDetails show={selectedShow} isOpen={isDetailsOpen} onClose={handleCloseDetails} onRemove={handleRemoveShow} onWatchedToggle={handleWatchedToggle} onRefresh={handleManualRefresh} isRefreshing={isRefreshing} />
       </main>
 
       <Footer />
