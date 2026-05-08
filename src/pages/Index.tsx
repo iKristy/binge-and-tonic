@@ -34,8 +34,10 @@ const Index: React.FC = () => {
     handleViewDetails,
     handleCloseDetails,
     handleRemoveShow,
-    handleWatchedToggle
-  } = useShowDetails(removeShow, toggleWatched);
+    handleWatchedToggle,
+    handleManualRefresh,
+    isRefreshing
+  } = useShowDetails(removeShow, toggleWatched, refreshShows);
   const {
     isAddFormOpen,
     setIsAddFormOpen,
