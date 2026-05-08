@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, ExternalLink, Film, Trash2, Eye, EyeOff, Clock } from "lucide-react";
+import { CalendarDays, ExternalLink, Film, Trash2, Eye, EyeOff, Clock, RefreshCw } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLatestEpisode } from "@/hooks/show/useLatestEpisode";
 
@@ -20,14 +20,18 @@ interface ShowDetailsProps {
   onClose: () => void;
   onRemove?: (showId: string) => void;
   onWatchedToggle?: (showId: string) => void;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
-const ShowDetails: React.FC<ShowDetailsProps> = ({ 
-  show, 
-  isOpen, 
-  onClose, 
+const ShowDetails: React.FC<ShowDetailsProps> = ({
+  show,
+  isOpen,
+  onClose,
   onRemove,
-  onWatchedToggle 
+  onWatchedToggle,
+  onRefresh,
+  isRefreshing,
 }) => {
   const isMobile = useIsMobile();
   const { latestEpisode, isLoading: isLoadingEpisode } = useLatestEpisode(show?.tmdbId, show?.seasonNumber);
