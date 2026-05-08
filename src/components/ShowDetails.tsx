@@ -92,6 +92,18 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
             <Badge variant={isComplete ? "complete" : "inProgress"}>
               {isComplete ? "Season completed" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
             </Badge>
+            {onRefresh && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onRefresh}
+                disabled={isRefreshing}
+                aria-label="Refresh show data from TMDb"
+                className="h-7 w-7"
+              >
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+              </Button>
+            )}
           </div>
         </div>
 
