@@ -64,11 +64,15 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose} modal={false}>
       <DialogContent
         className="max-w-lg w-[95vw] sm:w-full p-4 sm:p-6 overflow-hidden rounded-lg"
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
+        onInteractOutside={(e) => {
+          // Close only on genuine outside pointer interactions; keep page scroll intact.
+          onClose();
+        }}
       >
         <DialogHeader className="px-0">
           <DialogTitle className="break-words text-lg sm:text-xl">{show.title}</DialogTitle>
