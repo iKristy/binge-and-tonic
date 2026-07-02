@@ -65,7 +65,11 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg w-[95vw] sm:w-full p-4 sm:p-6 overflow-hidden rounded-lg">
+      <DialogContent
+        className="max-w-lg w-[95vw] sm:w-full p-4 sm:p-6 overflow-hidden rounded-lg"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader className="px-0">
           <DialogTitle className="break-words text-lg sm:text-xl">{show.title}</DialogTitle>
           {show.genre && (
