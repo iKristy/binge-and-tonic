@@ -35,8 +35,31 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const { latestEpisode, isLoading: isLoadingEpisode } = useLatestEpisode(show?.tmdbId, show?.seasonNumber);
-  
+
+  // Preserve the page's scroll position when the dialog opens/closes.
+  // Radix + focus changes can otherwise shift the underlying document.
+  const savedScrollY = React.useRef<number | null>(null);
+  React.useLayoutEffect(() => {
+    if (isOpen) {
+      savedScrollY.current = window.scrollY;
+      let frames = 0;
+      const restore = () => {
+        if (savedScrollY.current == null) return;
+        if (window.scrollY !== savedScrollY.current) {
+          window.scrollTo({ top: savedScrollY.current, left: 0, behavior: "auto" });
+        }
+        if (frames++ < 6) requestAnimationFrame(restore);
+      };
+      requestAnimationFrame(restore);
+    } else if (savedScrollY.current != null) {
+      const y = savedScrollY.current;
+      savedScrollY.current = null;
+      requestAnimationFrame(() => window.scrollTo({ top: y, left: 0, behavior: "auto" }));
+    }
+  }, [isOpen]);
+
   if (!show) return null;
+
 
   const isComplete = show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
   const remainingEpisodes = Math.max(0, show.totalEpisodes - show.releasedEpisodes);
