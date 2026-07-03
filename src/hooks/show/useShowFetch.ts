@@ -10,9 +10,9 @@ export function useShowFetch(user: User | null) {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  const fetchShows = async () => {
+  const fetchShows = async ({ showLoading = false }: { showLoading?: boolean } = {}) => {
     try {
-      setIsLoading(true);
+      if (showLoading) setIsLoading(true);
       
       // If not logged in, we'll use local storage for demo purposes
       if (!user) {
@@ -80,7 +80,7 @@ export function useShowFetch(user: User | null) {
   };
 
   useEffect(() => {
-    fetchShows();
+    fetchShows({ showLoading: true });
   }, [user]);
 
   // Set up real-time updates for shows table
@@ -116,6 +116,6 @@ export function useShowFetch(user: User | null) {
     shows,
     setShows,
     isLoading,
-    refreshShows: fetchShows
+    refreshShows: () => fetchShows()
   };
 }
