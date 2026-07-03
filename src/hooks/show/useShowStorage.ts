@@ -29,41 +29,26 @@ export function useShowStorage(user: User | null) {
 
       // Only store in Supabase if the user is logged in
       if (user) {
-        // First, check if the show already exists in the shows table
-        let showId: number;
-        
-        const { data: existingShow, error: findError } = await supabase
-          .from("shows")
-          .select("id")
-          .eq("tmdb_id", newShow.tmdbId)
-          .single();
-        
-        if (findError && findError.code !== "PGRST116") { // Not found error is expected
-          throw findError;
+        // Upsert the catalog row via a privileged edge function; the shows
+        // table is no longer directly writable from the client.
+        const { data: addShowData, error: addShowError } = await supabase.functions.invoke("add-show", {
+          body: {
+            tmdbId: newShow.tmdbId,
+            title: newShow.title,
+            posterUrl: newShow.imageUrl,
+            totalEpisodes: newShow.totalEpisodes,
+            releasedEpisodes: newShow.releasedEpisodes,
+            seasonNumber: newShow.seasonNumber,
+          },
+        });
+
+        if (addShowError) {
+          throw addShowError;
         }
-        
-        // If the show doesn't exist, insert it
-        if (!existingShow) {
-          const { data: insertedShow, error: insertShowError } = await supabase
-            .from("shows")
-            .insert({
-              tmdb_id: newShow.tmdbId,
-              title: newShow.title,
-              poster_url: newShow.imageUrl,
-              total_episodes: newShow.totalEpisodes,
-              released_episodes: newShow.releasedEpisodes,
-              season_number: newShow.seasonNumber
-            })
-            .select("id")
-            .single();
-            
-          if (insertShowError) {
-            throw insertShowError;
-          }
-          
-          showId = insertedShow.id;
-        } else {
-          showId = existingShow.id;
+
+        const showId: number | undefined = addShowData?.showId;
+        if (!showId) {
+          throw new Error("Failed to register show in catalog");
         }
         
         // Now create the relationship between user and show

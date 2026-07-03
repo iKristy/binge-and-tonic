@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Authenticated users can insert shows" ON public.shows;
