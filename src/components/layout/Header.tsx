@@ -9,6 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import MobileActions from "./MobileActions";
 import DesktopActions from "./DesktopActions";
 import FilterControls from "./FilterControls";
+import RefreshShowsButton from "@/components/RefreshShowsButton";
 
 interface HeaderProps {
   filter: FilterType;
@@ -18,6 +19,7 @@ interface HeaderProps {
   onAddShow: (show: any) => void;
   isAddFormOpen: boolean;
   setIsAddFormOpen: (isOpen: boolean) => void;
+  onRefreshShows: () => void;
   showCounts: {
     total: number;
     complete: number;
@@ -33,6 +35,7 @@ const Header: React.FC<HeaderProps> = ({
   onAddShow,
   isAddFormOpen,
   setIsAddFormOpen,
+  onRefreshShows,
   showCounts
 }) => {
   const { user, signOut } = useAuth();
@@ -80,17 +83,26 @@ const Header: React.FC<HeaderProps> = ({
             <Logo />
             
             {isMobile && (
-              <MobileActions
-                isAuthenticated={!!user}
-                isAddFormOpen={isAddFormOpen}
-                setIsAddFormOpen={setIsAddFormOpen}
-                onAddShow={onAddShow}
-                onSignOut={handleSignOut}
-                onSignIn={handleSignIn}
-                onSignUp={handleSignUp}
-                userMenuOpen={userMenuOpen}
-                setUserMenuOpen={setUserMenuOpen}
-              />
+              <div className="flex items-center gap-2">
+                {user && (
+                  <RefreshShowsButton
+                    variant="icon"
+                    user={user}
+                    onRefreshComplete={onRefreshShows}
+                  />
+                )}
+                <MobileActions
+                  isAuthenticated={!!user}
+                  isAddFormOpen={isAddFormOpen}
+                  setIsAddFormOpen={setIsAddFormOpen}
+                  onAddShow={onAddShow}
+                  onSignOut={handleSignOut}
+                  onSignIn={handleSignIn}
+                  onSignUp={handleSignUp}
+                  userMenuOpen={userMenuOpen}
+                  setUserMenuOpen={setUserMenuOpen}
+                />
+              </div>
             )}
           </div>
           
@@ -104,17 +116,26 @@ const Header: React.FC<HeaderProps> = ({
             />
             
             {!isMobile && (
-              <DesktopActions
-                isAuthenticated={!!user}
-                isAddFormOpen={isAddFormOpen}
-                setIsAddFormOpen={setIsAddFormOpen}
-                onAddShow={onAddShow}
-                onSignOut={handleSignOut}
-                onSignIn={handleSignIn}
-                onSignUp={handleSignUp}
-                userMenuOpen={userMenuOpen}
-                setUserMenuOpen={setUserMenuOpen}
-              />
+              <div className="flex items-center gap-2">
+                {user && (
+                  <RefreshShowsButton
+                    variant="icon"
+                    user={user}
+                    onRefreshComplete={onRefreshShows}
+                  />
+                )}
+                <DesktopActions
+                  isAuthenticated={!!user}
+                  isAddFormOpen={isAddFormOpen}
+                  setIsAddFormOpen={setIsAddFormOpen}
+                  onAddShow={onAddShow}
+                  onSignOut={handleSignOut}
+                  onSignIn={handleSignIn}
+                  onSignUp={handleSignUp}
+                  userMenuOpen={userMenuOpen}
+                  setUserMenuOpen={setUserMenuOpen}
+                />
+              </div>
             )}
           </div>
         </div>
