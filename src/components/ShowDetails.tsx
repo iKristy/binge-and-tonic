@@ -137,11 +137,13 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
               <span className="text-sm font-medium">Latest Episode</span>
             </div>
             <div className="space-y-1">
-              <div className="text-sm sm:text-base font-medium">
-                Episode {latestEpisode.episodeNumber}: {latestEpisode.name}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Aired {formatAirDate(latestEpisode.airDate)}
+              <div className="flex items-baseline justify-between gap-3">
+                <div className="text-sm sm:text-base font-medium">
+                  Episode {latestEpisode.episodeNumber}: {latestEpisode.name}
+                </div>
+                <div className="text-sm text-muted-foreground text-right whitespace-nowrap flex-shrink-0">
+                  Aired {formatAirDate(latestEpisode.airDate)}
+                </div>
               </div>
               {latestEpisode.overview && (
                 <div className="text-sm text-muted-foreground line-clamp-2 mt-1">
