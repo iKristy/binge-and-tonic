@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarDays, ExternalLink, Trash2, Eye, EyeOff, Clock, RefreshCw } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLatestEpisode } from "@/hooks/show/useLatestEpisode";
+import { morphFromDialog, MORPH_NAME } from "@/lib/viewTransition";
 
 interface ShowDetailsProps {
   show: Show | null;
@@ -63,9 +64,19 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
     }
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (open) return;
+    const cardEl = show.id
+      ? document.querySelector<HTMLElement>(`[data-show-card="${show.id}"]`)
+      : null;
+    morphFromDialog(cardEl, onClose);
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent
+        animated={false}
+        style={{ viewTransitionName: MORPH_NAME }}
         className="max-w-lg w-[95vw] sm:w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto rounded-lg"
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}

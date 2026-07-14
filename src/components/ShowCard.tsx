@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CalendarDays, Info } from "lucide-react";
+import { morphToDialog } from "@/lib/viewTransition";
+import { usePrefetchLatestEpisode } from "@/hooks/show/useLatestEpisode";
 
 interface ShowCardProps {
   show: Show;
@@ -19,16 +21,21 @@ const ShowCard: React.FC<ShowCardProps> = ({
   const progressPercent = show.totalEpisodes > 0
     ? Math.min(100, (show.releasedEpisodes / show.totalEpisodes) * 100)
     : 0;
-  const handleCardClick = () => {
-    onViewDetails(show);
+  const prefetchLatestEpisode = usePrefetchLatestEpisode();
+  const prefetch = () => prefetchLatestEpisode(show.tmdbId, show.seasonNumber);
+  const openDetails = (el: HTMLElement | null) => {
+    morphToDialog(el, () => onViewDetails(show));
   };
-  const handleCardKeyDown = (e: React.KeyboardEvent) => {
+  const handleCardClick = (e: React.MouseEvent<HTMLElement>) => {
+    openDetails(e.currentTarget);
+  };
+  const handleCardKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      onViewDetails(show);
+      openDetails(e.currentTarget);
     }
   };
-  return <Card className={`group relative aspect-[2/3] w-full overflow-hidden transition-all hover:shadow-xl hover:border-gray-700 cursor-pointer ${show.watched ? 'opacity-50' : ''}`} onClick={handleCardClick} onKeyDown={handleCardKeyDown} role="button" tabIndex={0} aria-label={`View details for ${show.title}`}>
+  return <Card data-show-card={show.id} className={`group relative aspect-[2/3] w-full overflow-hidden transition-all hover:shadow-xl hover:border-gray-700 cursor-pointer ${show.watched ? 'opacity-50' : ''}`} onClick={handleCardClick} onKeyDown={handleCardKeyDown} onMouseEnter={prefetch} onFocus={prefetch} role="button" tabIndex={0} aria-label={`View details for ${show.title}`}>
       <img src={show.imageUrl || "/placeholder.svg"} alt={show.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
       <Badge variant={isComplete ? "complete" : "inProgress"} className="absolute top-2 right-2 z-10">
         {isComplete ? "Season completed" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
@@ -53,12 +60,12 @@ const ShowCard: React.FC<ShowCardProps> = ({
           <div className="flex items-center gap-2 text-sm text-white/80">
             <CalendarDays className="h-4 w-4" />
             <span className="font-normal">
-              {show.releasedEpisodes} / {show.totalEpisodes} episodes released
+              {show.releasedEpisodes} / {show.totalEpisodes} released
             </span>
           </div>
           <Button variant="outline" onClick={e => {
           e.stopPropagation();
-          onViewDetails(show);
+          openDetails(e.currentTarget.closest<HTMLElement>("[data-show-card]"));
         }} aria-label={`View details for ${show.title}`}>
             <Info className="h-4 w-4 mr-1" aria-hidden="true" /> Details
           </Button>

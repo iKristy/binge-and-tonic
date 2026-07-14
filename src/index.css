@@ -80,3 +80,14 @@
     background-color: var(--surface2);
   }
 }
+
+::view-transition-group(show-detail-morph) {
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*) {
+    animation: none !important;
+  }
+}

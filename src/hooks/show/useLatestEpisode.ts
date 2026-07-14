@@ -1,72 +1,95 @@
-import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { LatestEpisode } from "@/types/Show";
 import { supabase } from "@/integrations/supabase/client";
 
-export function useLatestEpisode(tmdbId: number | undefined, seasonNumber: number | undefined) {
-  const [latestEpisode, setLatestEpisode] = useState<LatestEpisode | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const latestEpisodeQueryKey = (
+  tmdbId: number | undefined,
+  seasonNumber: number | undefined
+) => ["latestEpisode", tmdbId ?? null, seasonNumber ?? null] as const;
 
-  useEffect(() => {
-    if (!tmdbId || !seasonNumber) {
-      setLatestEpisode(null);
-      return;
-    }
+async function fetchLatestEpisode(
+  tmdbId: number,
+  seasonNumber: number
+): Promise<LatestEpisode | null> {
+  const { data, error: functionError } = await supabase.functions.invoke("tmdb", {
+    body: {
+      action: "season",
+      path: `/tv/${tmdbId}/season/${seasonNumber}?language=en-US`,
+    },
+  });
 
-    const fetchLatestEpisode = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+  if (functionError) {
+    throw new Error(`Failed to fetch season details: ${functionError.message}`);
+  }
+  if (!data) {
+    throw new Error("No data returned from TMDB API");
+  }
 
-        // Use the TMDB edge function to fetch season details
-        const { data, error: functionError } = await supabase.functions.invoke('tmdb', {
-          body: {
-            action: 'season',
-            path: `/tv/${tmdbId}/season/${seasonNumber}?language=en-US`
-          }
-        });
+  const today = new Date();
+  const airedEpisodes =
+    data.episodes?.filter((episode: any) => {
+      if (!episode.air_date) return false;
+      return new Date(episode.air_date) <= today;
+    }) || [];
 
-        if (functionError) {
-          throw new Error(`Failed to fetch season details: ${functionError.message}`);
-        }
+  if (airedEpisodes.length === 0) {
+    return null;
+  }
 
-        if (!data) {
-          throw new Error('No data returned from TMDB API');
-        }
-        
-        // Find the latest aired episode
-        const today = new Date();
-        const airedEpisodes = data.episodes?.filter((episode: any) => {
-          if (!episode.air_date) return false;
-          return new Date(episode.air_date) <= today;
-        }) || [];
-        
-        if (airedEpisodes.length > 0) {
-          // Get the latest aired episode (highest episode number)
-          const latest = airedEpisodes.reduce((prev: any, current: any) => 
-            current.episode_number > prev.episode_number ? current : prev
-          );
-          
-          setLatestEpisode({
-            episodeNumber: latest.episode_number,
-            name: latest.name,
-            airDate: latest.air_date,
-            overview: latest.overview
-          });
-        } else {
-          setLatestEpisode(null);
-        }
-      } catch (err: any) {
-        console.error("Error fetching latest episode:", err);
-        setError(err.message);
-        setLatestEpisode(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const latest = airedEpisodes.reduce((prev: any, current: any) =>
+    current.episode_number > prev.episode_number ? current : prev
+  );
 
-    fetchLatestEpisode();
-  }, [tmdbId, seasonNumber]);
+  return {
+    episodeNumber: latest.episode_number,
+    name: latest.name,
+    airDate: latest.air_date,
+    overview: latest.overview,
+  };
+}
 
-  return { latestEpisode, isLoading, error };
+// Episodes rarely change, so keep results cached long enough that reopening a
+// show's details renders instantly without a layout shift.
+const STALE_TIME = 1000 * 60 * 30;
+const GC_TIME = 1000 * 60 * 60;
+
+export function useLatestEpisode(
+  tmdbId: number | undefined,
+  seasonNumber: number | undefined
+) {
+  const {
+    data,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: latestEpisodeQueryKey(tmdbId, seasonNumber),
+    queryFn: () => fetchLatestEpisode(tmdbId as number, seasonNumber as number),
+    enabled: !!tmdbId && !!seasonNumber,
+    staleTime: STALE_TIME,
+    gcTime: GC_TIME,
+  });
+
+  return {
+    latestEpisode: data ?? null,
+    isLoading,
+    error: error ? (error as Error).message : null,
+  };
+}
+
+/**
+ * Returns a function that warms the latest-episode cache ahead of time (e.g. on
+ * card hover/focus) so the detail modal has data ready and doesn't shift.
+ */
+export function usePrefetchLatestEpisode() {
+  const queryClient = useQueryClient();
+
+  return (tmdbId: number | undefined, seasonNumber: number | undefined) => {
+    if (!tmdbId || !seasonNumber) return;
+    queryClient.prefetchQuery({
+      queryKey: latestEpisodeQueryKey(tmdbId, seasonNumber),
+      queryFn: () => fetchLatestEpisode(tmdbId, seasonNumber),
+      staleTime: STALE_TIME,
+      gcTime: GC_TIME,
+    });
+  };
 }
