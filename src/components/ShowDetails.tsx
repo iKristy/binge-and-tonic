@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, ExternalLink, Film, Trash2, Eye, EyeOff, Clock, RefreshCw } from "lucide-react";
+import { CalendarDays, ExternalLink, Trash2, Eye, EyeOff, Clock, RefreshCw } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLatestEpisode } from "@/hooks/show/useLatestEpisode";
 
@@ -66,7 +66,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="max-w-lg w-[95vw] sm:w-full p-4 sm:p-6 overflow-hidden rounded-lg"
+        className="max-w-lg w-[95vw] sm:w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto rounded-lg"
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
@@ -111,26 +111,16 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           />
         </div>
 
-        {show.seasonNumber && (
-          <div className="mt-2 flex items-center gap-2">
-            <Film className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm sm:text-base">Season {show.seasonNumber}</span>
-          </div>
-        )}
-
         {latestEpisode && !isLoadingEpisode && (
           <div className="mt-3 bg-muted/50 rounded-lg">
             <div className="flex items-center gap-2 mb-2 text-muted-foreground">
               <Clock className="h-4 w-4" />
-              <span className="text-sm font-medium">Latest episode</span>
+              <span className="text-sm font-medium">Latest episode aired {formatAirDate(latestEpisode.airDate)}</span>
             </div>
             <div className="space-y-1">
               <div className="flex items-baseline justify-between gap-3">
                 <div className="text-sm sm:text-base font-medium">
-                  Episode {latestEpisode.episodeNumber}: {latestEpisode.name}
-                </div>
-                <div className="text-sm text-muted-foreground text-right whitespace-nowrap flex-shrink-0">
-                  Aired {formatAirDate(latestEpisode.airDate)}
+                  {show.seasonNumber ? `S${show.seasonNumber}` : ""}E{latestEpisode.episodeNumber}: {latestEpisode.name}
                 </div>
               </div>
               {latestEpisode.overview && (
