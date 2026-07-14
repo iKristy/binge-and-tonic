@@ -119,7 +119,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
         )}
 
         {latestEpisode && !isLoadingEpisode && (
-          <div className="mt-3 py-2 bg-muted/50 rounded-lg">
+          <div className="mt-3 bg-muted/50 rounded-lg">
             <div className="flex items-center gap-2 mb-2 text-muted-foreground">
               <Clock className="h-4 w-4" />
               <span className="text-sm font-medium">Latest episode</span>
