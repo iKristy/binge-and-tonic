@@ -8,11 +8,13 @@ import { User } from "@supabase/supabase-js";
 interface RefreshShowsButtonProps {
   onRefreshComplete: () => void;
   user: User | null;
+  variant?: "default" | "icon";
 }
 
 const RefreshShowsButton: React.FC<RefreshShowsButtonProps> = ({
   onRefreshComplete,
-  user
+  user,
+  variant = "default",
 }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
@@ -29,9 +31,8 @@ const RefreshShowsButton: React.FC<RefreshShowsButtonProps> = ({
 
     setIsRefreshing(true);
     try {
-      // Call the update-shows edge function
       const { data, error } = await supabase.functions.invoke("update-shows", {
-        body: { action: "update" }
+        body: { action: "update" },
       });
 
       if (error) {
@@ -42,8 +43,7 @@ const RefreshShowsButton: React.FC<RefreshShowsButtonProps> = ({
         title: "Shows refreshed",
         description: data?.message || "Your shows have been refreshed with the latest data",
       });
-      
-      // After successful update, trigger a fresh fetch of shows
+
       onRefreshComplete();
     } catch (error: any) {
       console.error("Error refreshing shows:", error);
@@ -57,15 +57,38 @@ const RefreshShowsButton: React.FC<RefreshShowsButtonProps> = ({
     }
   };
 
+  const label = isRefreshing ? "Refreshing shows..." : "Refresh shows";
+
+  if (variant === "icon") {
+    return (
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={handleRefresh}
+        disabled={isRefreshing || !user}
+        aria-label={label}
+        title={label}
+      >
+        <RefreshCw
+          className={`h-5 w-5 ${isRefreshing ? "animate-spin" : ""}`}
+          aria-hidden="true"
+        />
+      </Button>
+    );
+  }
+
   return (
     <Button
       variant="outline"
       onClick={handleRefresh}
       disabled={isRefreshing || !user}
       className="w-full"
-      aria-label={isRefreshing ? "Refreshing shows..." : "Refresh shows list"}
+      aria-label={label}
     >
-      <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} aria-hidden="true" />
+      <RefreshCw
+        className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`}
+        aria-hidden="true"
+      />
       {isRefreshing ? "Refreshing..." : "Refresh shows"}
     </Button>
   );
