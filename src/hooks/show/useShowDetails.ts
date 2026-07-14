@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Show } from "@/types/Show";
 import { useShowRefresh } from "@/hooks/show/useShowRefresh";
 
@@ -34,7 +34,7 @@ export function useShowDetails(
     };
   }, [isDetailsOpen]);
 
-  const applyRefreshed = (current: Show, refreshed: { seasonNumber: number; releasedEpisodes: number; totalEpisodes: number; }) => {
+  const applyRefreshed = useCallback((current: Show, refreshed: { seasonNumber: number; releasedEpisodes: number; totalEpisodes: number; }) => {
     const updated: Show = {
       ...current,
       seasonNumber: refreshed.seasonNumber,
@@ -44,9 +44,9 @@ export function useShowDetails(
     };
     setSelectedShow(updated);
     onShowDataUpdated?.();
-  };
+  }, [onShowDataUpdated]);
 
-  const handleViewDetails = (show: Show) => {
+  const handleViewDetails = useCallback((show: Show) => {
     savedScrollY.current = window.scrollY;
     setSelectedShow(show);
     setIsDetailsOpen(true);
@@ -56,7 +56,7 @@ export function useShowDetails(
         if (refreshed) applyRefreshed(show, refreshed);
       });
     }
-  };
+  }, [refreshShow, applyRefreshed]);
 
   const handleManualRefresh = async () => {
     if (!selectedShow?.tmdbId) return;

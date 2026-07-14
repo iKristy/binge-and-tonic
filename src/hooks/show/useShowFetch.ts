@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Show } from "@/types/Show";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +10,7 @@ export function useShowFetch(user: User | null) {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  const fetchShows = async ({ showLoading = false }: { showLoading?: boolean } = {}) => {
+  const fetchShows = useCallback(async ({ showLoading = false }: { showLoading?: boolean } = {}) => {
     try {
       if (showLoading) setIsLoading(true);
       
@@ -77,11 +77,13 @@ export function useShowFetch(user: User | null) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, toast]);
+
+  const refreshShows = useCallback(() => fetchShows(), [fetchShows]);
 
   useEffect(() => {
     fetchShows({ showLoading: true });
-  }, [user]);
+  }, [fetchShows]);
 
   // Set up real-time updates for shows table
   useEffect(() => {
@@ -110,12 +112,12 @@ export function useShowFetch(user: User | null) {
       console.log("Cleaning up real-time subscription");
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user, fetchShows]);
 
   return {
     shows,
     setShows,
     isLoading,
-    refreshShows: () => fetchShows()
+    refreshShows
   };
 }
