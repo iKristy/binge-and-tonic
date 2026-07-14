@@ -46,7 +46,7 @@ const Index: React.FC = () => {
   const watchedShows = filteredShows.filter(show => show.watched);
   const unwatchedShows = filteredShows.filter(show => !show.watched);
   return <div className="min-h-screen bg-background">
-      <Header filter={filter} onFilterChange={setFilter} sortBy={sortBy} onSortChange={setSortBy} onAddShow={handleAddShow} isAddFormOpen={isAddFormOpen} setIsAddFormOpen={setIsAddFormOpen} showCounts={{
+      <Header filter={filter} onFilterChange={setFilter} sortBy={sortBy} onSortChange={setSortBy} onAddShow={handleAddShow} isAddFormOpen={isAddFormOpen} setIsAddFormOpen={setIsAddFormOpen} onRefreshShows={refreshShows} showCounts={{
       total: totalCount,
       complete: completeCount,
       waiting: waitingCount
