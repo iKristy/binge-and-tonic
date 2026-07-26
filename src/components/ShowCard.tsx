@@ -63,11 +63,12 @@ const ShowCard: React.FC<ShowCardProps> = ({
               {show.releasedEpisodes} / {show.totalEpisodes} released
             </span>
           </div>
-          <Button variant="outline" className="h-7 shrink-0 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm" onClick={e => {
+          <Button variant="outline" className="h-7 w-7 shrink-0 px-0 sm:h-9 sm:w-auto sm:px-3 sm:text-sm" onClick={e => {
           e.stopPropagation();
           openDetails(e.currentTarget.closest<HTMLElement>("[data-show-card]"));
         }} aria-label={`View details for ${show.title}`}>
-            <Info className="mr-1 h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" /> Details
+            <Info className="h-3.5 w-3.5 sm:mr-1 sm:h-4 sm:w-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Details</span>
           </Button>
         </div>
       </div>
