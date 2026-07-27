@@ -55,7 +55,7 @@ const DesktopActions: React.FC<DesktopActionsProps> = ({
           variant="outline" 
           onClick={onSignOut} 
           aria-label="Sign out" 
-          className="flex items-center gap-2 min-w-[40px]"
+          className="flex items-center min-w-[40px]"
         >
           <LogOut className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
           <span className={`${isTablet ? 'hidden' : 'inline-block'} truncate`}>Sign out</span>
