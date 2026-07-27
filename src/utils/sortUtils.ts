@@ -1,5 +1,6 @@
 
 import { Show } from "@/types/Show";
+import { hasUpcomingSeason } from "@/utils/showStatus";
 
 /**
  * Sort shows alphabetically by title
@@ -9,13 +10,26 @@ export const sortAlphabetically = (a: Show, b: Show): number => {
 };
 
 /**
- * Sort shows by status (complete first, then waiting)
+ * Rank a show for status sorting. Lower ranks sort first.
+ * Complete shows come first, then in-progress ("waiting") shows, and shows
+ * that are only waiting on an unreleased new season sort last, since there's
+ * nothing new to binge yet.
+ */
+const getStatusRank = (show: Show): number => {
+  if (hasUpcomingSeason(show)) return 2;
+  const isComplete =
+    show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
+  return isComplete ? 0 : 1;
+};
+
+/**
+ * Sort shows by status (complete first, then waiting, then new-season shows)
  * with secondary alphabetical sorting
  */
 export const sortByStatus = (a: Show, b: Show): number => {
-  // Sort complete shows first, then waiting
-  if (a.status === "complete" && b.status !== "complete") return -1;
-  if (a.status !== "complete" && b.status === "complete") return 1;
+  const rankA = getStatusRank(a);
+  const rankB = getStatusRank(b);
+  if (rankA !== rankB) return rankA - rankB;
   return sortAlphabetically(a, b); // Secondary sort by title
 };
 
