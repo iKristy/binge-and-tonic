@@ -73,6 +73,12 @@ async function refreshShow(show: any) {
     seasonNumber === previousSeasonNumber && releasedEpisodes > previousReleasedEpisodes;
   const hasNewContent = hasNewSeason || hasNewEpisodes;
 
+  // A show newly entering the pre-release "New season" window (an upcoming
+  // season just got announced where none was tracked before) should also move
+  // back to the unwatched list, just like freshly aired content does.
+  const previousNextSeasonAirDate = show.next_season_air_date ?? null;
+  const gainedUpcomingSeason = !previousNextSeasonAirDate && !!nextSeasonAirDate;
+
   const { error: updateError } = await supabase
     .from("shows")
     .update({
@@ -91,10 +97,11 @@ async function refreshShow(show: any) {
     throw new Error(`Error updating show ${show.title}: ${updateError.message}`);
   }
 
-  // When new content lands, any user who had already marked this show as
-  // watched should see it move back to their unwatched list.
+  // When new content lands (or a new season is newly announced), any user who
+  // had already marked this show as watched should see it move back to their
+  // unwatched list.
   let unwatchedRelations = 0;
-  if (hasNewContent) {
+  if (hasNewContent || gainedUpcomingSeason) {
     const { data: reset, error: resetError } = await supabase
       .from("user_show_relations")
       .update({ watched: false, updated_at: new Date().toISOString() })
@@ -122,6 +129,7 @@ async function refreshShow(show: any) {
     totalEpisodes,
     nextSeasonAirDate,
     hasNewContent,
+    gainedUpcomingSeason,
     unwatchedRelations,
   };
 }
@@ -163,7 +171,7 @@ serve(async (req) => {
     if (payload?.tmdbId || payload?.showId) {
       let query = supabase
         .from("shows")
-        .select("id, tmdb_id, title, total_episodes, released_episodes, season_number, retry_count, last_error")
+        .select("id, tmdb_id, title, total_episodes, released_episodes, season_number, next_season_air_date, retry_count, last_error")
         .limit(1);
 
       if (payload.tmdbId) query = query.eq("tmdb_id", payload.tmdbId);
@@ -199,7 +207,7 @@ serve(async (req) => {
 
     const { data: shows, error: fetchError } = await supabase
       .from("shows")
-      .select("id, tmdb_id, title, total_episodes, released_episodes, season_number, retry_count, last_error")
+      .select("id, tmdb_id, title, total_episodes, released_episodes, season_number, next_season_air_date, retry_count, last_error")
       .or(`updated_at.is.null,updated_at.lt.${staleCutoff}`)
       .lt("retry_count", MAX_RETRIES)
       .order("updated_at", { ascending: true, nullsFirst: true })

@@ -8,7 +8,9 @@ interface RefreshedShow {
   seasonNumber: number;
   releasedEpisodes: number;
   totalEpisodes: number;
+  nextSeasonAirDate?: string | null;
   hasNewContent?: boolean;
+  gainedUpcomingSeason?: boolean;
 }
 
 /**
