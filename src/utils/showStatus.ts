@@ -29,6 +29,17 @@ export const hasUpcomingSeason = (show: Show): boolean => {
   return new Date(show.nextSeasonAirDate).getTime() > Date.now();
 };
 
+/**
+ * A show is "ready to binge" when its currently tracked season is fully
+ * released and it isn't merely waiting on an announced-but-unaired new season.
+ * A "New season" (pre-release) show has all of its current episodes out but
+ * nothing fresh to watch yet, so it's treated as "waiting for episodes".
+ */
+export const isReadyToBinge = (show: Show): boolean => {
+  if (hasUpcomingSeason(show)) return false;
+  return show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
+};
+
 export type ShowBadgeVariant = "finished" | "complete" | "inProgress" | "announced";
 
 export interface ShowBadge {

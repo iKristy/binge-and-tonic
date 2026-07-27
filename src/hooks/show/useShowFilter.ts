@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Show } from "@/types/Show";
-import { isSeriesFinished } from "@/utils/showStatus";
+import { isSeriesFinished, isReadyToBinge } from "@/utils/showStatus";
 
 export type FilterType = "all" | "complete" | "waiting" | "finished";
 
@@ -11,13 +11,13 @@ export function useShowFilter(shows: Show[]) {
   const filteredShows = shows.filter((show) => {
     if (filter === "all") return true;
     if (filter === "finished") return isSeriesFinished(show);
-    if (filter === "complete") return show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
-    return show.status === "waiting" && show.releasedEpisodes < show.totalEpisodes;
+    if (filter === "complete") return isReadyToBinge(show);
+    // "Waiting for episodes" covers anything that isn't ready to binge, which
+    // now includes "New season" shows waiting on an announced upcoming season.
+    return !isReadyToBinge(show);
   });
   
-  const completeCount = shows.filter(show => 
-    show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes
-  ).length;
+  const completeCount = shows.filter(isReadyToBinge).length;
   
   const finishedCount = shows.filter(isSeriesFinished).length;
   const waitingCount = shows.length - completeCount;
