@@ -8,6 +8,7 @@ interface AddShowBody {
   totalEpisodes: number
   releasedEpisodes: number
   seasonNumber: number
+  seriesStatus?: string | null
 }
 
 function validate(body: unknown): { ok: true; data: AddShowBody } | { ok: false; error: string } {
@@ -19,6 +20,7 @@ function validate(body: unknown): { ok: true; data: AddShowBody } | { ok: false;
   const releasedEpisodes = Number(b.releasedEpisodes)
   const seasonNumber = Number(b.seasonNumber)
   const posterUrl = b.posterUrl == null ? null : String(b.posterUrl)
+  const seriesStatus = b.seriesStatus == null ? null : String(b.seriesStatus)
 
   if (!Number.isInteger(tmdbId) || tmdbId <= 0) return { ok: false, error: 'tmdbId must be a positive integer' }
   if (!title || title.length > 500) return { ok: false, error: 'title required, max 500 chars' }
@@ -26,8 +28,9 @@ function validate(body: unknown): { ok: true; data: AddShowBody } | { ok: false;
   if (!Number.isInteger(releasedEpisodes) || releasedEpisodes < 0 || releasedEpisodes > 100000) return { ok: false, error: 'releasedEpisodes invalid' }
   if (!Number.isInteger(seasonNumber) || seasonNumber < 0 || seasonNumber > 1000) return { ok: false, error: 'seasonNumber invalid' }
   if (posterUrl && posterUrl.length > 2000) return { ok: false, error: 'posterUrl too long' }
+  if (seriesStatus && seriesStatus.length > 100) return { ok: false, error: 'seriesStatus too long' }
 
-  return { ok: true, data: { tmdbId, title, posterUrl, totalEpisodes, releasedEpisodes, seasonNumber } }
+  return { ok: true, data: { tmdbId, title, posterUrl, totalEpisodes, releasedEpisodes, seasonNumber, seriesStatus } }
 }
 
 Deno.serve(async (req) => {
@@ -83,6 +86,14 @@ Deno.serve(async (req) => {
     let showId: number
     if (existing) {
       showId = existing.id
+      // Backfill the series status on catalog rows added before this column
+      // existed so the "Finished series" filter works without a full refresh.
+      if (input.seriesStatus) {
+        await admin
+          .from('shows')
+          .update({ series_status: input.seriesStatus })
+          .eq('id', showId)
+      }
     } else {
       const { data: inserted, error: insertErr } = await admin
         .from('shows')
@@ -93,6 +104,7 @@ Deno.serve(async (req) => {
           total_episodes: input.totalEpisodes,
           released_episodes: input.releasedEpisodes,
           season_number: input.seasonNumber,
+          series_status: input.seriesStatus,
         })
         .select('id')
         .single()

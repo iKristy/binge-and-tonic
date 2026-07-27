@@ -38,7 +38,8 @@ export function useShowFetch(user: User | null) {
             poster_url,
             total_episodes,
             released_episodes,
-            season_number
+            season_number,
+            series_status
           )
         `)
         .eq("user_id", user.id)
@@ -59,6 +60,7 @@ export function useShowFetch(user: User | null) {
           status: relation.show.released_episodes >= relation.show.total_episodes ? "complete" : "waiting",
           seasonNumber: relation.show.season_number,
           tmdbId: relation.show.tmdb_id,
+          seriesStatus: relation.show.series_status || undefined,
           watched: relation.watched || false
         }));
         

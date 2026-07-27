@@ -17,4 +17,5 @@ export interface Show {
   seasonNumber?: number;
   watched?: boolean; // Ensure this matches the database column
   latestEpisode?: LatestEpisode;
+  seriesStatus?: string; // TMDB series-level status, e.g. "Returning Series", "Ended", "Canceled"
 }

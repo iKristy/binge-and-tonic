@@ -24,6 +24,7 @@ interface HeaderProps {
     total: number;
     complete: number;
     waiting: number;
+    finished: number;
   };
 }
 

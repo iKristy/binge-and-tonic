@@ -53,7 +53,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               poster_url: show.imageUrl,
               total_episodes: show.totalEpisodes,
               released_episodes: show.releasedEpisodes,
-              season_number: show.seasonNumber
+              season_number: show.seasonNumber,
+              series_status: show.seriesStatus
             })
             .select("id")
             .single();

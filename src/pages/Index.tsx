@@ -24,6 +24,7 @@ const Index: React.FC = () => {
     removeShow,
     completeCount,
     waitingCount,
+    finishedCount,
     totalCount,
     refreshShows,
     toggleWatched
@@ -49,7 +50,8 @@ const Index: React.FC = () => {
       <Header filter={filter} onFilterChange={setFilter} sortBy={sortBy} onSortChange={setSortBy} onAddShow={handleAddShow} isAddFormOpen={isAddFormOpen} setIsAddFormOpen={setIsAddFormOpen} onRefreshShows={refreshShows} showCounts={{
       total: totalCount,
       complete: completeCount,
-      waiting: waitingCount
+      waiting: waitingCount,
+      finished: finishedCount
     }} />
 
       <main className="mx-auto max-w-7xl p-6 space-y-8">

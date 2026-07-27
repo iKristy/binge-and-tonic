@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { CalendarDays, Info } from "lucide-react";
 import { morphToDialog } from "@/lib/viewTransition";
 import { usePrefetchLatestEpisode } from "@/hooks/show/useLatestEpisode";
+import { isSeriesFinished } from "@/utils/showStatus";
 
 interface ShowCardProps {
   show: Show;
@@ -17,6 +18,7 @@ const ShowCard: React.FC<ShowCardProps> = ({
   onViewDetails
 }) => {
   const isComplete = show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
+  const isFinished = isSeriesFinished(show);
   const remainingEpisodes = Math.max(0, show.totalEpisodes - show.releasedEpisodes);
   const progressPercent = show.totalEpisodes > 0
     ? Math.min(100, (show.releasedEpisodes / show.totalEpisodes) * 100)
@@ -37,8 +39,8 @@ const ShowCard: React.FC<ShowCardProps> = ({
   };
   return <Card data-show-card={show.id} className={`group relative aspect-[2/3] w-full overflow-hidden transition-all hover:shadow-xl hover:border-gray-700 cursor-pointer ${show.watched ? 'opacity-50' : ''}`} onClick={handleCardClick} onKeyDown={handleCardKeyDown} onMouseEnter={prefetch} onFocus={prefetch} role="button" tabIndex={0} aria-label={`View details for ${show.title}`}>
       <img src={show.imageUrl || "/placeholder.svg"} alt={show.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-      <Badge variant={isComplete ? "complete" : "inProgress"} className="absolute top-1.5 right-1.5 z-10 max-w-[calc(100%-0.75rem)] truncate text-[10px] sm:top-2 sm:right-2 sm:max-w-none sm:text-xs">
-        {isComplete ? "Season completed" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
+      <Badge variant={isFinished ? "finished" : isComplete ? "complete" : "inProgress"} className="absolute top-1.5 right-1.5 z-10 max-w-[calc(100%-0.75rem)] truncate text-[10px] sm:top-2 sm:right-2 sm:max-w-none sm:text-xs">
+        {isFinished ? "Finished series" : isComplete ? "Season completed" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
       </Badge>
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 backdrop-blur-md"

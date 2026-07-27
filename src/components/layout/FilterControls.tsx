@@ -22,6 +22,7 @@ interface FilterControlsProps {
     total: number;
     complete: number;
     waiting: number;
+    finished: number;
   };
 }
 
@@ -50,11 +51,13 @@ const FilterControls: React.FC<FilterControlsProps> = ({
                 {filter === "all" && "All shows"}
                 {filter === "complete" && "Ready to binge"}
                 {filter === "waiting" && "Waiting for episodes"}
+                {filter === "finished" && "Finished series"}
               </span>
               <CountBadge 
                 count={
                   filter === "all" ? showCounts.total :
                   filter === "complete" ? showCounts.complete :
+                  filter === "finished" ? showCounts.finished :
                   showCounts.waiting
                 } 
                 className="ml-2 flex-shrink-0"
@@ -75,6 +78,10 @@ const FilterControls: React.FC<FilterControlsProps> = ({
             <SelectItem value="waiting" className="flex items-center justify-between">
               <span>Waiting for episodes</span>
               <CountBadge count={showCounts.waiting} />
+            </SelectItem>
+            <SelectItem value="finished" className="flex items-center justify-between">
+              <span>Finished series</span>
+              <CountBadge count={showCounts.finished} />
             </SelectItem>
           </SelectGroup>
         </SelectContent>

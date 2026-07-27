@@ -23,6 +23,7 @@ export type Database = {
           released_episodes: number | null
           retry_count: number | null
           season_number: number | null
+          series_status: string | null
           title: string
           tmdb_id: number
           total_episodes: number
@@ -36,6 +37,7 @@ export type Database = {
           released_episodes?: number | null
           retry_count?: number | null
           season_number?: number | null
+          series_status?: string | null
           title: string
           tmdb_id: number
           total_episodes: number
@@ -49,6 +51,7 @@ export type Database = {
           released_episodes?: number | null
           retry_count?: number | null
           season_number?: number | null
+          series_status?: string | null
           title?: string
           tmdb_id?: number
           total_episodes?: number

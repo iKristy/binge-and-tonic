@@ -89,7 +89,8 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
       description: show.overview,
       genre: show.genres?.map(g => g.name).join(", "),
       tmdbId: show.id,
-      seasonNumber
+      seasonNumber,
+      seriesStatus: show.status
     };
   };
 

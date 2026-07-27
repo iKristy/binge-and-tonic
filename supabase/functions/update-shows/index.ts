@@ -59,6 +59,7 @@ async function refreshShow(show: any) {
       season_number: seasonNumber,
       released_episodes: releasedEpisodes,
       total_episodes: totalEpisodes,
+      series_status: showDetails.status ?? null,
       updated_at: new Date().toISOString(),
       retry_count: 0,
       last_error: null,

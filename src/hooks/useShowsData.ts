@@ -13,7 +13,7 @@ export type { SortType } from "@/hooks/show/useShowSort";
 
 export function useShowsData(user: User | null) {
   const { shows, setShows, isLoading, refreshShows } = useShowFetch(user);
-  const { filter, setFilter, filteredShows, completeCount, waitingCount, totalCount } = useShowFilter(shows);
+  const { filter, setFilter, filteredShows, completeCount, waitingCount, finishedCount, totalCount } = useShowFilter(shows);
   const { sortBy, setSortBy, sortedShows } = useShowSort(filteredShows);
   const { isShowAlreadyAdded, addShow: addShowToStorage, removeShow: removeShowFromStorage } = useShowStorage(user);
   const { toast } = useToast();
@@ -83,6 +83,7 @@ export function useShowsData(user: User | null) {
     refreshShows,
     completeCount,
     waitingCount,
+    finishedCount,
     totalCount,
     isShowAlreadyAdded: (tmdbId: number) => isShowAlreadyAdded(shows, tmdbId),
     toggleWatched
