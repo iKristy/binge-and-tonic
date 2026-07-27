@@ -124,7 +124,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
         </div>
 
         {latestEpisode && !isLoadingEpisode && (
-          <div className="mt-3 bg-muted/50 rounded-lg">
+          <div className="mt-2 bg-muted/50 rounded-lg">
             <div className="flex items-center gap-2 mb-2 text-muted-foreground">
               <Clock className="h-4 w-4" />
               <span className="text-sm font-medium">Latest episode aired {formatAirDate(latestEpisode.airDate)}</span>
@@ -166,12 +166,12 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
           >
             {show.watched ? (
               <>
-                <EyeOff className="h-4 w-4 mr-2" />
+                <EyeOff className="h-4 w-4" />
                 Mark as Unwatched
               </>
             ) : (
               <>
-                <Eye className="h-4 w-4 mr-2" />
+                <Eye className="h-4 w-4" />
                 Mark as Watched
               </>
             )}
@@ -181,7 +181,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
             onClick={handleRemove}
             className="w-full sm:flex-1"
           >
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="h-4 w-4" />
             Remove from my list
           </Button>
         </DialogFooter>
