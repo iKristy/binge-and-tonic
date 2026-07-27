@@ -14,7 +14,7 @@ import { CalendarDays, ExternalLink, Trash2, Eye, EyeOff, Clock, RefreshCw } fro
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLatestEpisode } from "@/hooks/show/useLatestEpisode";
 import { morphFromDialog, MORPH_NAME } from "@/lib/viewTransition";
-import { getShowBadge } from "@/utils/showStatus";
+import { getShowBadge, hasUpcomingSeason } from "@/utils/showStatus";
 
 interface ShowDetailsProps {
   show: Show | null;
@@ -141,6 +141,12 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {hasUpcomingSeason(show) && show.nextSeasonAirDate && (
+          <div className="mt-2 text-sm font-medium text-muted-foreground">
+            New season airs {formatAirDate(show.nextSeasonAirDate)}
           </div>
         )}
 
