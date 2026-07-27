@@ -39,6 +39,11 @@ export interface TMDbShow {
   status: string;
   genres: Array<{ id: number; name: string }>;
   seasons: TMDbSeason[];
+  next_episode_to_air?: {
+    air_date: string | null;
+    episode_number: number;
+    season_number: number;
+  } | null;
   popularity?: number;
   vote_average?: number;
 }

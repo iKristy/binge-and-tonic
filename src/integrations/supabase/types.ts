@@ -19,6 +19,7 @@ export type Database = {
           created_at: string | null
           id: number
           last_error: string | null
+          next_season_air_date: string | null
           poster_url: string | null
           released_episodes: number | null
           retry_count: number | null
@@ -33,6 +34,7 @@ export type Database = {
           created_at?: string | null
           id?: number
           last_error?: string | null
+          next_season_air_date?: string | null
           poster_url?: string | null
           released_episodes?: number | null
           retry_count?: number | null
@@ -47,6 +49,7 @@ export type Database = {
           created_at?: string | null
           id?: number
           last_error?: string | null
+          next_season_air_date?: string | null
           poster_url?: string | null
           released_episodes?: number | null
           retry_count?: number | null

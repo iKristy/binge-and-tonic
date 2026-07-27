@@ -40,6 +40,7 @@ export function useShowStorage(user: User | null) {
             releasedEpisodes: newShow.releasedEpisodes,
             seasonNumber: newShow.seasonNumber,
             seriesStatus: newShow.seriesStatus,
+            nextSeasonAirDate: newShow.nextSeasonAirDate ?? null,
           },
         });
 
@@ -77,7 +78,8 @@ export function useShowStorage(user: User | null) {
           status: newShow.releasedEpisodes >= newShow.totalEpisodes ? "complete" : "waiting",
           seasonNumber: newShow.seasonNumber,
           tmdbId: newShow.tmdbId,
-          seriesStatus: newShow.seriesStatus
+          seriesStatus: newShow.seriesStatus,
+          nextSeasonAirDate: newShow.nextSeasonAirDate ?? null
         };
         
         // Update the local state
@@ -94,7 +96,8 @@ export function useShowStorage(user: User | null) {
           status: newShow.releasedEpisodes >= newShow.totalEpisodes ? "complete" : "waiting",
           seasonNumber: newShow.seasonNumber,
           tmdbId: newShow.tmdbId,
-          seriesStatus: newShow.seriesStatus
+          seriesStatus: newShow.seriesStatus,
+          nextSeasonAirDate: newShow.nextSeasonAirDate ?? null
         };
         
         setShows([show, ...currentShows]);

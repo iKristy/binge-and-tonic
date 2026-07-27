@@ -43,10 +43,21 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
   }
 
   const prepareShowData = async (show: TMDbShow) => {
-    const latestSeason = show.seasons?.sort((a, b) => b.season_number - a.season_number)[0];
+    const today = new Date();
+
+    // Track the latest season that has already started airing (mirrors the
+    // server-side refresh logic). An announced-but-unaired season must not be
+    // treated as the current season, otherwise it looks like a released season
+    // with zero episodes out.
+    const airedSeasons = (show.seasons || []).filter(season => {
+      if (season.season_number === 0) return false;
+      if (!season.air_date) return false;
+      return new Date(season.air_date) <= today;
+    });
+    const latestSeason = airedSeasons.sort((a, b) => b.season_number - a.season_number)[0];
     const seasonNumber = latestSeason?.season_number || 1;
     const totalEpisodes = latestSeason?.episode_count || show.number_of_episodes || 0;
-    
+
     // Initialize with default values
     let releasedEpisodes = 0;
     
@@ -55,7 +66,6 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
       const seasonDetails = await getSeasonDetails(show.id, seasonNumber);
       
       if (seasonDetails?.episodes) {
-        const today = new Date();
         // Count episodes that have already aired
         releasedEpisodes = seasonDetails.episodes.filter(episode => {
           if (!episode.air_date) return false;
@@ -69,7 +79,6 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
       console.error("Error fetching season details:", error);
       // Fallback to the old logic if we can't get episode data
       const lastAirDate = new Date(show.last_air_date || show.first_air_date);
-      const today = new Date();
       const timeDiff = today.getTime() - lastAirDate.getTime();
       const daysSinceLastAir = timeDiff / (1000 * 3600 * 24);
       
@@ -81,6 +90,14 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
       console.log(`Using fallback logic: ${releasedEpisodes} of ${totalEpisodes} episodes have been released`);
     }
 
+    // A concretely scheduled next episode that belongs to a season newer than
+    // the one we track means a new season is announced but hasn't aired yet.
+    const nextEpisode = show.next_episode_to_air;
+    const nextSeasonAirDate =
+      nextEpisode && nextEpisode.season_number > seasonNumber && nextEpisode.air_date
+        ? nextEpisode.air_date
+        : null;
+
     return {
       title: show.name,
       imageUrl: show.poster_path ? getImageUrl(show.poster_path) : "/placeholder.svg",
@@ -90,7 +107,8 @@ export function useAddShowForm(onAddShow: (show: Omit<Show, "id" | "status">) =>
       genre: show.genres?.map(g => g.name).join(", "),
       tmdbId: show.id,
       seasonNumber,
-      seriesStatus: show.status
+      seriesStatus: show.status,
+      nextSeasonAirDate
     };
   };
 

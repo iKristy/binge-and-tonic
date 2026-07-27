@@ -9,6 +9,7 @@ interface AddShowBody {
   releasedEpisodes: number
   seasonNumber: number
   seriesStatus?: string | null
+  nextSeasonAirDate?: string | null
 }
 
 function validate(body: unknown): { ok: true; data: AddShowBody } | { ok: false; error: string } {
@@ -21,6 +22,7 @@ function validate(body: unknown): { ok: true; data: AddShowBody } | { ok: false;
   const seasonNumber = Number(b.seasonNumber)
   const posterUrl = b.posterUrl == null ? null : String(b.posterUrl)
   const seriesStatus = b.seriesStatus == null ? null : String(b.seriesStatus)
+  const nextSeasonAirDate = b.nextSeasonAirDate == null ? null : String(b.nextSeasonAirDate)
 
   if (!Number.isInteger(tmdbId) || tmdbId <= 0) return { ok: false, error: 'tmdbId must be a positive integer' }
   if (!title || title.length > 500) return { ok: false, error: 'title required, max 500 chars' }
@@ -29,8 +31,10 @@ function validate(body: unknown): { ok: true; data: AddShowBody } | { ok: false;
   if (!Number.isInteger(seasonNumber) || seasonNumber < 0 || seasonNumber > 1000) return { ok: false, error: 'seasonNumber invalid' }
   if (posterUrl && posterUrl.length > 2000) return { ok: false, error: 'posterUrl too long' }
   if (seriesStatus && seriesStatus.length > 100) return { ok: false, error: 'seriesStatus too long' }
+  // Expect an ISO date like "2026-08-04"; reject anything that isn't a real date.
+  if (nextSeasonAirDate && Number.isNaN(Date.parse(nextSeasonAirDate))) return { ok: false, error: 'nextSeasonAirDate invalid' }
 
-  return { ok: true, data: { tmdbId, title, posterUrl, totalEpisodes, releasedEpisodes, seasonNumber, seriesStatus } }
+  return { ok: true, data: { tmdbId, title, posterUrl, totalEpisodes, releasedEpisodes, seasonNumber, seriesStatus, nextSeasonAirDate } }
 }
 
 Deno.serve(async (req) => {
@@ -86,12 +90,16 @@ Deno.serve(async (req) => {
     let showId: number
     if (existing) {
       showId = existing.id
-      // Backfill the series status on catalog rows added before this column
-      // existed so the "Finished series" filter works without a full refresh.
-      if (input.seriesStatus) {
+      // Backfill the series status / upcoming-season date on catalog rows added
+      // before these columns existed so the "Finished series" filter and the
+      // "New season" badge work without waiting for a full refresh.
+      if (input.seriesStatus || input.nextSeasonAirDate !== undefined) {
         await admin
           .from('shows')
-          .update({ series_status: input.seriesStatus })
+          .update({
+            ...(input.seriesStatus ? { series_status: input.seriesStatus } : {}),
+            next_season_air_date: input.nextSeasonAirDate,
+          })
           .eq('id', showId)
       }
     } else {
@@ -105,6 +113,7 @@ Deno.serve(async (req) => {
           released_episodes: input.releasedEpisodes,
           season_number: input.seasonNumber,
           series_status: input.seriesStatus,
+          next_season_air_date: input.nextSeasonAirDate,
         })
         .select('id')
         .single()

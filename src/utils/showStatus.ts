@@ -3,15 +3,6 @@ import { Show } from "@/types/Show";
 // TMDB series-level status values that mean no further episodes will ever air.
 const FINISHED_SERIES_STATUSES = ["ended", "canceled", "cancelled"];
 
-// TMDB series-level status values that mean more episodes are still expected
-// (the show is ongoing, renewed, or has a new season in the pipeline).
-const RETURNING_SERIES_STATUSES = [
-  "returning series",
-  "in production",
-  "planned",
-  "pilot",
-];
-
 /**
  * A show counts as a "finished series" when the whole series has concluded on
  * TMDB (Ended/Canceled) and every tracked episode has already aired. This is
@@ -26,16 +17,16 @@ export const isSeriesFinished = (show: Show): boolean => {
 
 /**
  * A show has an upcoming season only while it is in the pre-release state: TMDB
- * marks it as returning/ongoing, the season has a known episode count, but none
- * of its episodes have aired yet. As soon as the first episode airs the show
- * moves to normal progress tracking, so this is purely the "announced but not
- * airing yet" window (not the gap after a season has finished airing).
+ * has a concretely scheduled first episode of a season newer than the one we
+ * currently track (`nextSeasonAirDate`), and that date is still in the future.
+ * As soon as the new season starts airing the date passes (and the tracked
+ * season advances), so this is purely the "announced but not airing yet"
+ * window, not the gap after a season has simply finished airing.
  */
 export const hasUpcomingSeason = (show: Show): boolean => {
-  const status = show.seriesStatus?.trim().toLowerCase();
-  if (!status || !RETURNING_SERIES_STATUSES.includes(status)) return false;
   if (isSeriesFinished(show)) return false;
-  return show.totalEpisodes > 0 && show.releasedEpisodes === 0;
+  if (!show.nextSeasonAirDate) return false;
+  return new Date(show.nextSeasonAirDate).getTime() > Date.now();
 };
 
 export type ShowBadgeVariant = "finished" | "complete" | "inProgress" | "announced";

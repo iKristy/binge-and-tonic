@@ -39,7 +39,8 @@ export function useShowFetch(user: User | null) {
             total_episodes,
             released_episodes,
             season_number,
-            series_status
+            series_status,
+            next_season_air_date
           )
         `)
         .eq("user_id", user.id)
@@ -61,6 +62,7 @@ export function useShowFetch(user: User | null) {
           seasonNumber: relation.show.season_number,
           tmdbId: relation.show.tmdb_id,
           seriesStatus: relation.show.series_status || undefined,
+          nextSeasonAirDate: relation.show.next_season_air_date || null,
           watched: relation.watched || false
         }));
         

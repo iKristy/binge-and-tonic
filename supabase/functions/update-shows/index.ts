@@ -53,6 +53,16 @@ async function refreshShow(show: any) {
     showDetails.number_of_episodes ||
     show.total_episodes;
 
+  // A new season is "announced but not aired yet" when TMDB has a concretely
+  // scheduled next episode that belongs to a season newer than the one we
+  // track. Store its air date so the UI can show the "New season" badge only
+  // during that pre-release window (and drop it once episodes start airing).
+  const nextEpisode = showDetails.next_episode_to_air;
+  const nextSeasonAirDate =
+    nextEpisode && nextEpisode.season_number > seasonNumber && nextEpisode.air_date
+      ? nextEpisode.air_date
+      : null;
+
   // Detect whether new content became available since we last refreshed this
   // show. A brand-new season (higher season number) or freshly aired episodes
   // within the current season both count as "there's something new to watch".
@@ -70,6 +80,7 @@ async function refreshShow(show: any) {
       released_episodes: releasedEpisodes,
       total_episodes: totalEpisodes,
       series_status: showDetails.status ?? null,
+      next_season_air_date: nextSeasonAirDate,
       updated_at: new Date().toISOString(),
       retry_count: 0,
       last_error: null,
@@ -109,6 +120,7 @@ async function refreshShow(show: any) {
     seasonNumber,
     releasedEpisodes,
     totalEpisodes,
+    nextSeasonAirDate,
     hasNewContent,
     unwatchedRelations,
   };
