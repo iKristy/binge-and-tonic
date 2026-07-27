@@ -14,7 +14,7 @@ import { CalendarDays, ExternalLink, Trash2, Eye, EyeOff, Clock, RefreshCw } fro
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLatestEpisode } from "@/hooks/show/useLatestEpisode";
 import { morphFromDialog, MORPH_NAME } from "@/lib/viewTransition";
-import { isSeriesFinished } from "@/utils/showStatus";
+import { getShowBadge } from "@/utils/showStatus";
 
 interface ShowDetailsProps {
   show: Show | null;
@@ -41,8 +41,7 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
   if (!show) return null;
 
   const isComplete = show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
-  const isFinished = isSeriesFinished(show);
-  const remainingEpisodes = Math.max(0, show.totalEpisodes - show.releasedEpisodes);
+  const badge = getShowBadge(show);
 
   const formatAirDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -106,8 +105,8 @@ const ShowDetails: React.FC<ShowDetailsProps> = ({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant={isFinished ? "finished" : isComplete ? "complete" : "inProgress"}>
-              {isFinished ? "Finished series" : isComplete ? "Season completed" : `${remainingEpisodes} episode${remainingEpisodes !== 1 ? 's' : ''} remaining`}
+            <Badge variant={badge.variant}>
+              {badge.label}
             </Badge>
           </div>
         </div>

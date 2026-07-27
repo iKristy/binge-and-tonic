@@ -34,13 +34,16 @@ export function useShowDetails(
     };
   }, [isDetailsOpen]);
 
-  const applyRefreshed = useCallback((current: Show, refreshed: { seasonNumber: number; releasedEpisodes: number; totalEpisodes: number; }) => {
+  const applyRefreshed = useCallback((current: Show, refreshed: { seasonNumber: number; releasedEpisodes: number; totalEpisodes: number; hasNewContent?: boolean; }) => {
     const updated: Show = {
       ...current,
       seasonNumber: refreshed.seasonNumber,
       releasedEpisodes: refreshed.releasedEpisodes,
       totalEpisodes: refreshed.totalEpisodes,
       status: refreshed.releasedEpisodes >= refreshed.totalEpisodes ? "complete" : "waiting",
+      // New content moves the show back to the unwatched list (the server also
+      // resets this in user_show_relations), so mirror that locally.
+      watched: refreshed.hasNewContent ? false : current.watched,
     };
     setSelectedShow(updated);
     onShowDataUpdated?.();

@@ -53,6 +53,16 @@ async function refreshShow(show: any) {
     showDetails.number_of_episodes ||
     show.total_episodes;
 
+  // Detect whether new content became available since we last refreshed this
+  // show. A brand-new season (higher season number) or freshly aired episodes
+  // within the current season both count as "there's something new to watch".
+  const previousSeasonNumber = show.season_number ?? 0;
+  const previousReleasedEpisodes = show.released_episodes ?? 0;
+  const hasNewSeason = seasonNumber > previousSeasonNumber;
+  const hasNewEpisodes =
+    seasonNumber === previousSeasonNumber && releasedEpisodes > previousReleasedEpisodes;
+  const hasNewContent = hasNewSeason || hasNewEpisodes;
+
   const { error: updateError } = await supabase
     .from("shows")
     .update({
@@ -70,6 +80,28 @@ async function refreshShow(show: any) {
     throw new Error(`Error updating show ${show.title}: ${updateError.message}`);
   }
 
+  // When new content lands, any user who had already marked this show as
+  // watched should see it move back to their unwatched list.
+  let unwatchedRelations = 0;
+  if (hasNewContent) {
+    const { data: reset, error: resetError } = await supabase
+      .from("user_show_relations")
+      .update({ watched: false, updated_at: new Date().toISOString() })
+      .eq("show_id", show.id)
+      .eq("watched", true)
+      .select("id");
+
+    if (resetError) {
+      // Don't fail the whole refresh just because the reset failed; the show
+      // data itself is already up to date.
+      console.error(
+        `Error resetting watched status for show ${show.title}: ${resetError.message}`
+      );
+    } else {
+      unwatchedRelations = reset?.length ?? 0;
+    }
+  }
+
   return {
     id: show.id,
     title: show.title,
@@ -77,6 +109,8 @@ async function refreshShow(show: any) {
     seasonNumber,
     releasedEpisodes,
     totalEpisodes,
+    hasNewContent,
+    unwatchedRelations,
   };
 }
 

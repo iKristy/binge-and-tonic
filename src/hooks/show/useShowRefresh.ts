@@ -8,6 +8,7 @@ interface RefreshedShow {
   seasonNumber: number;
   releasedEpisodes: number;
   totalEpisodes: number;
+  hasNewContent?: boolean;
 }
 
 /**
