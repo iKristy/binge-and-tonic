@@ -25,16 +25,17 @@ export const isSeriesFinished = (show: Show): boolean => {
 };
 
 /**
- * A show has an upcoming season when TMDB still marks it as returning/ongoing
- * but the currently tracked season is fully released. In that case we're in the
- * gap between seasons: the latest season is done, and a new one is announced but
- * has not started airing yet (so it isn't tracked as the current season).
+ * A show has an upcoming season only while it is in the pre-release state: TMDB
+ * marks it as returning/ongoing, the season has a known episode count, but none
+ * of its episodes have aired yet. As soon as the first episode airs the show
+ * moves to normal progress tracking, so this is purely the "announced but not
+ * airing yet" window (not the gap after a season has finished airing).
  */
 export const hasUpcomingSeason = (show: Show): boolean => {
   const status = show.seriesStatus?.trim().toLowerCase();
   if (!status || !RETURNING_SERIES_STATUSES.includes(status)) return false;
   if (isSeriesFinished(show)) return false;
-  return show.releasedEpisodes >= show.totalEpisodes;
+  return show.totalEpisodes > 0 && show.releasedEpisodes === 0;
 };
 
 export type ShowBadgeVariant = "finished" | "complete" | "inProgress" | "announced";
@@ -46,21 +47,23 @@ export interface ShowBadge {
 
 /**
  * Derives the status badge (label + color variant) shown on cards and details.
- * Precedence: finished series → new season announced → season completed →
- * episodes remaining.
+ * Precedence: finished series → new season announced (pre-release) → season
+ * completed → episodes remaining.
  */
 export const getShowBadge = (show: Show): ShowBadge => {
-  const isComplete =
-    show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
-
   if (isSeriesFinished(show)) {
     return { variant: "finished", label: "Finished series" };
   }
 
+  // Only true before the upcoming season starts airing; once episodes drop the
+  // show falls through to the progress/completed states below.
+  if (hasUpcomingSeason(show)) {
+    return { variant: "announced", label: "New season" };
+  }
+
+  const isComplete =
+    show.status === "complete" || show.releasedEpisodes >= show.totalEpisodes;
   if (isComplete) {
-    if (hasUpcomingSeason(show)) {
-      return { variant: "announced", label: "New season" };
-    }
     return { variant: "complete", label: "Season completed" };
   }
 
