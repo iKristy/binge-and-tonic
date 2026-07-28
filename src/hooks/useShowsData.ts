@@ -4,6 +4,7 @@ import { useShowFetch } from "@/hooks/show/useShowFetch";
 import { useShowFilter, FilterType } from "@/hooks/show/useShowFilter";
 import { useShowSort, SortType } from "@/hooks/show/useShowSort";
 import { useShowStorage } from "@/hooks/show/useShowStorage";
+import { useBackgroundRefresh } from "@/hooks/show/useBackgroundRefresh";
 import { Show } from "@/types/Show";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +18,10 @@ export function useShowsData(user: User | null) {
   const { sortBy, setSortBy, sortedShows } = useShowSort(filteredShows);
   const { isShowAlreadyAdded, addShow: addShowToStorage, removeShow: removeShowFromStorage } = useShowStorage(user);
   const { toast } = useToast();
+
+  // Refresh TMDB data in the background on load so auto-unwatch (new episodes or
+  // a newly announced season) takes effect without opening each show's details.
+  useBackgroundRefresh(user, refreshShows);
 
   const addShow = async (newShow: Omit<Show, "id" | "status">) => {
     return addShowToStorage(shows, setShows, newShow);
