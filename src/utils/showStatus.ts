@@ -60,7 +60,7 @@ export const getShowBadge = (show: Show): ShowBadge => {
   // Only true before the upcoming season starts airing; once episodes drop the
   // show falls through to the progress/completed states below.
   if (hasUpcomingSeason(show)) {
-    return { variant: "announced", label: "New season" };
+    return { variant: "announced", label: "New season coming" };
   }
 
   const isComplete =
